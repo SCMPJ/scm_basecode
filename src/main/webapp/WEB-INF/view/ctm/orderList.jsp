@@ -297,7 +297,7 @@
           
           <div class="btn_areaC mt30">
             <a href="" class="btnType blue" id="btnSubmit" name="btn"><span>등록</span></a>
-            <a href="" class="btnType gray" id="btnCloseRefund" name="btn"><span>닫기</span></a>
+            <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
             
           </div>
         
