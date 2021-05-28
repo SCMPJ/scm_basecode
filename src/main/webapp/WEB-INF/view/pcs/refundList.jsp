@@ -26,15 +26,15 @@
          language: 'kr'
       });
       
-      $('#datetimepicker2').datetimepicker({
+    $('#datetimepicker2').datetimepicker({
       format : 'L',
       useCurrent : false,
       language: 'kr'
       });
       
-      $("#datetimepicker1").on("change.datetimepicker", function(e) {
-        $('#datetimepicker2').datetimepicker('minDate', e.date);
-      });
+    $("#datetimepicker1").on("change.datetimepicker", function(e) {
+      $('#datetimepicker2').datetimepicker('minDate', e.date);
+    });
 
     // 반품서 목록 조회 호출
     selectList();
@@ -42,9 +42,9 @@
   });
 
    /* 반품서 목록 조회 */
-  function selectList(currentPage, serchOptions) {
+  function selectList(currentPage) {
    
-     var option = $('#options').val();
+    var option = $('#options').val();
     var keyword = $('#keyword').val();
     var date = $("#datetimepicker1").find("input").val()
     
@@ -84,7 +84,6 @@
    /* 반품서 목록 조회 콜백 함수 */
   function selectListCallBack(data, currentPage) {
     
-    console.log('반품서목록!!', data)
     // 기존 목록 삭제
     $('#refundList').empty();
     
@@ -134,7 +133,6 @@
 
     /* 반품서 단건 조회 콜백 함수 */
     var resultCallback = function(data) {
-      console.log('콜백:', data);
       selectDetailCallBack(data);
     };
 
@@ -142,46 +140,44 @@
   }
 
   // 반품서 단건 조회  데이터 설정 함수 호출 
-  // fSelectGrpCodResult참고
   function selectDetailCallBack(data) {
     gfModalPop("#layer1");
     initModal(data);
   }
 
   /* 반품서 모달 초기화,데이터 설정 함수 */
-  // fInitFormGrpCod 참고
-  function initModal(object) {
+  function initModal(result) {
 
-    if (object == "" || object == null || object == undefined) {
+    if (result == '' || result == null || result == undefined) {
 
-      $("#purch_list_no").val("");
-      $("#supply_nm").val("");
-      $("#supply_cd").val("");
-      $("#m_ct_nm").val("");
-      $("#product_cd").val("");
-      $("#prod_nm").val("");
-      $("#return_qty").val("");
-      $("#returnPrice").val("");
-      $("#warehouse_cd").val("");
-      $("#addr").val("");
-      $("#return_mng_id").val("");
-      $("#purch_date").val("");
-      $("#desired_delivery_date").val("");
+      $('#purch_list_no').val('');
+      $('#supply_nm').val('');
+      $('#supply_cd').val('');
+      $('#m_ct_nm').val('');
+      $('#product_cd').val('');
+      $('#prod_nm').val('');
+      $('#return_qty').val('');
+      $('#returnPrice').val('');
+      $('#warehouse_cd').val('');
+      $('#addr').val('');
+      $('return_mng_id').val('');
+      $('#purch_date').val('');
+      $('#desired_delivery_date').val('');
 
     } else {
-      $("#purch_list_no").val(object.purch_list_no);
-      $("#supply_nm").val(object.supply_nm);
-      $("#supply_cd").val(object.supply_cd);
-      $("#m_ct_nm").val(object.m_ct_nm);
-      $("#product_cd").val(object.product_cd);
-      $("#prod_nm").val(object.prod_nm);
-      $("#return_qty").val(object.return_qty);
-      $('#returnPrice').val(object.return_price);
-      $("#warehouse_cd").val(object.warehouse_cd);
-      $("#addr").val(object.addr);
-      $("#return_mng_id").val(object.return_mng_id);
-      $("#purch_date").val(object.purch_date);
-      $("#desired_delivery_date").val(object.desired_delivery_date);
+      $('#purch_list_no').val(result.purch_list_no);
+      $('#supply_nm').val(result.supply_nm);
+      $('#supply_cd').val(result.supply_cd);
+      $('#m_ct_nm').val(result.m_ct_nm);
+      $('#product_cd').val(result.product_cd);
+      $('#prod_nm').val(result.prod_nm);
+      $('#return_qty').val(result.return_qty);
+      $('#returnPrice').val(result.return_price);
+      $('#warehouse_cd').val(result.warehouse_cd);
+      $('#addr').val(result.addr);
+      $('#return_mng_id').val(result.return_mng_id);
+      $('#purch_date').val(result.purch_date);
+      $('#desired_delivery_date').val(result.desired_delivery_date);
 
     }
 
