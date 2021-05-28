@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.scm.model.CusInfoModel;
-import kr.happyjob.study.scm.model.ProductInfoModel;
 import kr.happyjob.study.scm.service.CusInfoService;
 
 @Controller
