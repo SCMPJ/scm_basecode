@@ -40,7 +40,8 @@ public class OrderListController {
     int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
     int pageSize    = Integer.parseInt((String)paramMap.get("pageSize"));      // 페이지 사이즈
     int pageIndex   = (currentPage -1)*pageSize;                  // 페이지 시작 row 번호
-    
+
+    paramMap.put("loginID", session.getAttribute("loginId"));
     paramMap.put("pageIndex", pageIndex);
     paramMap.put("pageSize", pageSize);
     
@@ -51,10 +52,29 @@ public class OrderListController {
     // 주문이력 총 개수 조회
     int totalCount = orderListService.totalCntOrder(paramMap);
     model.addAttribute("totalOrder", totalCount);
-    
     model.addAttribute("pageSize", pageSize);
     model.addAttribute("currentPageProduct",currentPage);  
     
     return "ctm/orderHisList";
   }  
+  
+  //단건 조회
+  @RequestMapping("selectRefund.do")
+  @ResponseBody
+  public Map<String, Object> selectRefund (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception{
+
+    String result = "SUCCESS";
+    String resultMsg = "조회 되었습니다.";
+    
+    OrderListModel refundInfoModel = orderListService.selectRefund(paramMap);
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    resultMap.put("refundInfoModel", refundInfoModel);
+    
+    System.out.println(resultMap);
+    return resultMap;
+  }
 }

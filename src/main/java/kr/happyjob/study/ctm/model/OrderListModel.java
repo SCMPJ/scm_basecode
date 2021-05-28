@@ -29,9 +29,27 @@ public class OrderListModel {
 	private String m_ct_cd;
 	// 대분류 코드(for JOIN)
 	private String l_ct_cd;
+	private String loginID;
+	private String addr;
 	
 
-	public String getL_ct_cd() {
+	public String getAddr() {
+    return addr;
+  }
+
+  public void setAddr(String addr) {
+    this.addr = addr;
+  }
+
+  public String getLoginID() {
+    return loginID;
+  }
+
+  public void setLoginID(String loginID) {
+    this.loginID = loginID;
+  }
+
+  public String getL_ct_cd() {
 		return l_ct_cd;
 	}
 

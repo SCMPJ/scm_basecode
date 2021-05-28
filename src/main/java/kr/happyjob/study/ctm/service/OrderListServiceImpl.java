@@ -26,4 +26,10 @@ public class OrderListServiceImpl implements OrderListService {
     int totalCntOrder = OrderListDao.totalCntOrder(paramMap);
     return totalCntOrder;
   }
+  /* 단건 조회*/
+  @Override
+  public OrderListModel selectRefund(Map<String, Object> paramMap) throws Exception {
+    OrderListModel selectRefund = OrderListDao.selectRefund(paramMap);
+    return selectRefund;
+  }
 }

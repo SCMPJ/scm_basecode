@@ -24,6 +24,7 @@
         LEFT OUTER JOIN tb_scm_product sp ON od.product_cd = sp.product_cd
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
+       WHERE od.loginID = #{loginID}
       LIMIT #{pageIndex}, #{pageSize}
   </select>
   
@@ -34,6 +35,21 @@
         LEFT OUTER JOIN tb_scm_product sp ON od.product_cd = sp.product_cd
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
+       WHERE od.loginID = #{loginID}
+  </select>
+  
+  <!-- 반품신청 모달 -->
+  <select id="selectRefund" resultType="kr.happyjob.study.ctm.model.OrderListModel">
+     SELECT PD.prod_nm as prod_nm,
+            PD.product_cd as product_cd,
+            OD.amount as amount,
+            UI.addr as addr,
+            OD.order_cnt as order_cnt,
+            OD.refund_reason as refund_reason
+       FROM tb_order OD
+  LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
+  LEFT JOIN tb_userinfo UI ON UI.loginID = OD.loginID
+      WHERE OD.order_cd = #{order_cd}
   </select>
   
 </mapper> 

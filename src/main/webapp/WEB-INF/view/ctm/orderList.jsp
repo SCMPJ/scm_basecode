@@ -28,13 +28,10 @@
       case 'searchBtn':
         board_search(); // 검색하기
         break;
-      case 'btnSaveProduct':
-        fSaveProduct(); // save 안에 저장,수정  
+      case 'btnSubmit':// 등록하기
+        fSubmitRefund();
         break;
-      case 'btnDeleteProduct'://삭제하기
-        fDeleteProduct();
-        break;
-      case 'btnCloseProduct':
+      case 'btnCloseModal':
         gfCloseModal(); // 모달닫기 
         break;
       }
@@ -91,6 +88,51 @@
     callAjax("/ctm/orderHisList.do", "post", "text", true, param, resultCallback);
   }
   
+  /* 모달 실행 */
+  function fPopModalRefund(order_cd) {
+    $("#action").val("R");
+    fSelectRefund(order_cd);
+  }
+
+  /* 단건 조회*/
+  function fSelectRefund(order_cd) {
+    var param = {
+      order_cd : order_cd
+    };
+    var resultCallback = function(data) {
+      fSelectRefundResult(data);
+    };
+    callAjax("/ctm/selectRefund.do", "post", "json", true, param, resultCallback);
+  }
+
+  // 콜백 함수
+  function fSelectRefundResult(data) {
+    if (data.result == "SUCCESS") {
+      gfModalPop("#layerRefund")
+      fInitFormRefund(data.refundInfoModel);
+    } else {
+      alert(data.resultMsg);
+    }
+  }
+  
+  function fInitFormRefund(object) {
+    
+      $("#prod_nm").val(object.prod_nm);
+      $("#product_cd").val(object.product_cd);
+      $("#refund_amt").val(object.amount); //amount = refund_amt
+      $("#addr").val(object.addr);
+      $("#refund_cnt").val(object.order_cnt); //order_cnt = refund_cnt
+      $("#refund_reason").val(object.refund_reason);
+      $("#prod_nm").attr("readonly", true);
+      $("#product_cd").attr("readonly", true);
+      $("#refund_amt").attr("readonly", true);
+      $("#addr").attr("readonly", true);
+      $("#refund_cnt").attr("readonly", true);
+      
+      
+      $("#btnSubmit").show();
+    
+  } 
 </script>
 </head>
 <body>
@@ -208,6 +250,62 @@
 				</ul>
 			</div>
 		</div>
+    
+    <!-- 모달 -->
+    
+    <div id="layerRefund" class="layerPop layerType2" style="width: 600px;"> 
+      <dl>
+        <dt>
+          <strong>반  품</strong>
+        </dt>
+        <dd class="content">
+          <table class="row">
+            <caption>caption</caption>
+            <colgroup>
+              <col width="120px">
+              <col width="*">
+              <col width="120px">
+              <col width="*">
+            </colgroup>
+            <tbody>
+              <tr>
+                <th scope="row">제품명</th>
+                <td><input type="text" name="prod_nm" id="prod_nm"/></td>
+                <th scope="row">반품사유</th>
+              </tr>
+              <tr>
+                <th scope="row">제품코드</th>
+                <td><input type="text" name="product_cd" id="product_cd"/></td>
+                <td rowspan="4"><textarea class = "ui-widget ui-widget-content ui-corner-all" id="refund_reason" maxlength="200" name="detail" 
+                    style="height:130px;outline:none;resize:none;" placeholder="여기에  반품사유를 적어주세요.(200자 이내)"></textarea></td>
+              </tr>
+              <tr>
+                <th scope="row">환불금액</th>
+                <td><input type="text" name="refund_amt" id="refund_amt"/></td>
+              </tr>
+              <tr>
+                <th scope="row">상세주소</th>
+                <td><input type="text" name="addr" id="addr"/></td>
+              </tr>
+              <tr>
+                <th scope="row">반품수량</th>
+                <td><input type="text" name="refund_cnt" id="refund_cnt"/></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          
+          <div class="btn_areaC mt30">
+            <a href="" class="btnType blue" id="btnSubmit" name="btn"><span>등록</span></a>
+            <a href="" class="btnType gray" id="btnCloseRefund" name="btn"><span>닫기</span></a>
+            
+          </div>
+        
+       
+        </dd>
+      </dl>
+      <a href="" class="closePop" id="btnClose" name="btn"><span class="hidden">닫기</span></a>
+    </div>
 	</form>
 </body>
 </html>
