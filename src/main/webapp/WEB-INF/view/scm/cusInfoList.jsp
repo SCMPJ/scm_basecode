@@ -8,10 +8,10 @@
 <c:if test="${cusListCnt > 0 }">
     <c:forEach items="${cusList}" var="list">
         <tr>
-            <td><a href="javascript:fOrderDetailList('${list.company_nm}');">${list.company_nm}</a></td>
+            <td><a href="javascript:cusInfoModalOpen('${list.loginID}');">${list.company_nm}</a></td>
             <td>${list.company_mng_nm}</td>
             <td>${list.mng_tel}</td>
-            <td>${list.active}</td>
+            <td><input type="hidden" id="activeStatus" value="${list.active}"/>${list.active}</td>
         </tr>
     </c:forEach>
 </c:if>
