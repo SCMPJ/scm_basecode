@@ -36,22 +36,23 @@
                                     <!-- searchbar -->
                                     <div class="col-lg-6">
                                         <div class="input-group">
-                                            <select id="searchKey" name="searchKey" style="width:90px;height:34px;">
-                                               <option value="employee">직원명</option>
-                                               <option value="task">담당업무</option>
-                                            </select>
-                                            <input type="text" id="sname" name="sname" class="form-control">
+	                                        <select name="searchKey" style="width:90px; height:34px;" >
+	                                            <option value="all" selected="selected">전체</option>
+	                                            <option value="company_nm">회사명</option>
+	                                            <option value="company_mng_nm">담당자명</option>
+	                                        </select>
+                                            <input type="text" name="searchInfo" class="form-control">
                                         </div>
                                     </div>
                                     <!-- // searchbar -->
                                     <!-- button -->
                                     <div class="btn-group" role="group" aria-label="...">
-                                      <a class="btn btn-default" id="btnSearchEmployeeInfo" href="">검색</a>
+                                      <a class="btn btn-default" href="javascript:fSearchCusList()">검색</a>
                                     </div>
                                     <!-- // button -->
                                     <!-- checkbox -->
                                     <div class="input-group" style="display:inline-block;vertical-align:middle;margin-left:10px;">
-                                        <input type="checkbox" id="searchUseYn" name="searchUseYn" onchange="javascript:fSearchCusList()">
+                                        <input type="checkbox" id="searchUseYn" onchange="javascript:fSearchCusList()">
                                         <label for="searchUseYn" style="display:inline-block;margin-top:2px;">비활성화된 항목 표시</label>
                                     </div>
                                     <!-- // checkbox -->
@@ -121,7 +122,6 @@
             
             param += "&currentPage="+currentPage;
             param += "&pageSize="+pageSizeInfo;
-            param += "&showY=Y";
             
             console.log("검색조건에 대한 param : " + param);
             console.log("currentPage : " + currentPage);
@@ -207,15 +207,16 @@
     // 저장 버튼 추가 및 리스트 Ajax    
     cusInfoModal.addFooterBtn('저장', 'tingle-btn tingle-btn--primary', function() {
         
-        var param = {};
+    	var param = $('#modifyActiveFrom').serialize();
 
         console.log(param);
-        var resultCallback = function(data) {
+        
+        /* var resultCallback = function(data) {
             // getUpdateMessage(data);
         }
 
         callAjax("/scm/sendPurchaseDirection.do", "post", "json", true, param, resultCallback);
-        cusInfoModal.close();
+        cusInfoModal.close(); */
     });
     
     // 닫기 버튼
@@ -243,7 +244,9 @@
     }
 
     function cusInfoModalResult(data) {
-        console.log("=== 2.모달창에 뿌릴 데이터 === : " + data);
+        
+    	// console.log("=== 2.모달창에 뿌릴 데이터 === : " + data);
+    	
         cusInfoModal.setContent(data);
         return;
     }
