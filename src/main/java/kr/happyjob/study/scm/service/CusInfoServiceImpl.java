@@ -24,5 +24,10 @@ public class CusInfoServiceImpl implements CusInfoService{
 	public int cusListCnt(Map<String, Object> paramMap) throws Exception {
 		return cusInfoDao.cusListCnt(paramMap);
 	}
+
+	@Override
+	public List<CusInfoModel> getCusDetailInfo(Map<String, Object> paramMap) throws Exception {
+		return cusInfoDao.selectCusDetailInfo(paramMap);
+	}
   
 }
