@@ -17,7 +17,7 @@
 	         <c:forEach items="${cusDetailInfo}" var="list">
 	         <tr>
 	           <th scope="row">로그인ID</th>
-	           <td>${list.loginID}</td>
+	           <td><input type="hidden" name="loginID" value="${list.loginID}"/>${list.loginID}</td>
 	           <th scope="row">기업코드</th>
 	           <td>${list.company_cd}</td>  
 	         </tr>
