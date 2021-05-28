@@ -44,6 +44,7 @@
                     AND TSU.active = "Y"
                 </otherwise>
             </choose>
+            LIMIT #{pageIndex}, #{pageSize}
     </select>
     
     <select id="cusListCnt" resultType="int">
