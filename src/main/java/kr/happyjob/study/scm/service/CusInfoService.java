@@ -12,4 +12,7 @@ public interface CusInfoService {
   /* 기업 고객 카운트 조회 */
   public int cusListCnt(Map<String, Object> paramMap) throws Exception;
   
+  /* 기업 고객 모달 데이터 */
+  public List<CusInfoModel> getCusDetailInfo(Map<String, Object> paramMap) throws Exception;
+  
 }
