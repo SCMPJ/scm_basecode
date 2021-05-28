@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.scm.model.CusInfoModel;
 import kr.happyjob.study.scm.model.ProductInfoModel;
@@ -79,5 +80,19 @@ public class CusInfoController {
 		model.addAttribute("cusDetailInfo", cusDetailInfo);
 	
 		return "/scm/cusInfoDetail";
+	}
+	
+	// 기업고객 활성화여부 업데이트
+	@RequestMapping("sendCusActiveModify.do")
+	@ResponseBody
+	public Map<String, String> sendCusActiveModify(Model model, @RequestParam Map<String, Object> paramMap,
+			HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+
+		logger.info("===== Active Update paramMap ===== : " + paramMap);
+
+		// 고객 
+		Map<String, String> resultMap = cusInfoService.modifyActiveState(paramMap);
+
+		return resultMap;
 	}
 }
