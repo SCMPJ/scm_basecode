@@ -2,6 +2,8 @@ package kr.happyjob.study.scm.model;
 
 public class CusInfoModel {
 	
+	// 로그인 ID
+	private String loginID;
 	// 회사명
 	private String company_nm;
 	// 회사 매니저명
@@ -35,6 +37,11 @@ public class CusInfoModel {
 	public void setActive(String active) {
 		this.active = active;
 	}
-	
+	public String getLoginID() {
+		return loginID;
+	}
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
+	}
 	
 }
