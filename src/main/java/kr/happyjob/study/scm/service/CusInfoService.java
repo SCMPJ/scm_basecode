@@ -15,4 +15,6 @@ public interface CusInfoService {
   /* 기업 고객 모달 데이터 */
   public List<CusInfoModel> getCusDetailInfo(Map<String, Object> paramMap) throws Exception;
   
+  public Map<String, String> modifyActiveState(Map<String, Object> paramMap) throws Exception;
+  
 }
