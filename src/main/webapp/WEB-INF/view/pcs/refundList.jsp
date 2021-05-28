@@ -40,29 +40,49 @@
     selectList();
 
   });
+  
+  /* 검색일 검증 */
+  function validateDate() {
+    
+    var delimiter = '-';
+    var today = new Date();
+    today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
+    var date = $("#datetimepicker1").find("input").val();
+    
+    if(date > today) {
+      swal('오늘 이후는 검색할 수 없습니다');
+      return false;
+    }
+    console.log('실행안됨')
+    return true;
+  }
 
    /* 반품서 목록 조회 */
   function selectList(currentPage) {
    
     var option = $('#options').val();
     var keyword = $('#keyword').val();
-    var date = $("#datetimepicker1").find("input").val()
-    
+    var date = $("#datetimepicker1").find("input").val();
     
     currentPage = currentPage || 1;
 
     console.log("currentPage : " + currentPage);
 
     if (keyword || date) {
+      var validate = validateDate();
       
-      var param = {
-      option : option,
-      keyword : keyword,
-      date : date,
-      currentPage : currentPage,
-      pageSize : pageSize
+      if (validate) {
+        var param = {
+        option : option,
+        keyword : keyword,
+        date : date,
+        currentPage : currentPage,
+        pageSize : pageSize
+        }
       }
-
+      else {
+        return false;
+      }
     } else {
       
       var param = {
@@ -107,24 +127,19 @@
   function fadeInModal(refund_list_no) {
     
     if (refund_list_no != null || refund_list_no != undefined) {
-      
       // 그룹코드 폼 초기화
       initModal();
       
       // 모달 팝업
       gfModalPop("#layer1");
-      
     } else {
-      
       swal("에러가 발생했습니다");
-      
     }
     // 반품서 단건 조회
     selectDetail(refund_list_no);
   }
 
   /* 반품서 단건 조회 함수 */
-  // fSelectGrpCodResult 참고
   function selectDetail(refund_list_no) {
     
     var param = {
@@ -133,17 +148,13 @@
 
     /* 반품서 단건 조회 콜백 함수 */
     var resultCallback = function(data) {
-      selectDetailCallBack(data);
+      gfModalPop("#layer1");
+      initModal(data);
     };
 
     callAjax("/pcs/refund/detail.do", "post", "json", true, param, resultCallback);
   }
 
-  // 반품서 단건 조회  데이터 설정 함수 호출 
-  function selectDetailCallBack(data) {
-    gfModalPop("#layer1");
-    initModal(data);
-  }
 
   /* 반품서 모달 초기화,데이터 설정 함수 */
   function initModal(result) {
