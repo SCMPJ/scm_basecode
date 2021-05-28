@@ -26,6 +26,8 @@ public class CusInfoModalModel {
 	private String addr_detail;
 	// 가입날짜
 	private String join_date;
+	// 활성화 여부
+	private String active;
 	
 	public String getLoginID() {
 		return loginID;
@@ -99,6 +101,12 @@ public class CusInfoModalModel {
 	}
 	public void setJoin_date(String join_date) {
 		this.join_date = join_date;
+	}
+	public String getActive() {
+		return active;
+	}
+	public void setActive(String active) {
+		this.active = active;
 	}
 	
 }
