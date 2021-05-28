@@ -30,7 +30,7 @@
                     </if>
                 </when>
                 <otherwise>
-                    <if test="searchInfo != null">
+                    <if test="searchInfo != null and !searchInfo.equals('')">
 	                    AND INFO.name LIKE CONCAT('%', #{searchInfo}, '%')
 	                    OR TSU.company_mng LIKE CONCAT('%', #{searchInfo}, '%')
                     </if>
@@ -98,6 +98,7 @@
                 , INFO.addr AS addr
                 , INFO.addr_detail AS addr_detail
                 , DATE_FORMAT(TSU.join_date, '%Y-%m-%d') AS join_date
+                , TSU.active AS active
             FROM tb_scm_userinfo AS TSU
             
             LEFT JOIN tb_userinfo AS INFO
