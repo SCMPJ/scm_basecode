@@ -211,12 +211,12 @@
 
         console.log(param);
         
-        /* var resultCallback = function(data) {
-            // getUpdateMessage(data);
+        var resultCallback = function(data) {
+            getUpdateMessage(data);
         }
 
-        callAjax("/scm/sendPurchaseDirection.do", "post", "json", true, param, resultCallback);
-        cusInfoModal.close(); */
+        callAjax("/scm/sendCusActiveModify.do", "post", "json", true, param, resultCallback);
+        cusInfoModal.close();
     });
     
     // 닫기 버튼

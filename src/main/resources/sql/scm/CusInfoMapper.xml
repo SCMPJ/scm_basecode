@@ -109,4 +109,10 @@
             
             WHERE TSU.loginID = #{loginID}
     </select>
+    
+    <update id="updateActiveState" parameterType="int">
+        UPDATE tb_scm_userinfo
+            SET active = #{active}
+            WHERE loginID = #{loginID}
+    </update>
 </mapper>

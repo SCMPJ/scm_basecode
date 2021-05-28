@@ -14,4 +14,7 @@ public interface CusInfoDao {
 	
 	/* 기업 고객 모달 데이터 */
 	public List<CusInfoModel> selectCusDetailInfo(Map<String, Object> paramMap) throws Exception;
+	
+	/* 고객 활성화 업데이트 */
+	public int updateActiveState(Map<String, Object> paramMap) throws Exception;
 }
