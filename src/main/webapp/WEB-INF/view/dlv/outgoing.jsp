@@ -62,8 +62,9 @@
 
 	                // 날짜가 올바르지 않거나 널값인 경우 랜딩
 	                if(startDate > endDate){
-	                    alert("시작일자는 종료일자보다 클 수가 없습니다.");
-	                    location.href= "/dlv/outgoing.do";
+	                    swal("\n시작일자는 종료일자보다 클 수가 없습니다.").then(function(){
+	                    	window.location.reload();
+	                    })
 	                }
 	                
 	                var resultCallback = function(data) {
