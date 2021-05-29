@@ -40,7 +40,8 @@
   
   <!-- 반품신청 모달 -->
   <select id="selectRefund" resultType="kr.happyjob.study.ctm.model.OrderListModel">
-     SELECT PD.prod_nm as prod_nm,
+     SELECT OD.order_cd as order_cd,
+            PD.prod_nm as prod_nm,
             PD.product_cd as product_cd,
             OD.amount as amount,
             UI.addr as addr,
