@@ -229,6 +229,10 @@ public class PcsController {
     String result = "SUCCESS";
     String resultMsg = "전송 되었습니다.";
     
+    // 반품 버튼 클릭 시 모달 띄워지고 상태 업데이트
+    int updateReturnStateModel = pcsService.updateReturnState(paramMap);
+    model.addAttribute("updateReturnStateModel", updateReturnStateModel);
+    
     Map<String, Object> resultMap = new HashMap<String, Object>();
     resultMap.put("result", result);
     resultMap.put("resultMsg", resultMsg);
