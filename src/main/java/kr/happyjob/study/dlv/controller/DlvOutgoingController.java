@@ -34,7 +34,7 @@ public class DlvOutgoingController {
 	@RequestMapping("outgoing.do")
 	public String initBoard() {
 		
-		logger.info("환영해 ");
+		logger.info("출하계획 페이지");
 		
 		return "/dlv/outgoing";
 	}
