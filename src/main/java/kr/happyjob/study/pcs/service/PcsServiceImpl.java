@@ -73,9 +73,15 @@ public class PcsServiceImpl implements PcsService {
     return pcsmodel;
   }
 
-  /** 발주서 상태 변경 */
+  /** 입고완료 누르면 재고 업데이트*/
   public int updateStock(Map<String, Object> paramMap) {
     int pcsmodel = pcsDao.updateStock(paramMap);
+    return pcsmodel;
+  }
+  
+  /** 입고완료 누르면 재고 업데이트*/
+  public int updateReturnState(Map<String, Object> paramMap) {
+    int pcsmodel = pcsDao.updateReturnState(paramMap);
     return pcsmodel;
   }
 }
