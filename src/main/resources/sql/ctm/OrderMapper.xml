@@ -67,6 +67,39 @@
   
   <!-- 고객 단일 제품 구매 -->
   <insert id="insertOrder">
-  	
+		INSERT INTO tb_order (
+		                        order_cd,
+		                        loginID,
+		                        product_cd,
+		                        order_date,
+		                        want_receive_date,
+		                        order_cnt,
+		                        amount,
+		                        tax,
+		                        warehouse_cd,
+		                        offline,
+		                        request,
+		                        STTcd,
+		                        deposit_yn
+		                      )
+		VALUES (
+					#{orderCode},
+					#{loginId},
+					#{productCode},
+					NOW(),
+					#{wantDate},
+					#{productCount},
+					#{totalPrice},
+					#{tax},
+					(
+						SELECT warehouse_cd 
+						FROM tb_scm_product 
+						WHERE product_cd = #{productCode}
+					),
+					'n',
+					#{request},
+					'1',
+					'n'
+		        )
   </insert>
 </mapper>
