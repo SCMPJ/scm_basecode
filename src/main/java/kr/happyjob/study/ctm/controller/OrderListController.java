@@ -58,7 +58,7 @@ public class OrderListController {
     return "ctm/orderHisList";
   }  
   
-  //단건 조회
+  //반품 단건 조회
   @RequestMapping("selectRefund.do")
   @ResponseBody
   public Map<String, Object> selectRefund (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
@@ -95,6 +95,52 @@ public class OrderListController {
     } else{
       result = "FALSE";
       resultMsg = "반품신청이 실패하였습니다.";
+    }
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    
+    return resultMap;
+  }
+  
+//입금 단건 조회
+  @RequestMapping("selectDeposit.do")
+  @ResponseBody
+  public Map<String, Object> selectDeposit (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception{
+
+    String result = "SUCCESS";
+    String resultMsg = "조회 되었습니다.";
+    
+    OrderListModel depositInfoModel = orderListService.selectDeposit(paramMap);
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    resultMap.put("depositInfoModel", depositInfoModel);
+    
+    System.out.println(resultMap);
+    return resultMap;
+  }
+  
+  //반품 등록
+  @RequestMapping("submitDeposit.do")
+  @ResponseBody
+  public Map<String, Object> submitDeposit (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+    HttpServletResponse response, HttpSession session) throws Exception{
+    
+    String action = (String)paramMap.get("action");
+    
+    String result = "SUCCESS";
+    String resultMsg = "";
+    
+    if("D".equals(action)){
+      orderListService.submitDeposit(paramMap);
+      resultMsg = "입금 처리되었습니다.";
+    } else{
+      result = "FALSE";
+      resultMsg = "입금에 실패하였습니다.";
     }
     
     Map<String, Object> resultMap = new HashMap<String, Object>();

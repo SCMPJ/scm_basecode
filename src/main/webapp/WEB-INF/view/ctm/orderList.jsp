@@ -28,12 +28,16 @@
       case 'searchBtn':
         board_search(); // 검색하기
         break;
-      case 'btnSubmit':// 등록하기
+      case 'btnSubmitRefund':// 반품하기
         fSubmitRefund();
         break;
       case 'btnCloseModal':
         gfCloseModal(); // 모달닫기 
         break;
+      case 'btnSubmitDeposit':
+        fSubmitDeposit(); // 입금하기
+        break;
+        
       }
     });
   }
@@ -91,7 +95,7 @@
     fSelectRefund(order_cd);
   }
 
-  /* 단건 조회*/
+  /* 반품 단건 조회*/
   function fSelectRefund(order_cd) {
     var param = {
       order_cd : order_cd
@@ -153,6 +157,72 @@
     
   //콜백
   function fSubmitRefundResult(data) {
+    var currentPage = "1";
+    if (data.result == "SUCCESS") {
+      alert(data.resultMsg);
+      gfCloseModal();
+      fOrderHisList(currentPage);
+    } else {
+      alert(data.resultMsg);
+    }
+  }
+  
+  /* 입금 모달 실행 */
+  function fPopModalDeposit(order_cd) {
+    $("#action").val("D");
+    fSelectDeposit(order_cd);
+  }
+
+  /* 입금 단건 조회*/
+  function fSelectDeposit(order_cd) {
+    var param = {
+      order_cd : order_cd
+    };
+    var resultCallback = function(data) {
+      fSelectDepositResult(data);
+    };
+    callAjax("/ctm/selectDeposit.do", "post", "json", true, param, resultCallback);
+  }
+
+  // 콜백 함수
+  function fSelectDepositResult(data) {
+    if (data.result == "SUCCESS") {
+      gfModalPop("#layerDeposit")
+      fInitFormDeposit(data.depositInfoModel);
+    } else {
+      alert(data.resultMsg);
+    }
+  }
+
+  function fInitFormDeposit(object) {
+    $("#DeOrder_cd").val(object.order_cd);
+    $("#DeProd_nm").val(object.prod_nm);
+    $("#DeOrder_cnt").val(object.order_cnt);
+    $("#DeAmount").val(object.amount); //amount = refund_amt
+    $("#DeOrder_cd").attr("readonly", true);
+    $("#DeProd_nm").attr("readonly", true);
+    $("#DeOrder_cnt").attr("readonly", true);
+    $("#DeAmount").attr("readonly", true);
+    $("#btnDeposit").show();
+  }
+  
+  //입금 처리
+  function fSubmitDeposit() {
+    var con = confirm("입금 하시겠습니까 ?");
+    if (con){
+    var resultCallback = function(data) {
+      console.log(data);
+      fSubmitDepositResult(data);
+   }
+   callAjax("/ctm/submitDeposit.do", "post", "json", true, $("#myForm")
+       .serialize(), resultCallback);
+    } else {
+      alert("취소 하셨습니다.");
+    }
+  }
+    
+  //콜백
+  function fSubmitDepositResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
       alert(data.resultMsg);
@@ -260,7 +330,7 @@
         </ul>
       </div>
     </div>
-    <!-- 모달 -->
+    <!-- 반품 모달 -->
     <div id="layerRefund" class="layerPop layerType2" style="width: 1300px;">
       <dl>
         <dt>
@@ -358,7 +428,49 @@
             </tbody>
           </table>
           <div class="btn_areaC mt30">
-            <a href="" class="btnType blue" id="btnSubmit" name="btn"><span>등록</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
+            <a href="" class="btnType blue" id="btnSubmitRefund" name="btn"><span>등록</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
+          </div>
+        </dd>
+      </dl>
+      <a href="" class="closePop" id="btnClose" name="btn"><span class="hidden">닫기</span></a>
+    </div>
+    
+    <!-- 입금 모달 -->
+    <div id="layerDeposit" class="layerPop layerType2" style="width: 700px;">
+      <dl>
+        <dt>
+          <strong>반 품</strong>
+        </dt>
+        <dd class="content">
+          <table class="row">
+            <caption>caption</caption>
+            <colgroup>
+              <col width="120px">
+              <col width="*">
+              <col width="120px">
+              <col width="*">
+            </colgroup>
+            <tbody>
+              <tr>
+                <th scope="row">주문코드</th>
+                <td><input type="text" name="DeOrder_cd" id="DeOrder_cd" /></td>
+              </tr>
+              <tr>
+                <th scope="row">제품명</th>
+                <td><input type="text" style="width:500px;"name="DeProd_nm" id="DeProd_nm" /></td>
+              </tr>
+              <tr>
+                <th scope="row">주문수량</th>
+                <td><input type="text" name="DeOrder_cnt" id="DeOrder_cnt" /></td> 
+              </tr>
+              <tr>
+                <th scope="row">결제금액</th>
+                <td><input type="text" name="DeAmount" id="DeAmount" /></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="btn_areaC mt30">
+            <a href="" class="btnType blue" id="btnSubmitDeposit" name="btn"><span>입금</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
           </div>
         </dd>
       </dl>

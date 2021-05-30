@@ -22,7 +22,7 @@
       <td>${list.order_date}</td>
       <td>${list.want_receive_date}</td>
       <td>${list.state}</td>
-      <td><a href="" class="btnType3 color1"><span>입금</span></a></td>
+      <td><a href="javascript:fPopModalDeposit('${list.order_cd}');" class="btnType3 color1"><span>입금</span></a></td>
       <td><a href="javascript:fPopModalRefund('${list.order_cd}');" class="btnType3 color1"><span>반품</span></a></td>
       <td><a href="" class="btnType3 color1"><span>확인</span></a></td>
     </tr>
