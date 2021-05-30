@@ -26,4 +26,10 @@ public class OrderServiceImpl implements OrderService {
     int totalCntProduct = OrderDao.totalCntProduct(paramMap);
     return totalCntProduct;
   }
+  // 고객 단일 제품 구매  내역 INSERT 
+  @Override
+  public Map<String, String> insertOrder(Map<String, Object> paramMap) throws Exception {
+    int insertOrderResult = OrderDao.insertOrder(paramMap);
+    return insertOrderResult;
+  }
 }

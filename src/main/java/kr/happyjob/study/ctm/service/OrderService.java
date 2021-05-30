@@ -10,4 +10,6 @@ public interface OrderService {
   List<OrderModel> productList(Map<String, Object> paramMap) throws Exception;
   /* 공급처 목록 카운트 조회*/
   int totalCntProduct(Map<String, Object> paramMap) throws Exception;
+  /* 고객 단일 제품 구매  내역 INSERT */
+  int insertOrder(Map<String, Object> paramMap) throws Exception;
 }
