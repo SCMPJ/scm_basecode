@@ -1,6 +1,5 @@
 package kr.happyjob.study.ctm.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +22,15 @@ import kr.happyjob.study.ctm.service.OrderService;
 @Controller
 @RequestMapping("/ctm")
 public class OrderController {
+	
   @Autowired //묶어준다
   OrderService orderService;
   
+  private final Logger logger = LogManager.getLogger(this.getClass());
+	
+  // Get class name for logger
+  private final String className = this.getClass().toString();
+	  
   
   @RequestMapping("order.do")
   public String initOrder(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
@@ -56,5 +63,26 @@ public class OrderController {
     model.addAttribute("currentPageProduct",currentPage);  
     
     return "ctm/productList";
-  }  
+  }
+  
+  // 주문페이지에서 한 품목을 구매하기 하였을 때 실행
+  @RequestMapping("purchaseItem.do")
+  @ResponseBody
+  public Map<String, String> purchaseItem(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception {
+  
+	logger.info("+ Start" + className + ".purchaseItem");
+	
+	String loginId = (String) session.getAttribute("loginId");
+	
+	paramMap.put("loginId", loginId); // 로그인 아이디, SCM 관리자명 가져올 때 쓰임
+	logger.info("paramMap:" + paramMap);
+	
+	Map<String, String> resultMap = orderService.insertOrder(paramMap);
+	
+	logger.info("+ end " + className + ".purchaseItem");
+	
+	return resultMap;
+	
+  }
 }
