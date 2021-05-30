@@ -92,7 +92,11 @@
      SELECT OD.order_cd as order_cd,
             PD.prod_nm as prod_nm,
             OD.order_cnt as order_cnt,
-            SUM(OD.amount + OD.tax) as total_amt
+            OD.tax as tax,
+            OD.amount as amount,
+            SUM(OD.amount + OD.tax) as total_amt,
+            OD.loginID as loginID,
+            OD.request as request
        FROM tb_order OD
   LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
       WHERE OD.order_cd = #{order_cd}
@@ -102,7 +106,19 @@
   <update id="submitDeposit" parameterType="java.util.Map">
     UPDATE tb_order
        SET STTcd = "2"
-     WHERE order_cd = #{DeOrder_cd}
+     WHERE order_cd = #{DeOrder_cd};
+     
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no)+1, 'A100', '102', NOW(), #{DeOrder_cd}, #{DeAmount}, #{DeRequest}, null, #{DeLoginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '103', NOW(), #{DeOrder_cd}, #{DeTax}, #{DeRequest}, null, #{DeLoginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '104', NOW(), #{DeOrder_cd}, #{DeTotal_amt}, #{DeRequest}, null, #{DeLoginID}
+      FROM tb_acc_slip;
   </update>
   
   <!-- 구매확정 모달 -->

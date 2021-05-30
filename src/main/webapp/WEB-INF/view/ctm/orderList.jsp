@@ -205,6 +205,10 @@
     $("#DeProd_nm").val(object.prod_nm);
     $("#DeOrder_cnt").val(object.order_cnt);
     $("#DeTotal_amt").val(object.total_amt);
+    $("#DeTax").val(object.tax);
+    $("#DeAmount").val(object.amount);
+    $("#DeLoginID").val(object.loginID);
+    $("#DeRequest").val(object.request);
     $("#DeOrder_cd").attr("readonly", true);
     $("#DeProd_nm").attr("readonly", true);
     $("#DeOrder_cnt").attr("readonly", true);
@@ -540,7 +544,9 @@
             <tbody>
               <tr>
                 <th scope="row">주문코드</th>
-                <td><input type="text" name="DeOrder_cd" id="DeOrder_cd" /></td>
+                <td><input type="text" name="DeOrder_cd" id="DeOrder_cd" />
+                    <input type="hidden" name="DeLoginID" id="DeLoginID" />
+                </td>
               </tr>
               <tr>
                 <th scope="row">제품명</th>
@@ -548,11 +554,16 @@
               </tr>
               <tr>
                 <th scope="row">주문수량</th>
-                <td><input type="text" name="DeOrder_cnt" id="DeOrder_cnt" /></td> 
+                <td><input type="text" name="DeOrder_cnt" id="DeOrder_cnt" />
+                    <input type="hidden" name="DeRequest" id="DeRequest" />
+                </td> 
               </tr>
               <tr>
                 <th scope="row">결제금액</th>
-                <td><input type="text" name="DeTotal_amt" id="DeTotal_amt" /></td>
+                <td><input type="text" name="DeTotal_amt" id="DeTotal_amt" />
+                    <input type="hidden" name="DeTax" id="DeTax" />
+                    <input type="hidden" name="DeAmount" id="DeAmount" />
+                </td>
               </tr>
             </tbody>
           </table>
