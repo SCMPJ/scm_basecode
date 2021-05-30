@@ -44,6 +44,22 @@
       }
     });
   }
+  
+  //입금대기 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
+  function fnotYetDeposit() {
+    alert("아직 입금이 완료되지 않았습니다.");
+    return;
+  };
+  //입금완료~배송준비 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
+  function fYetDelivery() {
+    alert("배송 준비중입니다.");
+    return;
+  };
+  //배송중 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
+  function fNowDelivery() {
+    alert("배송중입니다.");
+    return;
+  };
 
   /*주문이력 조회*/
   function fOrderHisList(currentPage) {

@@ -22,9 +22,35 @@
       <td>${list.order_date}</td>
       <td>${list.want_receive_date}</td>
       <td>${list.state}</td>
-      <td><a href="javascript:fPopModalDeposit('${list.order_cd}');" class="btnType3 color1"><span>입금</span></a></td>
-      <td><a href="javascript:fPopModalRefund('${list.order_cd}');" class="btnType3 color1"><span>반품</span></a></td>
-      <td><a href="javascript:fPopModalConfirm('${list.order_cd}');" class="btnType3 color1"><span>확인</span></a></td>
+      <c:choose>
+        <c:when test="${list.state eq '입금대기'}">
+          <td><a href="javascript:fPopModalDeposit('${list.order_cd}');" class="btnType3 color2"><span>입금</span></a></td>
+          <td><a href="javascript:fnotYetDeposit();" class="btnType3 color1"><span>반품</span></a></td>
+          <td><a href="javascript:fnotYetDeposit();" class="btnType3 color1"><span>확인</span></a></td>
+        </c:when>
+        <c:when test="${list.state eq '입금완료' or list.state eq '승인대기(발주)' or list.state eq '승인완료(발주)' 
+                     or list.state eq '입고전' or list.state eq '입고완료' or list.state eq '배송준비'}">
+          <td><a class="btnType3 color4"><span>입금</span></a></td>
+          <td><a href="javascript:fYetDelivery();" class="btnType3 color1"><span>반품</span></a></td>
+          <td><a href="javascript:fYetDelivery();" class="btnType3 color1"><span>확인</span></a></td>
+        </c:when>
+        <c:when test="${list.state eq '배송중'}">
+          <td><a class="btnType3 color4"><span>입금</span></a></td>
+          <td><a href="javascript:fNowDelivery();" class="btnType3 color1"><span>반품</span></a></td>
+          <td><a href="javascript:fNowDelivery();" class="btnType3 color1"><span>확인</span></a></td>
+        </c:when>
+        <c:when test="${list.state eq '배송완료'}">
+          <td><a class="btnType3 color4"><span>입금</span></a></td>
+          <td><a href="javascript:fPopModalRefund('${list.order_cd}');" class="btnType3 color1"><span>반품</span></a></td>
+          <td><a href="javascript:fPopModalConfirm('${list.order_cd}');" class="btnType3 color1"><span>확인</span></a></td>
+        </c:when>
+        <c:otherwise>
+          <td><a class="btnType3 color4"><span>입금</span></a></td>
+          <td><a class="btnType3 color4"><span>반품</span></a></td>
+          <td><a class="btnType3 color4"><span>확인</span></a></td>      
+        </c:otherwise>
+      </c:choose>
+      
     </tr>
   <c:set var="nRow" value="${nRow + 1}" />
   </c:forEach>
