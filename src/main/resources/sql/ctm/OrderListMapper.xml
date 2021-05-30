@@ -105,7 +105,8 @@
   <!-- 입금 처리 -->
   <update id="submitDeposit" parameterType="java.util.Map">
     UPDATE tb_order
-       SET STTcd = "2"
+       SET STTcd = "2" ,
+           deposit_yn = 'y'
      WHERE order_cd = #{DeOrder_cd};
      
     INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
