@@ -114,4 +114,21 @@
        where  pr.m_ct_cd = #{code} 
        order by pr.product_cd
   </select>   
+  
+  <!-- 배송상태 조회 -->
+  <select  id ="selectSTlist" resultType="kr.happyjob.study.system.model.comcombo">
+    /*kr.happyjob.study.system.dao.ComnComboDao.selectSTlist*/
+      SELECT DISTINCT OD.STTcd as cd
+             , DC.detail_name as name
+       FROM tb_order OD
+  LEFT JOIN (
+          SELECT detail_code, group_code, detail_name
+          FROM tb_detail_code
+          WHERE group_code = 'STTcd'
+          ) DC ON OD.STTcd = DC.detail_code
+      ORDER BY FIELD(DC.detail_name, '입금대기', '입금완료', '승인대기(발주)', '승인완료(발주)', 
+                                     '입고전', '입고완료', '배송준비', '배송중', 
+                                     '배송완료', '구매확정', '반품대기', '승인대기(반품)', '승인완료(반품)',
+                                     '반품진행중', '반품완료')
+  </select>
 </mapper>
