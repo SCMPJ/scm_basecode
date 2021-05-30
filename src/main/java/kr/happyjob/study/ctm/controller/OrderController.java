@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.common.uuidgenerator.Generator;
 import kr.happyjob.study.ctm.model.OrderModel;
 import kr.happyjob.study.ctm.service.OrderService;
 
@@ -74,8 +75,11 @@ public class OrderController {
 	logger.info("+ Start" + className + ".purchaseItem");
 	
 	String loginId = (String) session.getAttribute("loginId");
+	Generator generator = new Generator();
+	String uuid = generator.uuidGenerator();
 	
-	paramMap.put("loginId", loginId); // 로그인 아이디, SCM 관리자명 가져올 때 쓰임
+	paramMap.put("loginId", loginId); // 로그인 아이디, 기업고객 아이디 가져올 때 쓰임
+	paramMap.put("orderCode", uuid);  // order code 생성기
 	logger.info("paramMap:" + paramMap);
 	
 	Map<String, String> resultMap = orderService.insertOrder(paramMap);
