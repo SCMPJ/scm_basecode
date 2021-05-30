@@ -41,8 +41,8 @@
         </c:when>
         <c:when test="${list.state eq '배송완료'}">
           <td><a class="btnType3 color4"><span>입금</span></a></td>
-          <td><a href="javascript:fPopModalRefund('${list.order_cd}');" class="btnType3 color1"><span>반품</span></a></td>
-          <td><a href="javascript:fPopModalConfirm('${list.order_cd}');" class="btnType3 color1"><span>확인</span></a></td>
+          <td><a href="javascript:fPopModalRefund('${list.order_cd}');" class="btnType3 color2"><span>반품</span></a></td>
+          <td><a href="javascript:fPopModalConfirm('${list.order_cd}');" class="btnType3 color2"><span>확인</span></a></td>
         </c:when>
         <c:otherwise>
           <td><a class="btnType3 color4"><span>입금</span></a></td>
