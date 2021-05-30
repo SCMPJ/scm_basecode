@@ -124,7 +124,7 @@
     $("#order_cd").val(object.order_cd);
     $("#prod_nm").val(object.prod_nm);
     $("#product_cd").val(object.product_cd);
-    $("#refund_amt").val(object.amount); //amount = refund_amt
+    $("#refund_amt").val(object.refund_amt); //refund_amt = amount+tax
     $("#addr").val(object.addr);
     $("#refund_cnt").val(object.order_cnt); //order_cnt = refund_cnt
     $("#refund_reason").val(object.refund_reason);
@@ -201,12 +201,11 @@
     $("#DeOrder_cd").val(object.order_cd);
     $("#DeProd_nm").val(object.prod_nm);
     $("#DeOrder_cnt").val(object.order_cnt);
-    $("#DeAmount").val(object.amount);
+    $("#DeTotal_amt").val(object.total_amt);
     $("#DeOrder_cd").attr("readonly", true);
     $("#DeProd_nm").attr("readonly", true);
     $("#DeOrder_cnt").attr("readonly", true);
-    $("#DeAmount").attr("readonly", true);
-    $("#btnDeposit").show();
+    $("#DeTotal_amt").attr("readonly", true);
   }
   
   //입금 처리
@@ -267,16 +266,16 @@
     $("#ConOrder_cd").val(object.order_cd);
     $("#ConProd_nm").val(object.prod_nm);
     $("#ConProduct_cd").val(object.product_cd);
-    $("#ConAmount").val(object.amount);
+    $("#ConTotal_amt").val(object.total_amt);
     $("#ConAddr").val(object.addr);
     $("#ConOrder_cnt").val(object.order_cnt); 
     $("#ConRequest").val(object.request);
     $("#ConOrder_cd").attr("readonly", true);
     $("#ConProd_nm").attr("readonly", true);
     $("#ConProduct_cd").attr("readonly", true);
-    $("#ConRefund_amt").attr("readonly", true);
+    $("#ConTotal_amt").attr("readonly", true);
     $("#ConAddr").attr("readonly", true);
-    $("#ConRefund_cnt").attr("readonly", true);
+    $("#ConOrder_cnt").attr("readonly", true);
     $("#ConRequset").attr("readonly", true);
     $("#ConRequest").css("background", "#FFFFFF");
     $("#ConThumbnail").val("");
@@ -544,8 +543,8 @@
                 <td><input type="text" name="DeOrder_cnt" id="DeOrder_cnt" /></td> 
               </tr>
               <tr>
-                <th scope="row">총액</th>
-                <td><input type="text" name="DeAmount" id="DeAmount" /></td>
+                <th scope="row">결제금액</th>
+                <td><input type="text" name="DeTotal_amt" id="DeTotal_amt" /></td>
               </tr>
             </tbody>
           </table>
@@ -600,8 +599,8 @@
                 <td><input type="text" name="ConOrder_cnt" id="ConOrder_cnt" /></td>
               </tr>
               <tr>
-                <th scope="row">총액</th>
-                <td><input type="text" name="ConAmount" id="ConAmount" /></td>
+                <th scope="row">결제금액</th>
+                <td><input type="text" name="ConTotal_amt" id="ConTotal_amt" /></td>
               </tr>
               <tr>
                 <th scope="row">상세주소</th>

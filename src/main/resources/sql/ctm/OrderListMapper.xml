@@ -49,7 +49,7 @@
      SELECT OD.order_cd as order_cd,
             PD.prod_nm as prod_nm,
             PD.product_cd as product_cd,
-            OD.amount as amount,
+            SUM(OD.tax + OD.amount) as refund_amt,
             UI.addr as addr,
             OD.order_cnt as order_cnt,
             OD.refund_reason as refund_reason,
@@ -77,7 +77,7 @@
      SELECT OD.order_cd as order_cd,
             PD.prod_nm as prod_nm,
             OD.order_cnt as order_cnt,
-            OD.amount as amount
+            SUM(OD.amount + OD.tax) as total_amt
        FROM tb_order OD
   LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
       WHERE OD.order_cd = #{order_cd}
@@ -95,7 +95,7 @@
      SELECT OD.order_cd as order_cd,
             PD.prod_nm as prod_nm,
             PD.product_cd as product_cd,
-            OD.amount as amount,
+            SUM(OD.amount + OD.tax) as total_amt,
             UI.addr as addr,
             OD.order_cnt as order_cnt,
             OD.request as request,

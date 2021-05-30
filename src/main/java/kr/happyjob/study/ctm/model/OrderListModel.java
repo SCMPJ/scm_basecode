@@ -36,10 +36,19 @@ public class OrderListModel {
 	private String STTcd;
 	private String file_relative_path;
 	private String request;
+	private String total_amt;
 	
 	
 	
 	
+  public String getTotal_amt() {
+    return total_amt;
+  }
+
+  public void setTotal_amt(String total_amt) {
+    this.total_amt = total_amt;
+  }
+
   public String getRequest() {
     return request;
   }
