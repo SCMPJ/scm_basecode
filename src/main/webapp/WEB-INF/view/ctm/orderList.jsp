@@ -544,7 +544,7 @@
                 <td><input type="text" name="DeOrder_cnt" id="DeOrder_cnt" /></td> 
               </tr>
               <tr>
-                <th scope="row">결제금액</th>
+                <th scope="row">총액</th>
                 <td><input type="text" name="DeAmount" id="DeAmount" /></td>
               </tr>
             </tbody>
