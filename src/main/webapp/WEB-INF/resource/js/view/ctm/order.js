@@ -138,7 +138,7 @@ puchaseModal.addFooterBtn('구매', 'tingle-btn tingle-btn--primary', function()
 function getInsertMessage(data) {
   if (data.result === "SUCCESS") {
     swal(data.resultMsg).then(function() {
-      href.location = 'ctm/orderList.do';
+      href.location = '/ctm/orderList.do';
     });
     console.log("주문 완료");
     return 1;
@@ -163,6 +163,8 @@ function purchaseItem(prod_cd) {
   var middleCategory = $('input[name='+prod_cd+'middleCategory]').val();
   var productPrice = $('input[name='+prod_cd+'productPrice]').val();
   var totalPrice = productCount * productPrice;
+  var totalTax = totalPrice * 0.1;
+  var totalPriceWithTax = totalPrice + totalTax;
   // 현재 날짜 가져오기
   var now = new Date();
   var year = now.getFullYear();
@@ -185,6 +187,8 @@ function purchaseItem(prod_cd) {
                           +'<th scope="col">상호명</th>'
                           +'<th scope="col">제품금액(원)</th>'
                           +'<th scope="col">갯수</th>'
+                          +'<th scope="col">총 단가금액(원)</th>'
+                          +'<th scope="col">세금(원)</th>'
                           +'<th scope="col">총 결제금액(원)</th>'
                           +'<th scope="col">희망배송날짜</th>'
                           +'</tr>'
@@ -196,17 +200,19 @@ function purchaseItem(prod_cd) {
                           +'<td scope="col">'+productPrice+'</td>'
                           +'<td scope="col">'+productCount+'</td>'
                           +'<td scope="col">'+totalPrice+'</td>'
+                          +'<td scope="col">'+totalTax+'</td>'
+                          +'<td scope="col">'+totalPriceWithTax+'</td>'
                           +'<td scope="col"><input type="date" name="want_receive_date" min="'+format_now+'"/></td>'
                           +'</tr>'
                           +'</tbody>'
                           +'<thead>'
                           +'<tr>'
-                          +'<th scope="col" colspan="6">요청사항</th>'
+                          +'<th scope="col" colspan="8">요청사항</th>'
                           +'</tr>'
                           +'</thead>'
                           +'<tbody>'
                           +'<tr>'
-                          +'<td scope="col" colspan="6"><textarea name="request" maxlength="1000" rows="10" cols="35"></textarea></td>'                          
+                          +'<td scope="col" colspan="8"><textarea name="request" maxlength="1000" rows="10" cols="35"></textarea></td>'                          
                           +'</tr>'
                           +'</tbody>'                         
                           +'</table>'
@@ -220,6 +226,7 @@ function purchaseItem(prod_cd) {
       productPrice: productPrice,
       totalPrice: totalPrice,
       productCode: productCode,
+      tax: totalTax
   }
   
   puchaseModal.open();
