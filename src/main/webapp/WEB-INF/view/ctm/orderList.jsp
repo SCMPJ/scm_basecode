@@ -331,7 +331,7 @@
       </div>
     </div>
     <!-- 반품 모달 -->
-    <div id="layerRefund" class="layerPop layerType2" style="width: 1300px;">
+    <div id="layerRefund" class="layerPop layerType2" style="width: 1000px;">
       <dl>
         <dt>
           <strong>반 품</strong>
@@ -357,8 +357,8 @@
                   <img id="tempImg" style="object-fit: cover; max-width:100%; max-hight:100%;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
                 </td>
                 <th scope="row">제품명</th>
-                <td><input type="text" name="prod_nm" id="prod_nm" /></td> 
-                <td colspan="3" rowspan="5"><textarea class="ui-widget ui-widget-content ui-corner-all" 
+                <td><input type="text" name="prod_nm" id="prod_nm" style="width:250px;"/></td> 
+                <td colspan="3" rowspan="6"><textarea class="ui-widget ui-widget-content ui-corner-all" 
                                                       id="refund_reason" maxlength="200" name="refund_reason" style="height: 200px; length: 200px; outline: none; resize: none;" 
                                                       placeholder="여기에  반품사유를 적어주세요.(200자 이내)"></textarea></td>
               </tr>
@@ -367,16 +367,16 @@
                 <td><input type="text" name="product_cd" id="product_cd" /></td>
                 </tr>
               <tr>
+                <th scope="row">반품수량</th>
+                <td><input type="text" name="refund_cnt" id="refund_cnt" /></td>
+              </tr>
+              <tr>
                 <th scope="row">환불금액</th>
                 <td><input type="text" name="refund_amt" id="refund_amt" /></td>
               </tr>
               <tr>
                 <th scope="row">상세주소</th>
                 <td><input type="text" name="addr" id="addr" /></td>
-              </tr>
-              <tr>
-                <th scope="row">반품수량</th>
-                <td><input type="text" name="refund_cnt" id="refund_cnt" /></td>
               </tr>
               <tr>
               <td class="thumb">
@@ -428,7 +428,7 @@
             </tbody>
           </table>
           <div class="btn_areaC mt30">
-            <a href="" class="btnType blue" id="btnSubmitRefund" name="btn"><span>등록</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
+            <a href="" class="btnType blue" id="btnSubmitRefund" name="btn"><span>반품 신청</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
           </div>
         </dd>
       </dl>
@@ -439,7 +439,7 @@
     <div id="layerDeposit" class="layerPop layerType2" style="width: 700px;">
       <dl>
         <dt>
-          <strong>반 품</strong>
+          <strong>입  금</strong>
         </dt>
         <dd class="content">
           <table class="row">
