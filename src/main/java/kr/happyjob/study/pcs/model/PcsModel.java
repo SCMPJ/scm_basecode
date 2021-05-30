@@ -49,8 +49,17 @@ public class PcsModel {
   public String detail_name;
   // 로그인 아이디
   public String loginID;
-  // 반품 수량
+  // 반품수량
   public String return_qty;
+  // 반품가격
+  public String return_price;
+  // 반품날짜
+  public Date return_date;
+  // 반품요청날짜
+  public Date request_return_date;
+  // 반품담당자명
+  public String return_mng_id;
+  
   public String getPurch_list_no() {
     return purch_list_no;
   }
@@ -194,5 +203,29 @@ public class PcsModel {
   }
   public void setReturn_qty(String return_qty) {
     this.return_qty = return_qty;
-  }   
+  }
+  public String getReturn_price() {
+    return return_price;
+  }
+  public void setReturn_price(String return_price) {
+    this.return_price = return_price;
+  }
+  public Date getReturn_date() {
+    return return_date;
+  }
+  public void setReturn_date(Date return_date) {
+    this.return_date = return_date;
+  }
+  public Date getRequest_return_date() {
+    return request_return_date;
+  }
+  public void setRequest_return_date(Date request_return_date) {
+    this.request_return_date = request_return_date;
+  }
+  public String getReturn_mng_id() {
+    return return_mng_id;
+  }
+  public void setReturn_mng_id(String return_mng_id) {
+    this.return_mng_id = return_mng_id;
+  }
 }
