@@ -121,9 +121,12 @@
 
   function fInitFormRefund(object) {
     $("#refund_reason").focus();
+    $("#loginID").val(object.loginID);
     $("#order_cd").val(object.order_cd);
     $("#prod_nm").val(object.prod_nm);
     $("#product_cd").val(object.product_cd);
+    $("#tax").val(object.tax);
+    $("#amount").val(object.amount);
     $("#refund_amt").val(object.refund_amt); //refund_amt = amount+tax
     $("#addr").val(object.addr);
     $("#refund_cnt").val(object.order_cnt); //order_cnt = refund_cnt
@@ -443,7 +446,7 @@
               </tr>
               <tr>
                 <th scope="row">제품코드</th>
-                <td><input type="text" name="product_cd" id="product_cd" /></td>
+                <td><input type="text" name="product_cd" id="product_cd" /></td>  
                 </tr>
               <tr>
                 <th scope="row">반품수량</th>
@@ -451,7 +454,10 @@
               </tr>
               <tr>
                 <th scope="row">환불금액</th>
-                <td><input type="text" name="refund_amt" id="refund_amt" /></td>
+                <td><input type="text" name="refund_amt" id="refund_amt" />
+                    <input type="hidden" name="tax" id="tax" />
+                    <input type="hidden" name="amount" id="amount" />
+                </td>
               </tr>
               <tr>
                 <th scope="row">상세주소</th>
@@ -502,7 +508,9 @@
                                 </script>
                                 <!-- 파일 미리보기 스크립트 영역 끝 -->
                                 </span>
+                   <input type="hidden" name="loginID" id="loginID" />             
                  </td>
+                
               </tr>
             </tbody>
           </table>

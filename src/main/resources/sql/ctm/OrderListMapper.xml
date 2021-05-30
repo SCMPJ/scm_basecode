@@ -49,11 +49,14 @@
      SELECT OD.order_cd as order_cd,
             PD.prod_nm as prod_nm,
             PD.product_cd as product_cd,
+            OD.tax as tax,
+            OD.amount as amount,
             SUM(OD.tax + OD.amount) as refund_amt,
             UI.addr as addr,
             OD.order_cnt as order_cnt,
             OD.refund_reason as refund_reason,
-            FL.file_relative_path as file_relative_path
+            FL.file_relative_path as file_relative_path,
+            OD.loginID as loginID
        FROM tb_order OD
   LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
   LEFT JOIN tb_userinfo UI ON UI.loginID = OD.loginID
@@ -69,7 +72,19 @@
          , refund_cnt = #{refund_cnt}
          , refund_amt = #{refund_amt}
          , refund_reason = #{refund_reason}
-     WHERE order_cd = #{order_cd}
+     WHERE order_cd = #{order_cd};
+     
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no)+1, 'A100', '102', NOW(), #{order_cd}, -#{amount}, #{refund_reason}, null, #{loginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '103', NOW(), #{order_cd}, -#{tax}, #{refund_reason}, null, #{loginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '104', NOW(), #{order_cd}, -#{refund_amt}, #{refund_reason}, null, #{loginID}
+      FROM tb_acc_slip;
   </update>
   
   <!-- 입금신청 모달 -->
