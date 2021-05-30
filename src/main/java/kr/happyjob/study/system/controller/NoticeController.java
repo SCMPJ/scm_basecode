@@ -201,8 +201,7 @@ public class NoticeController {
 	  if(updateViewCount == 1) {
 	    notice = noticeService.selectNoticeDetail(notice_id);
 	  } else {
-	    log.info("조회수 증가 실패");
-	    return null;
+	    notice = null;
 	  }
 	  
 	  return notice;
@@ -226,21 +225,26 @@ public class NoticeController {
 	  
 	  System.out.println("file_no확인" + file_no);
 	  
-	  String imgPath =  noticePath + File.separator + file_no + File.separator;
+	 // String imgPath =  noticePath + File.separator + file_no + File.separator;
 	  
-	  FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
+	 // FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
 	  
 	  // 첨부파일의 존재유무 확인
-	  if(param.containsKey("isFile")) { // 글만 수정되는 경우
+	  if(param.containsKey("noFile")) { // 글만 수정되는 경우
+	    System.out.println("글만 수정");
 	    result = noticeService.updateNotice(param);
 	  }
 	  else if(param.containsKey("deleted")) {
 	    // 기존 첨부파일 삭제  + 글수정
 	    
-	    System.out.println("삭제!");
+	    System.out.println("첨부파일삭제!");
 	    
 	    System.out.println("file_nm확인" + file_nm);
-	    imgPath = rootPath + File.separator + imgPath;
+	    // 바꾼 부분
+//	    String imgPath = rootPath + File.separator + imgPath;
+	    String imgPath = rootPath + File.separator + noticePath + File.separator + file_no + File.separator;
+	    FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
+	    
 	    // DB에서 파일 삭제
 	    int deleteResult = noticeService.deleteFile(file_no);
 	    
@@ -250,7 +254,9 @@ public class NoticeController {
   	    if (file_nm != null && !"".equals(file_nm)) {
          //File file = new File(rootFilePath + file_nm);
   	      File file = new File(imgPath + file_nm);
+          File folder = new File(imgPath);
           if (file.exists()) file.delete();
+          if (folder.exists()) folder.delete();
           //
           result = 1;
           return result;
@@ -262,7 +268,70 @@ public class NoticeController {
 	    } 
 	  }
 	  else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
-	   
+	    // 첨부파일 신규등록 || 첨부파일 수정
+      // 파일 업로드(공통과정)
+	    System.out.println("파일업로드 또는 수정");
+	    // 기존 파일 번호
+	    int formerFileNo = file_no;
+	    
+	    // 신규파일 등록을 위한 파일번호
+	    file_no = noticeService.selectFileNo();
+      System.out.println("새로저장할파일번호" + file_no);
+	    
+	    // 여길 바꿔보자
+	    String imgPath =  noticePath + File.separator + file_no + File.separator;
+	    FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
+//	    fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
+	    // 여기에서 오류 발생
+	    // 기존 파일 번호를 사용하여 폴더에 저장하고 있음
+      Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
+      
+      String delimiter = "/";
+      String file_ofname = (String) fileUtilModel.get("file_nm");
+      String file_local_path = (String) fileUtilModel.get("file_loc");
+      String file_size = (String) fileUtilModel.get("file_size");
+      String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
+      
+      // DB에 등록할 파일 정보
+      param.put("file_no", file_no);
+      param.put("file_local_path", file_local_path);
+      param.put("file_relative_path", file_relative_path);
+      param.put("file_ofname", file_ofname);
+      param.put("file_size", file_size);
+      
+      // DB에 신규 파일  등록  
+      int fileResult = noticeService.insertFile(param);
+      
+      // 파일 신규 등록에 성공한 경우 공지사항 글 업데이트
+      if(fileResult == 1) {
+        // 공지사항 정보 업데이트
+        result = noticeService.updateNotice(param);
+        
+        // 기존 파일 삭제
+        if(formerFileNo != 0) {
+          imgPath = rootPath + File.separator + noticePath + File.separator + formerFileNo + File.separator;
+          //db에서 삭제
+          System.out.println("db에서삭제할 파일번호" + formerFileNo);
+          int deleteResult = noticeService.deleteFile(formerFileNo);
+          
+          // 물리경로에서 파일 삭제
+          if(deleteResult == 1) {
+            if (file_nm != null && !"".equals(file_nm)) {
+              //File file = new File(rootFilePath + file_nm);
+              File file = new File(imgPath + file_nm);
+              //폴더삭제코드 추가
+              File folder = new File(imgPath);
+              if (file.exists()) file.delete();
+              if (folder.exists()) folder.delete();
+              //
+              result = 1;
+              return result;
+            }
+          }
+          else {
+            // 파일 삭제 실패한 경우
+            return result;
+          }
         }// 기존 파일 삭제 끝
       }// 파일 신규등록 성공 끝
       else {//파일 신규등록 실패
@@ -271,15 +340,44 @@ public class NoticeController {
       }
 	   }
 	  
-	  return result; // 이건 또 뭐지
+	  return result; // 이건 또 뭐지. 의외로 이게 오류의 원인일지도?
 	}
 	
 	/* 공지사항 삭제 */
 	@ResponseBody
 	@RequestMapping(value="deleteNotice.do", method=RequestMethod.POST)
 	public int deleteNotice(@RequestParam Map<String, Object> param) throws Exception {
+	  System.out.println("글삭제호출!!" + param);
 	  
-	  int result = noticeService.deleteNotice(param);
+	  //****
+	  // 글삭제할 때는 form이 아니어도 됨
+	  // 삭제할 파일 번호(file_no), file_name만 있으면 됨
+	  
+	  int result =0;
+	  
+	  // result가  아니여야 함
+	  int noticeResult = noticeService.deleteNotice(param);
+	  
+	  if(noticeResult == 1) {
+	    
+	    // 파일도db에서삭제
+	    int file_no = Integer.parseInt((String)param.get("file_no"));
+	    noticeService.deleteFile(file_no);
+	    // 파일도물리에서삭제
+	    
+	    String imgPath = rootPath + File.separator + noticePath + File.separator + file_no + File.separator;
+	    String file_nm = (String)param.get("file_nm");
+
+      if (file_nm != null && !"".equals(file_nm)) {
+          File file = new File(imgPath + file_nm);
+          File folder = new File(imgPath);
+          if (file.exists()) file.delete();
+          if (folder.exists()) folder.delete();
+      }
+      result = 1;
+      return result;
+	  }
+	  
 	  
 	  return result;
 	}

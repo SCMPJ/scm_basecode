@@ -117,8 +117,7 @@
   <!-- 공지사항 작성 -->
   <insert id="insertNotice" parameterType="java.util.Map">
     
-    INSERT INTO 
-                tb_scm_notice
+    INSERT INTO tb_scm_notice
                (
                 title, 
                 content, 
@@ -145,8 +144,10 @@
        SET 
            title = #{title},
            content = #{content},
-           auth = #{auth},
-           file_no = #{file_no}
+           auth = #{auth}
+           <if test="file_no != 0">
+            ,file_no = #{file_no}
+           </if>
      WHERE notice_id = #{notice_id}
   </update>
   
@@ -165,7 +166,7 @@
   <!-- 파일 업로드 -->
   <insert id="insertFile">
   
-     INSERT INTO tb_file
+     INSERT INTO  tb_file
                  (
                   file_no, 
                   file_local_path, 
@@ -190,7 +191,8 @@
            file_relative_path = #{file_relative_path},
            file_ofname = #{file_ofname},
            file_size = #{file_size}
-     WHERE file_no = #{file_no}
+     WHERE 
+           file_no = #{file_no}
   
   </update>
   

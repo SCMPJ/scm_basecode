@@ -372,32 +372,41 @@
       // 기존 첨부파일 유무 확인
       var file_no = $('#file_no').val();
       var file_name = $('#file_name').val();
-      fileData.append('file_no', file_no);
+      //이걸 이동해보자
+      //fileData.append('file_no', file_no);
       fileData.append('file_nm', file_name);
       
       // 기존 첨부파일 삭제 여부 확인
       var file_path = $('#file_path').val();
       console.log('파일경로!',file_path)
+      
       // 첨부 파일 변경, 추가 여부 확인
       var modifiedFile = document.getElementById('upload_modify_file').files[0];
       //var uploadModifyFile = document.getElementById("upload_modify_file")
-      console.log('변경파일',modifiedFile)
-      console.log('file_no',file_no)
-      console.log('file_name',file_name)
-      console.log('modifiedFile',modifiedFile)
-      // file_no이 0이면 원본 글에  파일 없음
+      
+      // file_no이 null이면 원본 글에  파일 없음
       if(!file_no && !modifiedFile) { // 글만 수정되는 경우
-         var isFile = false;
-         fileData.append('isFile', isFile);
+        console.log('글만수정, 파일없음') 
+        var isFile = false;
+         fileData.append('file_no', 0);
+         fileData.append('noFile', isFile);
       }
-      else if(!file_no && modifiedFile ) {// 첨부파일 신규 등록
+      else if(!file_no && modifiedFile) {// 첨부파일 신규 등록
         // 첨부파일 업로드 과정        
         // 컨트롤러에서 이것을 처리하는 로직이 없음
+        console.log('추가!')
+        console.log('기존글파일신규등록, 파일번호 확인', file_no );
+        console.log('기존글파일신규등록', 'file', modifiedFile );
+        
+        fileData.append('file_no', 0);
         fileData.append('added', 'addedFile');
         fileData.append('file', modifiedFile);
       }
       else if (file_no && !file_path) {
+        
           console.log('삭제!file_nm확인 ')
+          console.log('삭제!file_no ', file_no)
+          fileData.append('file_no', file_no);
           fileData.append('file_nm', file_name);
           fileData.append('deleted', 'file_deleted');
       }
@@ -405,6 +414,7 @@
         console.log('이게호출되야 하는데?', modifiedFile)  
         //var uploadModifyFile = document.getElementById("upload_modify_file")
         // 파일 수정을 알리는 식별문자 
+        fileData.append('file_no', file_no);
         fileData.append('modified','file_modified');
         fileData.append('file', modifiedFile);
       }
@@ -428,11 +438,21 @@
   function deleteNotice() {
     var isDelete = confirm('정말 삭제하시겠습니까?');
 
+    // file_no, file_nm
     // 삭제
     if (isDelete) {
       var notice_id = $('#notice_id').val();
+      var file_no = $('#file_no').val();
+      var file_nm = $('#file_name').val();
+      
+      if(!file_no) {
+        file_no = 0;
+      }
+      
       var param = {
-        notice_id : notice_id
+        notice_id : notice_id,
+        file_no : file_no,
+        file_nm : file_nm
       }
 
       // 콜백
