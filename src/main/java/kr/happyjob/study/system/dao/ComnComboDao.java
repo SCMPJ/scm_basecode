@@ -39,5 +39,8 @@ public interface ComnComboDao {
     
   /** 제품 대분류,중분류 별  목록 조회 */
   public List<comcombo> selectdivproductlist(Map<String, Object> paramMap);
+  
+  /** 배송상태 목록 조회 */
+  public List<comcombo> selectSTlist(Map<String, Object> paramMap);
 
 }

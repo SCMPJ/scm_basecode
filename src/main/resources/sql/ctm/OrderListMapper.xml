@@ -24,6 +24,13 @@
         LEFT OUTER JOIN tb_scm_product sp ON od.product_cd = sp.product_cd
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
+       WHERE od.loginID = #{loginID}
+   ORDER BY FIELD(dc.detail_name, '입금대기', '입금완료', '승인대기(발주)', '승인완료(발주)', 
+                                  '입고전', '입고완료', '배송준비', '배송중', 
+                                  '배송완료', '구매확정', '반품대기', '승인대기(반품)', '승인완료(반품)',
+                                  '반품진행중', '반품완료') 
+                          ASC,
+            od.order_date DESC
       LIMIT #{pageIndex}, #{pageSize}
   </select>
   
@@ -34,6 +41,108 @@
         LEFT OUTER JOIN tb_scm_product sp ON od.product_cd = sp.product_cd
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
+       WHERE od.loginID = #{loginID}
   </select>
   
+  <!-- 반품신청 모달 -->
+  <select id="selectRefund" resultType="kr.happyjob.study.ctm.model.OrderListModel">
+     SELECT OD.order_cd as order_cd,
+            PD.prod_nm as prod_nm,
+            PD.product_cd as product_cd,
+            OD.tax as tax,
+            OD.amount as amount,
+            SUM(OD.tax + OD.amount) as refund_amt,
+            UI.addr as addr,
+            OD.order_cnt as order_cnt,
+            OD.refund_reason as refund_reason,
+            FL.file_relative_path as file_relative_path,
+            OD.loginID as loginID
+       FROM tb_order OD
+  LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
+  LEFT JOIN tb_userinfo UI ON UI.loginID = OD.loginID
+  LEFT JOIN tb_file FL ON OD.product_cd = FL.product_cd
+      WHERE OD.order_cd = #{order_cd}
+  </select>
+  
+  <!-- 반품 등록 -->
+  <update id="submitRefund" parameterType="java.util.Map">
+    UPDATE tb_order
+       SET STTcd = "3"
+         , refund_date = NOW()
+         , refund_cnt = #{refund_cnt}
+         , refund_amt = #{refund_amt}
+         , refund_reason = #{refund_reason}
+     WHERE order_cd = #{order_cd};
+     
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no)+1, 'A100', '102', NOW(), #{order_cd}, -#{amount}, #{refund_reason}, null, #{loginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '103', NOW(), #{order_cd}, -#{tax}, #{refund_reason}, null, #{loginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '104', NOW(), #{order_cd}, -#{refund_amt}, #{refund_reason}, null, #{loginID}
+      FROM tb_acc_slip;
+  </update>
+  
+  <!-- 입금신청 모달 -->
+  <select id="selectDeposit" resultType="kr.happyjob.study.ctm.model.OrderListModel">
+     SELECT OD.order_cd as order_cd,
+            PD.prod_nm as prod_nm,
+            OD.order_cnt as order_cnt,
+            OD.tax as tax,
+            OD.amount as amount,
+            SUM(OD.amount + OD.tax) as total_amt,
+            OD.loginID as loginID,
+            OD.request as request
+       FROM tb_order OD
+  LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
+      WHERE OD.order_cd = #{order_cd}
+  </select>
+  
+  <!-- 입금 처리 -->
+  <update id="submitDeposit" parameterType="java.util.Map">
+    UPDATE tb_order
+       SET STTcd = "2" ,
+           deposit_yn = 'y'
+     WHERE order_cd = #{DeOrder_cd};
+     
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no)+1, 'A100', '102', NOW(), #{DeOrder_cd}, #{DeAmount}, #{DeRequest}, null, #{DeLoginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '103', NOW(), #{DeOrder_cd}, #{DeTax}, #{DeRequest}, null, #{DeLoginID}
+      FROM tb_acc_slip;
+
+    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, note, direct_id, client_cd )
+    SELECT MAX(slip_no), 'A100', '104', NOW(), #{DeOrder_cd}, #{DeTotal_amt}, #{DeRequest}, null, #{DeLoginID}
+      FROM tb_acc_slip;
+  </update>
+  
+  <!-- 구매확정 모달 -->
+  <select id="selectConfirm" resultType="kr.happyjob.study.ctm.model.OrderListModel">
+     SELECT OD.order_cd as order_cd,
+            PD.prod_nm as prod_nm,
+            PD.product_cd as product_cd,
+            SUM(OD.amount + OD.tax) as total_amt,
+            UI.addr as addr,
+            OD.order_cnt as order_cnt,
+            OD.request as request,
+            FL.file_relative_path as file_relative_path
+       FROM tb_order OD
+  LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
+  LEFT JOIN tb_userinfo UI ON UI.loginID = OD.loginID
+  LEFT JOIN tb_file FL ON OD.product_cd = FL.product_cd
+      WHERE OD.order_cd = #{order_cd}
+  </select>
+  
+  <!-- 입금 처리 -->
+  <update id="submitConfirm" parameterType="java.util.Map">
+    UPDATE tb_order
+       SET STTcd = "8"
+     WHERE order_cd = #{ConOrder_cd}
+  </update>
 </mapper> 

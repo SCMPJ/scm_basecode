@@ -26,4 +26,37 @@ public class OrderListServiceImpl implements OrderListService {
     int totalCntOrder = OrderListDao.totalCntOrder(paramMap);
     return totalCntOrder;
   }
+  //반품 단건 조회
+  @Override
+  public OrderListModel selectRefund(Map<String, Object> paramMap) throws Exception {
+    OrderListModel selectRefund = OrderListDao.selectRefund(paramMap);
+    return selectRefund;
+  }
+  //반품 등록
+  @Override
+  public int submitRefund(Map<String, Object> paramMap) throws Exception {
+    return OrderListDao.submitRefund(paramMap);
+  }
+  //입금 단건 조회
+  @Override
+  public OrderListModel selectDeposit(Map<String, Object> paramMap) throws Exception {
+    OrderListModel selectDeposit = OrderListDao.selectDeposit(paramMap);
+    return selectDeposit;
+  }
+  //입금 등록
+  @Override
+  public int submitDeposit(Map<String, Object> paramMap) throws Exception {
+    return OrderListDao.submitDeposit(paramMap);
+  }
+  //구매확정 단건 조회
+  @Override
+  public OrderListModel selectConfirm(Map<String, Object> paramMap) throws Exception {
+    OrderListModel selectConfirm = OrderListDao.selectConfirm(paramMap);
+    return selectConfirm;
+  }
+  //구매확정
+  @Override
+  public int submitConfirm(Map<String, Object> paramMap) throws Exception {
+    return OrderListDao.submitConfirm(paramMap);
+  }
 }

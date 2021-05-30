@@ -43,4 +43,7 @@ public interface ComnComboService {
   /** 제품 대분류,중분류 별  목록 조회 */
   public List<comcombo> selectdivproductlist(Map<String, Object> paramMap) throws Exception;
   
+  /** 제품 베송상태 목록 조회 */
+  public List<comcombo> selectSTlist(Map<String, Object> paramMap) throws Exception;
+  
 }

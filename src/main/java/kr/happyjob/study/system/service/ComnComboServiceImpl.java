@@ -110,5 +110,13 @@ public class ComnComboServiceImpl implements ComnComboService {
     
     return list;
   }
+  
+  /** 배송상태 목록 조회 */
+  public List<comcombo> selectSTlist(Map<String, Object> paramMap) throws Exception {
+    
+    List<comcombo> list = comnComboDao.selectSTlist(paramMap);
+    
+    return list;
+  }
 
 }

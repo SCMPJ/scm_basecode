@@ -1,7 +1,5 @@
 package kr.happyjob.study.ctm.model;
 
-import java.util.Date;
-
 public class OrderListModel {
 	// 제품 코드
 	private String product_cd;
@@ -29,9 +27,101 @@ public class OrderListModel {
 	private String m_ct_cd;
 	// 대분류 코드(for JOIN)
 	private String l_ct_cd;
+	private String loginID;
+	private String addr;
+	private String refund_date;
+	private String refund_cnt;
+	private String refund_amt;
+	private String refund_reason;
+	private String STTcd;
+	private String file_relative_path;
+	private String request;
+	private String total_amt;
 	
+	
+	
+	
+  public String getTotal_amt() {
+    return total_amt;
+  }
 
-	public String getL_ct_cd() {
+  public void setTotal_amt(String total_amt) {
+    this.total_amt = total_amt;
+  }
+
+  public String getRequest() {
+    return request;
+  }
+
+  public void setRequest(String request) {
+    this.request = request;
+  }
+
+  public String getFile_relative_path() {
+    return file_relative_path;
+  }
+
+  public void setFile_relative_path(String file_relative_path) {
+    this.file_relative_path = file_relative_path;
+  }
+
+  public String getSTTcd() {
+    return STTcd;
+  }
+
+  public void setSTTcd(String sTTcd) {
+    STTcd = sTTcd;
+  }
+
+  public String getRefund_date() {
+    return refund_date;
+  }
+
+  public void setRefund_date(String refund_date) {
+    this.refund_date = refund_date;
+  }
+
+  public String getRefund_cnt() {
+    return refund_cnt;
+  }
+
+  public void setRefund_cnt(String refund_cnt) {
+    this.refund_cnt = refund_cnt;
+  }
+
+  public String getRefund_amt() {
+    return refund_amt;
+  }
+
+  public void setRefund_amt(String refund_amt) {
+    this.refund_amt = refund_amt;
+  }
+
+  public String getRefund_reason() {
+    return refund_reason;
+  }
+
+  public void setRefund_reason(String refund_reason) {
+    this.refund_reason = refund_reason;
+  }
+
+  public String getAddr() {
+    return addr;
+  }
+
+  public void setAddr(String addr) {
+    this.addr = addr;
+  }
+
+  public String getLoginID() {
+    return loginID;
+  }
+
+  public void setLoginID(String loginID) {
+    this.loginID = loginID;
+  }
+
+  public String getL_ct_cd() {
 		return l_ct_cd;
 	}
 
