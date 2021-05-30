@@ -104,7 +104,7 @@ public class OrderListController {
     return resultMap;
   }
   
-//입금 단건 조회
+  //입금 단건 조회
   @RequestMapping("selectDeposit.do")
   @ResponseBody
   public Map<String, Object> selectDeposit (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
@@ -124,7 +124,7 @@ public class OrderListController {
     return resultMap;
   }
   
-  //반품 등록
+  //입금 처리
   @RequestMapping("submitDeposit.do")
   @ResponseBody
   public Map<String, Object> submitDeposit (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
@@ -141,6 +141,52 @@ public class OrderListController {
     } else{
       result = "FALSE";
       resultMsg = "입금에 실패하였습니다.";
+    }
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    
+    return resultMap;
+  }
+  
+  //구매확정 단건 조회
+  @RequestMapping("selectConfirm.do")
+  @ResponseBody
+  public Map<String, Object> selectConfirm (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception{
+
+    String result = "SUCCESS";
+    String resultMsg = "조회 되었습니다.";
+    
+    OrderListModel confirmInfoModel = orderListService.selectConfirm(paramMap);
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    resultMap.put("confirmInfoModel", confirmInfoModel);
+    
+    System.out.println(resultMap);
+    return resultMap;
+  }
+  
+  //구매확정
+  @RequestMapping("submitConfirm.do")
+  @ResponseBody
+  public Map<String, Object> submitConfirm (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+    HttpServletResponse response, HttpSession session) throws Exception{
+    
+    String action = (String)paramMap.get("action");
+    
+    String result = "SUCCESS";
+    String resultMsg = "";
+    
+    if("C".equals(action)){
+      orderListService.submitConfirm(paramMap);
+      resultMsg = "구매확정 처리되었습니다.";
+    } else{
+      result = "FALSE";
+      resultMsg = "구매확정에 실패하였습니다.";
     }
     
     Map<String, Object> resultMap = new HashMap<String, Object>();

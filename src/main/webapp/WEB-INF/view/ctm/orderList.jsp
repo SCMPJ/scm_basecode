@@ -31,13 +31,16 @@
       case 'btnSubmitRefund':// 반품하기
         fSubmitRefund();
         break;
-      case 'btnCloseModal':
-        gfCloseModal(); // 모달닫기 
-        break;
       case 'btnSubmitDeposit':
         fSubmitDeposit(); // 입금하기
         break;
-        
+      case 'btnSubmitConfirm':
+        fSubmitConfirm(); // 구매확정
+        break;
+      case 'btnCloseModal':
+        gfCloseModal(); // 모달닫기 
+        break;
+
       }
     });
   }
@@ -89,7 +92,7 @@
     callAjax("/ctm/orderHisList.do", "post", "text", true, param, resultCallback);
   }
 
-  /* 모달 실행 */
+  /* 반품 모달 실행 */
   function fPopModalRefund(order_cd) {
     $("#action").val("R");
     fSelectRefund(order_cd);
@@ -198,7 +201,7 @@
     $("#DeOrder_cd").val(object.order_cd);
     $("#DeProd_nm").val(object.prod_nm);
     $("#DeOrder_cnt").val(object.order_cnt);
-    $("#DeAmount").val(object.amount); //amount = refund_amt
+    $("#DeAmount").val(object.amount);
     $("#DeOrder_cd").attr("readonly", true);
     $("#DeProd_nm").attr("readonly", true);
     $("#DeOrder_cnt").attr("readonly", true);
@@ -223,6 +226,83 @@
     
   //콜백
   function fSubmitDepositResult(data) {
+    var currentPage = "1";
+    if (data.result == "SUCCESS") {
+      alert(data.resultMsg);
+      gfCloseModal();
+      fOrderHisList(currentPage);
+    } else {
+      alert(data.resultMsg);
+    }
+  }
+  
+  /* 구매확정 모달 실행 */
+  function fPopModalConfirm(order_cd) {
+    $("#action").val("C");
+    fSelectConfirm(order_cd);
+  }
+
+  /* 구매확정 단건 조회*/
+  function fSelectConfirm(order_cd) {
+    var param = {
+      order_cd : order_cd
+    };
+    var resultCallback = function(data) {
+      fSelectConfirmResult(data);
+    };
+    callAjax("/ctm/selectConfirm.do", "post", "json", true, param, resultCallback);
+  }
+
+  // 콜백 함수
+  function fSelectConfirmResult(data) {
+    if (data.result == "SUCCESS") {
+      gfModalPop("#layerConfirm")
+      fInitFormConfirm(data.confirmInfoModel);
+    } else {
+      alert(data.resultMsg);
+    }
+  }
+
+  function fInitFormConfirm(object) {
+    $("#ConOrder_cd").val(object.order_cd);
+    $("#ConProd_nm").val(object.prod_nm);
+    $("#ConProduct_cd").val(object.product_cd);
+    $("#ConAmount").val(object.amount);
+    $("#ConAddr").val(object.addr);
+    $("#ConOrder_cnt").val(object.order_cnt); 
+    $("#ConRequest").val(object.request);
+    $("#ConOrder_cd").attr("readonly", true);
+    $("#ConProd_nm").attr("readonly", true);
+    $("#ConProduct_cd").attr("readonly", true);
+    $("#ConRefund_amt").attr("readonly", true);
+    $("#ConAddr").attr("readonly", true);
+    $("#ConRefund_cnt").attr("readonly", true);
+    $("#ConRequset").attr("readonly", true);
+    $("#ConRequest").css("background", "#FFFFFF");
+    $("#ConThumbnail").val("");
+    $("#ConTempImg").attr("src", object.file_relative_path);
+
+    $("#ConThumbnail").hide();
+
+  }
+  
+  //반품 등록
+  function fSubmitConfirm() {
+    var con = confirm("구매확정을 하시겠습니까 ?");
+    if (con){
+    var resultCallback = function(data) {
+      console.log(data);
+      fSubmitConfirmResult(data);
+   }
+   callAjax("/ctm/submitConfirm.do", "post", "json", true, $("#myForm")
+       .serialize(), resultCallback);
+    } else {
+      alert("취소 하셨습니다.");
+    }
+  }
+    
+  //콜백
+  function fSubmitConfirmResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
       alert(data.resultMsg);
@@ -471,6 +551,113 @@
           </table>
           <div class="btn_areaC mt30">
             <a href="" class="btnType blue" id="btnSubmitDeposit" name="btn"><span>입금</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
+          </div>
+        </dd>
+      </dl>
+      <a href="" class="closePop" id="btnClose" name="btn"><span class="hidden">닫기</span></a>
+    </div>
+    
+    <!-- 구매확정 모달 -->
+    <div id="layerConfirm" class="layerPop layerType2" style="width: 1000px;">
+      <dl>
+        <dt>
+          <strong>구매확정</strong>
+        </dt>
+        <dd class="content">
+          <table class="row">
+            <caption>caption</caption>
+            <colgroup>
+              <col width="120px">
+              <col width="*">
+              <col width="120px">
+              <col width="*">
+            </colgroup>
+            <tbody>
+              <tr>
+                <th scope="row">제품 이미지</th>
+                <th scope="row">주문코드</th>
+                <td><input type="text" name="ConOrder_cd" id="ConOrder_cd" /></td>
+                <th scope="row">요구사항</th>
+              </tr>
+              <tr>
+                <td rowspan = "5" style="text-align:center; width:300px; hight:300px;">
+                  <img id="ConTempImg" style="object-fit: cover; max-width:100%; max-hight:100%;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
+                </td>
+                <th scope="row">제품명</th>
+                <td><input type="text" name="ConProd_nm" id="ConProd_nm" style="width:250px;"/></td> 
+                <td colspan="3" rowspan="6"><textarea class="ui-widget ui-widget-content ui-corner-all" 
+                                                      id="ConRequest" maxlength="200" name="ConRequest" 
+                                                      style="height: 200px; length: 200px; outline: none; resize: none;">
+                                            </textarea>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">제품코드</th>
+                <td><input type="text" name="ConProduct_cd" id="ConProduct_cd" /></td>
+                </tr>
+              <tr>
+                <th scope="row">주문개수</th>
+                <td><input type="text" name="ConOrder_cnt" id="ConOrder_cnt" /></td>
+              </tr>
+              <tr>
+                <th scope="row">총액</th>
+                <td><input type="text" name="ConAmount" id="ConAmount" /></td>
+              </tr>
+              <tr>
+                <th scope="row">상세주소</th>
+                <td><input type="text" name="ConAddr" id="ConAddr" /></td>
+              </tr>
+              <tr>
+              <td class="thumb">
+                            <span> 
+                <input name="ConThumbnail" type="file" id="ConThumbnail" accept="image/* " required>
+    
+                    <!-- 파일 미리보기 스크립트 영역 -->
+                       <script>
+                       var file = document.querySelector('#ConThumbnail');
+                    
+                       file.onchange = function () { 
+                           var fileList = file.files ;
+                           
+                           // 읽기
+                           var reader = new FileReader();
+                           reader.readAsDataURL(fileList [0]);
+                           //로드 한 후
+                           reader.onload = function  () {
+                               //로컬 이미지를 보여주기
+                               
+                               //썸네일 이미지 생성
+                               var tempImage = new Image(); //drawImage 메서드에 넣기 위해 이미지 객체화
+                               tempImage.src = reader.result; //data-uri를 이미지 객체에 주입
+                               tempImage.onload = function() {
+                                   //리사이즈를 위해 캔버스 객체 생성
+                                   var canvas = document.createElement('canvas');
+                                   var canvasContext = canvas.getContext("2d");
+                                   
+                                   //캔버스 크기 설정
+                                   canvas.width = 300; //가로 300px
+                                   canvas.height = 300; //세로 300px
+                                   
+                                   
+                                   //이미지를 캔버스에 그리기
+                                   canvasContext.drawImage(this, 0, 0, 300, 300);
+                                   //캔버스에 그린 이미지를 다시 data-uri 형태로 변환
+                                   var dataURI = canvas.toDataURL("image/jpeg");
+                                   
+                                   //썸네일 이미지 보여주기
+                                   document.querySelector('#ConTempImg').src = dataURI;
+                               };
+                           }; 
+                       };
+                                </script>
+                                <!-- 파일 미리보기 스크립트 영역 끝 -->
+                                </span>
+                 </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="btn_areaC mt30">
+            <a href="" class="btnType blue" id="btnSubmitConfirm" name="btn"><span>구매확정</span></a> <a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>닫기</span></a>
           </div>
         </dd>
       </dl>

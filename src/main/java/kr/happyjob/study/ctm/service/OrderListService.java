@@ -18,5 +18,9 @@ public interface OrderListService {
   public OrderListModel selectDeposit(Map<String, Object> paramMap) throws Exception;
   /* 입금 등록*/
   int submitDeposit(Map<String, Object> paramMap) throws Exception;
+  /* 구매확정 단건 조회*/
+  public OrderListModel selectConfirm(Map<String, Object> paramMap) throws Exception;
+  /* 구매확정*/
+  int submitConfirm(Map<String, Object> paramMap) throws Exception;
 
 }

@@ -48,5 +48,15 @@ public class OrderListServiceImpl implements OrderListService {
   public int submitDeposit(Map<String, Object> paramMap) throws Exception {
     return OrderListDao.submitDeposit(paramMap);
   }
-  
+  //구매확정 단건 조회
+  @Override
+  public OrderListModel selectConfirm(Map<String, Object> paramMap) throws Exception {
+    OrderListModel selectConfirm = OrderListDao.selectConfirm(paramMap);
+    return selectConfirm;
+  }
+  //구매확정
+  @Override
+  public int submitConfirm(Map<String, Object> paramMap) throws Exception {
+    return OrderListDao.submitConfirm(paramMap);
+  }
 }

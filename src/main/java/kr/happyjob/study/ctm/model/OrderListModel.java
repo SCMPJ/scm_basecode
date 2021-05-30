@@ -35,10 +35,19 @@ public class OrderListModel {
 	private String refund_reason;
 	private String STTcd;
 	private String file_relative_path;
+	private String request;
 	
 	
 	
 	
+  public String getRequest() {
+    return request;
+  }
+
+  public void setRequest(String request) {
+    this.request = request;
+  }
+
   public String getFile_relative_path() {
     return file_relative_path;
   }
