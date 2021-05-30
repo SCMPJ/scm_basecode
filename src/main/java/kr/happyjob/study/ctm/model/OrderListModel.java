@@ -34,10 +34,19 @@ public class OrderListModel {
 	private String refund_amt;
 	private String refund_reason;
 	private String STTcd;
+	private String file_relative_path;
 	
 	
 	
 	
+  public String getFile_relative_path() {
+    return file_relative_path;
+  }
+
+  public void setFile_relative_path(String file_relative_path) {
+    this.file_relative_path = file_relative_path;
+  }
+
   public String getSTTcd() {
     return STTcd;
   }

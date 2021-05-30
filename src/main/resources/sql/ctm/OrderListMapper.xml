@@ -47,10 +47,12 @@
             OD.amount as amount,
             UI.addr as addr,
             OD.order_cnt as order_cnt,
-            OD.refund_reason as refund_reason
+            OD.refund_reason as refund_reason,
+            FL.file_relative_path as file_relative_path
        FROM tb_order OD
   LEFT JOIN tb_scm_product PD ON PD.product_cd = OD.product_cd
   LEFT JOIN tb_userinfo UI ON UI.loginID = OD.loginID
+  LEFT JOIN tb_file FL ON OD.product_cd = FL.product_cd
       WHERE OD.order_cd = #{order_cd}
   </select>
   

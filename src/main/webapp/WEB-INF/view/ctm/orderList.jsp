@@ -128,8 +128,11 @@
     $("#addr").attr("readonly", true);
     $("#refund_cnt").attr("readonly", true);
     $("#refund_reason").css("background", "#FFFFFF");
+    $("#thumbnail").val("");
+    $("#tempImg").attr("src", object.file_relative_path);
 
     $("#btnSubmit").show();
+    $("#thumbnail").hide();
 
   }
   
@@ -258,7 +261,7 @@
       </div>
     </div>
     <!-- 모달 -->
-    <div id="layerRefund" class="layerPop layerType2" style="width: 600px;">
+    <div id="layerRefund" class="layerPop layerType2" style="width: 1300px;">
       <dl>
         <dt>
           <strong>반 품</strong>
@@ -274,11 +277,15 @@
             </colgroup>
             <tbody>
               <tr>
+                <th scope="row">제품 이미지</th>
                 <th scope="row">주문코드</th>
                 <td><input type="text" name="order_cd" id="order_cd" /></td>
                 <th scope="row">반품사유</th>
               </tr>
               <tr>
+                <td rowspan = "5" style="text-align:center; width:300px; hight:300px;">
+                  <img id="tempImg" style="object-fit: cover; max-width:100%; max-hight:100%;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
+                </td>
                 <th scope="row">제품명</th>
                 <td><input type="text" name="prod_nm" id="prod_nm" /></td> 
                 <td colspan="3" rowspan="5"><textarea class="ui-widget ui-widget-content ui-corner-all" 
@@ -300,6 +307,53 @@
               <tr>
                 <th scope="row">반품수량</th>
                 <td><input type="text" name="refund_cnt" id="refund_cnt" /></td>
+              </tr>
+              <tr>
+              <td class="thumb">
+                            <span> 
+                <input name="thumbnail" type="file" id="thumbnail" accept="image/* " required>
+    
+                    <!-- 파일 미리보기 스크립트 영역 -->
+                       <script>
+                       var file = document.querySelector('#thumbnail');
+                    
+                       file.onchange = function () { 
+                           var fileList = file.files ;
+                           
+                           // 읽기
+                           var reader = new FileReader();
+                           reader.readAsDataURL(fileList [0]);
+                           //로드 한 후
+                           reader.onload = function  () {
+                               //로컬 이미지를 보여주기
+                               
+                               //썸네일 이미지 생성
+                               var tempImage = new Image(); //drawImage 메서드에 넣기 위해 이미지 객체화
+                               tempImage.src = reader.result; //data-uri를 이미지 객체에 주입
+                               tempImage.onload = function() {
+                                   //리사이즈를 위해 캔버스 객체 생성
+                                   var canvas = document.createElement('canvas');
+                                   var canvasContext = canvas.getContext("2d");
+                                   
+                                   //캔버스 크기 설정
+                                   canvas.width = 300; //가로 300px
+                                   canvas.height = 300; //세로 300px
+                                   
+                                   
+                                   //이미지를 캔버스에 그리기
+                                   canvasContext.drawImage(this, 0, 0, 300, 300);
+                                   //캔버스에 그린 이미지를 다시 data-uri 형태로 변환
+                                   var dataURI = canvas.toDataURL("image/jpeg");
+                                   
+                                   //썸네일 이미지 보여주기
+                                   document.querySelector('#tempImg').src = dataURI;
+                               };
+                           }; 
+                       };
+                                </script>
+                                <!-- 파일 미리보기 스크립트 영역 끝 -->
+                                </span>
+                 </td>
               </tr>
             </tbody>
           </table>
