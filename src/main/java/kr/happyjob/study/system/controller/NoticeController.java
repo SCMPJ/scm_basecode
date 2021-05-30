@@ -60,11 +60,9 @@ public class NoticeController {
 		return "system/notice";
 	}
 	
-	// 공지사항 목록 조회(기본, 검색)
+	/* 공지사항 목록 조회(기본,검색) */
 	@RequestMapping(value="notice.do", method=RequestMethod.POST)
 	public String selectNotice(@RequestParam(required = false) Map<String, Object> param, Model model, HttpSession session)throws Exception {
-	  
-	  System.out.println("공지사항 목록 조회 파라미터: " + param);
 	  
 	  // 현재 페이지 번호
 	  int currentPage = Integer.parseInt((String) param.get("currentPage"));
@@ -127,7 +125,6 @@ public class NoticeController {
 	    
 	  }
 	  
-	  
 	  List<NoticeModel> noticeList = noticeService.selectNoticeList(param); 
 	  
 	  model.addAttribute("noticeList", noticeList);
@@ -135,13 +132,11 @@ public class NoticeController {
 	  model.addAttribute("pageSize", pageSize);
 	  model.addAttribute("currentPage", currentPage);
 	  
-	  
 	  return "/system/noticeList";
 	}
 	
 	
-	// 공지사항 작성
-	// 파일 업로드 추가
+	/* 공지사항 작성 */
 	@ResponseBody
 	@RequestMapping(value="writeNotice.do", method=RequestMethod.POST)
 	public int insertNotice(@RequestParam Map<String, Object> param, HttpServletRequest request) throws Exception {
@@ -152,32 +147,40 @@ public class NoticeController {
 	  
 	  param.put("auth", auth);
 	  
-	  // file_no 조회
-	  int file_no = noticeService.selectFileNo();
+	  System.out.println("파라미터확인" + param);
 	  
-	  String imgPath = noticePath + File.separator + file_no + File.separator;
-	  FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
-	  Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
+	  int result = 0;
 	  
-	  String delimiter = "/";
-	  String file_ofname = (String) fileUtilModel.get("file_nm");
-	  String file_local_path = (String) fileUtilModel.get("file_loc");
-	  String file_size = (String) fileUtilModel.get("file_size");
-	  String file_relative_path =  fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
-
-	  // DB에 등록할 파일 정보
-	  param.put("file_no", file_no);
-	  param.put("file_local_path", file_local_path);
-	  param.put("file_relative_path", file_relative_path);
-	  param.put("file_ofname", file_ofname);
-	  param.put("file_size", file_size);
-	  
-    // DB에 파일  등록  
-	  int fileResult = noticeService.insertFile(param);
-	  
-	  
-	  // 게시물 등록 
-	  int result = noticeService.insertNotice(param);
+	  // 첨부파일이 있을 경우
+	  if(!param.containsKey("isFile")) {
+	    
+	    // file_no 조회
+	    int file_no = noticeService.selectFileNo();
+	    
+	    String imgPath = noticePath + File.separator + file_no + File.separator;
+	    FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
+	    Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
+	    
+	    String delimiter = "/";
+	    String file_ofname = (String) fileUtilModel.get("file_nm");
+	    String file_local_path = (String) fileUtilModel.get("file_loc");
+	    String file_size = (String) fileUtilModel.get("file_size");
+	    String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
+	    
+	    // DB에 등록할 파일 정보
+	    param.put("file_no", file_no);
+	    param.put("file_local_path", file_local_path);
+	    param.put("file_relative_path", file_relative_path);
+	    param.put("file_ofname", file_ofname);
+	    param.put("file_size", file_size);
+	    
+	    // DB에 파일  등록  
+	    int fileResult = noticeService.insertFile(param);
+	    result = noticeService.insertNotice(param);
+	  }
+	    // 첨부파일이 없을 경우
+	    // 공지사항만 등록 
+	  else  result = noticeService.insertNotice(param);
 	 
 	  return result;
 	}
@@ -205,24 +208,73 @@ public class NoticeController {
 	  return notice;
 	}
 	
-	// 공지사항 수정
+	/* 공지사항 수정 */
 	@ResponseBody
 	@RequestMapping(value="modifyNotice.do", method=RequestMethod.POST)
-	public int updateNotice(@RequestParam Map<String, Object> param) throws Exception {
+	public int updateNotice(@RequestParam Map<String, Object> param, HttpServletRequest request) throws Exception {
+	  MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
 
 	  int auth = Integer.parseInt((String)param.get("auth"));
 	  param.put("auth", auth);
 	  
+	  int result = 0;
+	  // 첨부파일이 없다가 새로 등록되는 경우는 신규등록과 같은 절차를 거쳐야 한다
+	  // 첨부파일이 없는 경우에는 file_no == 0
+	  int file_no = Integer.parseInt((String)param.get("file_no"));
+	  int notice_id = Integer.parseInt((String)param.get("notice_id"));
+	  String file_nm = (String)param.get("file_nm");
+	  
+	  System.out.println("file_no확인" + file_no);
+	  
+	  String imgPath =  noticePath + File.separator + file_no + File.separator;
+	  
+	  FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
+	  
 	  // 첨부파일의 존재유무 확인
-	  // file이 null? 일 경우 파일 삭제 & 글 수정
+	  if(param.containsKey("isFile")) { // 글만 수정되는 경우
+	    result = noticeService.updateNotice(param);
+	  }
+	  else if(param.containsKey("deleted")) {
+	    // 기존 첨부파일 삭제  + 글수정
+	    
+	    System.out.println("삭제!");
+	    
+	    System.out.println("file_nm확인" + file_nm);
+	    imgPath = rootPath + File.separator + imgPath;
+	    // DB에서 파일 삭제
+	    int deleteResult = noticeService.deleteFile(file_no);
+	    
+	    // 물리경로에서 파일 삭제
+	    fileUtil.deleteFiles(param);
+	    if(deleteResult == 1) {
+  	    if (file_nm != null && !"".equals(file_nm)) {
+         //File file = new File(rootFilePath + file_nm);
+  	      File file = new File(imgPath + file_nm);
+          if (file.exists()) file.delete();
+          //
+          result = 1;
+          return result;
+        }
+	    }
+	    else {
+	      // 파일 정보 삭제 실패
+	      return result;
+	    } 
+	  }
+	  else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
+	   
+        }// 기존 파일 삭제 끝
+      }// 파일 신규등록 성공 끝
+      else {//파일 신규등록 실패
+        //result = 0;
+        return result;
+      }
+	   }
 	  
-	  // 첨부파일
-	  int result = noticeService.updateNotice(param);
-	  
-	  return result;
+	  return result; // 이건 또 뭐지
 	}
 	
-	// 공지사항 삭제
+	/* 공지사항 삭제 */
 	@ResponseBody
 	@RequestMapping(value="deleteNotice.do", method=RequestMethod.POST)
 	public int deleteNotice(@RequestParam Map<String, Object> param) throws Exception {

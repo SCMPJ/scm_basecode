@@ -67,7 +67,6 @@
            AND DATE(pur.return_date) = (#{date})
         </when>
       </choose>
-              
     </if>
            
   ORDER BY purch_list_no DESC
@@ -88,17 +87,7 @@
    <select id="countConditionList"  resultType="int">
    SELECT 
           count(pur.purch_list_no)
-   FROM 
-           tb_scm_purchase_list pur
-           LEFT JOIN tb_order ord
-           ON pur.order_cd  = ord.order_cd
-           LEFT JOIN tb_scm_product pro
-           ON ord.product_cd = pro.product_cd
-           LEFT JOIN tb_scm_supply sup
-           ON pro.supply_cd = sup.supply_cd
-           LEFT JOIN tb_scm_m_category  cat
-           ON pro.m_ct_cd = cat.m_ct_cd
-     FROM 
+    FROM 
            tb_scm_purchase_list pur
            LEFT JOIN tb_order ord
            ON pur.order_cd  = ord.order_cd
@@ -150,8 +139,8 @@
            AND DATE(pur.return_date) = (#{date})
         </when>
       </choose>
-              
-    </if>           
+    </if>
+ 
    </select>
   
   

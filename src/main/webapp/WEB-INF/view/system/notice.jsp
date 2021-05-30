@@ -15,7 +15,6 @@
 
   /* OnLoad event */
   $(function() {
-
     // 공지사항 목록 조회
     selectList();
 
@@ -378,26 +377,36 @@
       
       // 기존 첨부파일 삭제 여부 확인
       var file_path = $('#file_path').val();
+      console.log('파일경로!',file_path)
       // 첨부 파일 변경, 추가 여부 확인
-      var modifiedFile = $('#upload_modify_file').val();
+      var modifiedFile = document.getElementById('upload_modify_file').files[0];
+      //var uploadModifyFile = document.getElementById("upload_modify_file")
       console.log('변경파일',modifiedFile)
       console.log('file_no',file_no)
       console.log('file_name',file_name)
-      
+      console.log('modifiedFile',modifiedFile)
       // file_no이 0이면 원본 글에  파일 없음
-      if(file_no == 0 && modifiedFile == '') { // 글만 수정되는 경우
+      if(!file_no && !modifiedFile) { // 글만 수정되는 경우
          var isFile = false;
          fileData.append('isFile', isFile);
       }
-      else if (file_no != 0) {
-        if (file_path == '') { // 글 수정 + 첨부파일 삭제
+      else if(!file_no && modifiedFile ) {// 첨부파일 신규 등록
+        // 첨부파일 업로드 과정        
+        // 컨트롤러에서 이것을 처리하는 로직이 없음
+        fileData.append('added', 'addedFile');
+        fileData.append('file', modifiedFile);
+      }
+      else if (file_no && !file_path) {
           console.log('삭제!file_nm확인 ')
           fileData.append('file_nm', file_name);
-        } 
+          fileData.append('deleted', 'file_deleted');
       }
-      else if (modifiedFile) { // 글 수정 + 파일 수정/추가
-          var uploadModifyFile = document.getElementById("upload_modify_file")
-          fileData.append('file', uploadModifyFile.files[0]);
+      else if (file_no && modifiedFile) { // 글 수정 + 파일 수정/추가
+        console.log('이게호출되야 하는데?', modifiedFile)  
+        //var uploadModifyFile = document.getElementById("upload_modify_file")
+        // 파일 수정을 알리는 식별문자 
+        fileData.append('modified','file_modified');
+        fileData.append('file', modifiedFile);
       }
 
       // 콜백
@@ -505,6 +514,8 @@
           $('#download').attr("href", result.file_relative_path);
           $('#file_name').val(result.file_ofname);
           $('#file_no').val(result.file_no);
+          $('#file_path').val(result.file_relative_path);
+          console.log('대입확인',  $('#file_path').val())
         }
         else {
           $('#download_file').hide();
@@ -534,7 +545,6 @@
 
     // JavsScript는 월이 0부터 시작하므로 +1
     // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
-    
     today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
     
     if (!formerDate || !latterDate) {
