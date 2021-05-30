@@ -318,7 +318,7 @@
                       <th scope="col">배송상태</th>
                       <th scope="col">입금</th>
                       <th scope="col">반품</th>
-                      <th scope="col">수취확인</th>
+                      <th scope="col">구매확정</th>
                     </tr>
                   </thead>
                   <tbody id="orderHisList"></tbody>
