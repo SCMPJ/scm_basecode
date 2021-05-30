@@ -77,4 +77,30 @@ public class OrderListController {
     System.out.println(resultMap);
     return resultMap;
   }
+  
+  //반품 등록
+  @RequestMapping("submitRefund.do")
+  @ResponseBody
+  public Map<String, Object> submitRefund (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+    HttpServletResponse response, HttpSession session) throws Exception{
+    
+    String action = (String)paramMap.get("action");
+    
+    String result = "SUCCESS";
+    String resultMsg = "";
+    
+    if("R".equals(action)){
+      orderListService.submitRefund(paramMap);
+      resultMsg = "반품신청이 완료되었습니다.";
+    } else{
+      result = "FALSE";
+      resultMsg = "반품신청이 실패하였습니다.";
+    }
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    
+    return resultMap;
+  }
 }

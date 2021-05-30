@@ -13,5 +13,6 @@ public interface OrderListDao {
   public int totalCntOrder(Map<String, Object> paramMap) throws Exception;
   // 단건 조회
   public OrderListModel selectRefund(Map<String, Object> paramMap) throws Exception;
-
+  // 반품 등록
+  public int submitRefund(Map<String, Object> paramMap) throws Exception;
 }

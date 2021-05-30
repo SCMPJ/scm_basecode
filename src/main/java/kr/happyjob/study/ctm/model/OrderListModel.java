@@ -1,7 +1,5 @@
 package kr.happyjob.study.ctm.model;
 
-import java.util.Date;
-
 public class OrderListModel {
 	// 제품 코드
 	private String product_cd;
@@ -31,9 +29,56 @@ public class OrderListModel {
 	private String l_ct_cd;
 	private String loginID;
 	private String addr;
+	private String refund_date;
+	private String refund_cnt;
+	private String refund_amt;
+	private String refund_reason;
+	private String STTcd;
 	
+	
+	
+	
+  public String getSTTcd() {
+    return STTcd;
+  }
 
-	public String getAddr() {
+  public void setSTTcd(String sTTcd) {
+    STTcd = sTTcd;
+  }
+
+  public String getRefund_date() {
+    return refund_date;
+  }
+
+  public void setRefund_date(String refund_date) {
+    this.refund_date = refund_date;
+  }
+
+  public String getRefund_cnt() {
+    return refund_cnt;
+  }
+
+  public void setRefund_cnt(String refund_cnt) {
+    this.refund_cnt = refund_cnt;
+  }
+
+  public String getRefund_amt() {
+    return refund_amt;
+  }
+
+  public void setRefund_amt(String refund_amt) {
+    this.refund_amt = refund_amt;
+  }
+
+  public String getRefund_reason() {
+    return refund_reason;
+  }
+
+  public void setRefund_reason(String refund_reason) {
+    this.refund_reason = refund_reason;
+  }
+
+  public String getAddr() {
     return addr;
   }
 

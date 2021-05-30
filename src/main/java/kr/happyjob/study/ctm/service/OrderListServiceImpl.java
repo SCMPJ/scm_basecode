@@ -32,4 +32,9 @@ public class OrderListServiceImpl implements OrderListService {
     OrderListModel selectRefund = OrderListDao.selectRefund(paramMap);
     return selectRefund;
   }
+  //반품 등록
+  @Override
+  public int submitRefund(Map<String, Object> paramMap) throws Exception {
+    return OrderListDao.submitRefund(paramMap);
+  }
 }

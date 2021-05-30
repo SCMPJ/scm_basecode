@@ -113,6 +113,7 @@
   }
 
   function fInitFormRefund(object) {
+    $("#refund_reason").focus();
     $("#order_cd").val(object.order_cd);
     $("#prod_nm").val(object.prod_nm);
     $("#product_cd").val(object.product_cd);
@@ -126,9 +127,37 @@
     $("#refund_amt").attr("readonly", true);
     $("#addr").attr("readonly", true);
     $("#refund_cnt").attr("readonly", true);
+    $("#refund_reason").css("background", "#FFFFFF");
 
     $("#btnSubmit").show();
 
+  }
+  
+  //반품 등록
+  function fSubmitRefund() {
+    var con = confirm("반품신청을 하시겠습니까 ?");
+    if (con){
+    var resultCallback = function(data) {
+      console.log(data);
+      fSubmitRefundResult(data);
+   }
+   callAjax("/ctm/submitRefund.do", "post", "json", true, $("#myForm")
+       .serialize(), resultCallback);
+    } else {
+      alert("취소 하셨습니다.");
+    }
+  }
+    
+  //콜백
+  function fSubmitRefundResult(data) {
+    var currentPage = "1";
+    if (data.result == "SUCCESS") {
+      alert(data.resultMsg);
+      gfCloseModal();
+      fOrderHisList(currentPage);
+    } else {
+      alert(data.resultMsg);
+    }
   }
 </script>
 </head>
@@ -223,6 +252,7 @@
                 </table>
               </div>
               <div class="paging_area" id="productPagination"></div>
+          </div>
           </li>
         </ul>
       </div>
@@ -252,7 +282,7 @@
                 <th scope="row">제품명</th>
                 <td><input type="text" name="prod_nm" id="prod_nm" /></td> 
                 <td colspan="3" rowspan="5"><textarea class="ui-widget ui-widget-content ui-corner-all" 
-                                                      id="refund_reason" maxlength="200" name="detail" style="height: 200px; length: 200px; outline: none; resize: none;" 
+                                                      id="refund_reason" maxlength="200" name="refund_reason" style="height: 200px; length: 200px; outline: none; resize: none;" 
                                                       placeholder="여기에  반품사유를 적어주세요.(200자 이내)"></textarea></td>
               </tr>
               <tr>
