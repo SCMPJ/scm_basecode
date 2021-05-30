@@ -65,4 +65,8 @@
     </where>
   </select>
   
+  <!-- 고객 단일 제품 구매 -->
+  <insert id="insertOrder">
+  	
+  </insert>
 </mapper>
