@@ -27,4 +27,7 @@ public interface CartService{
 	/** 장바구니 주문 */
 	public int orderCartItem(Map<String, Object> paramMap) throws Exception;
 	
+	/* 주문한 장바구니 해당 제품 삭제 */
+	public int deleteOrderedCartItem(Map<String, Object> paramMap) throws Exception;
+	
 }
