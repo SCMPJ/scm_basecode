@@ -81,8 +81,9 @@
         
 		// 날짜 비교, 널값 알맞지 않으면 랜딩
 		if (startDate > endDate) {
-			alert("시작일자는 종료일자보다 클 수가 없습니다.");
-			location.href = "/dlv/returnMain.do";
+			swal("\n시작일자는 종료일자보다 클 수가 없습니다.").then(function(){
+                window.location.reload();
+            })
 		}
 
 		var resultCallback = function(data) {
@@ -149,6 +150,11 @@
         	swal("\n배송사원을 입력해주세요.").then(function(){
                 location.href="/dlv/returnMain.do";
             })
+        } else if($('#completeState').val() === "7") {
+            
+            swal("\n처리된 건입니다.").then(function(){
+                location.href="/dlv/outgoing.do";
+            })
         } else {
         	
         	var param = $('#submitForm').serialize();
@@ -161,6 +167,7 @@
             
             callAjax("/dlv/updateSubmitInfo.do", "post", "text", true, param, resultCallback);
         }
+        
         
 	}
 
