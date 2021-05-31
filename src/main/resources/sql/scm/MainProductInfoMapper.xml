@@ -114,6 +114,23 @@ WHERE  PD.product_cd = #{product_cd}
                         FROM tb_scm_product
                        WHERE product_cd = #{product_cd}
                       );
+    INSERT INTO tb_file
+                 (
+                  file_no, 
+                  file_local_path, 
+                  file_relative_path, 
+                  file_ofname, 
+                  file_size,
+                  product_cd
+                  )
+          SELECT  MAX(file_no)+1, 
+                  #{file.file_loc}, 
+                  #{file.logicalpath}, 
+                  #{file.file_nm}, 
+                  #{file.file_size},
+                  #{product_cd}
+                        
+            FROM tb_file;
     </insert>
     
     <!-- 제품정보 삭제 -->

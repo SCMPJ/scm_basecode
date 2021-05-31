@@ -95,7 +95,6 @@ public class MainProductInfoController {
     return resultMap;
   }
   
-  // 제품정보 저장
   @RequestMapping("saveMainProduct.do")
   @ResponseBody
   public Map<String, Object> saveMainProduct(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
@@ -109,7 +108,7 @@ public class MainProductInfoController {
     
     if ("I".equals(action)) {
       // 등록
-      int saveResult = mainProductInfoService.insertMainProduct(paramMap);
+      int saveResult = mainProductInfoService.insertMainProduct(paramMap, request);
       if (saveResult == 0) {
         result = "FAIL";
         resultMsg = "중복된 코드입니다.";
