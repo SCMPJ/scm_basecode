@@ -7,7 +7,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>JobKorea</title>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
   // 페이징 설정
   var pageSize = 5;
@@ -385,11 +384,17 @@
       //var uploadModifyFile = document.getElementById("upload_modify_file")
       
       // file_no이 null이면 원본 글에  파일 없음
-      if(!file_no && !modifiedFile) { // 글만 수정되는 경우
+      if(!file_no && !modifiedFile) { // 첨부파일이 없던 글이,글만 수정되는 경우
         console.log('글만수정, 파일없음') 
-        var isFile = false;
+        var isFile = 'noFile';
          fileData.append('file_no', 0);
          fileData.append('noFile', isFile);
+      }
+      else if(file_no && !modifiedFile) {
+        // 첨부파일이 있던 글이, 글만 수정되는 경우
+         fileData.append('file_no', file_no);
+         fileData.append('noFile', isFile);
+        
       }
       else if(!file_no && modifiedFile) {// 첨부파일 신규 등록
         // 첨부파일 업로드 과정        

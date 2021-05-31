@@ -147,7 +147,7 @@ public class NoticeController {
 	  
 	  param.put("auth", auth);
 	  
-	  System.out.println("파라미터확인" + param);
+	  System.out.println("수정할파라미터확인" + param);
 	  
 	  int result = 0;
 	  
@@ -212,7 +212,7 @@ public class NoticeController {
 	@RequestMapping(value="modifyNotice.do", method=RequestMethod.POST)
 	public int updateNotice(@RequestParam Map<String, Object> param, HttpServletRequest request) throws Exception {
 	  MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
-
+	  System.out.println("파라미터확인" + param);
 	  int auth = Integer.parseInt((String)param.get("auth"));
 	  param.put("auth", auth);
 	  
@@ -225,10 +225,6 @@ public class NoticeController {
 	  
 	  System.out.println("file_no확인" + file_no);
 	  
-	 // String imgPath =  noticePath + File.separator + file_no + File.separator;
-	  
-	 // FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
-	  
 	  // 첨부파일의 존재유무 확인
 	  if(param.containsKey("noFile")) { // 글만 수정되는 경우
 	    System.out.println("글만 수정");
@@ -238,10 +234,8 @@ public class NoticeController {
 	    // 기존 첨부파일 삭제  + 글수정
 	    
 	    System.out.println("첨부파일삭제!");
-	    
 	    System.out.println("file_nm확인" + file_nm);
-	    // 바꾼 부분
-//	    String imgPath = rootPath + File.separator + imgPath;
+	    
 	    String imgPath = rootPath + File.separator + noticePath + File.separator + file_no + File.separator;
 	    FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
 	    
@@ -259,13 +253,8 @@ public class NoticeController {
           if (folder.exists()) folder.delete();
           //
           result = 1;
-          return result;
         }
 	    }
-	    else {
-	      // 파일 정보 삭제 실패
-	      return result;
-	    } 
 	  }
 	  else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
 	    // 첨부파일 신규등록 || 첨부파일 수정
@@ -325,22 +314,13 @@ public class NoticeController {
               if (folder.exists()) folder.delete();
               //
               result = 1;
-              return result;
             }
-          }
-          else {
-            // 파일 삭제 실패한 경우
-            return result;
           }
         }// 기존 파일 삭제 끝
       }// 파일 신규등록 성공 끝
-      else {//파일 신규등록 실패
-        //result = 0;
-        return result;
-      }
 	   }
 	  
-	  return result; // 이건 또 뭐지. 의외로 이게 오류의 원인일지도?
+	  return result; 
 	}
 	
 	/* 공지사항 삭제 */
