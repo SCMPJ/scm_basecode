@@ -693,7 +693,7 @@ function numberWithCommas(x) {
           </tr>
           
           <tr>
-            <td class="thumb"><span> <input name="pithumbnail" type="file" id="pithumbnail" accept="image/* " required> <!-- 파일 미리보기 스크립트 영역 --> 
+            <!-- <td class="thumb"><span> <input name="pithumbnail" type="file" id="pithumbnail" accept="image/* " required> 파일 미리보기 스크립트 영역 
                   <script>
                           var file = document.querySelector('#pithumbnail');
 
@@ -729,8 +729,8 @@ function numberWithCommas(x) {
                               };
                             };
                           };
-                        </script> <!-- 파일 미리보기 스크립트 영역 끝 -->
-            </span></td>
+                        </script> 파일 미리보기 스크립트 영역 끝
+            </span></td> -->
           </tr>
         </tbody>
           </table>
