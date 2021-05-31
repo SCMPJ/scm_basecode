@@ -46,7 +46,7 @@
             FROM tb_detail_code
             WHERE group_code = 'STTcd'
           ) DC ON OD.STTcd = DC.detail_code
-          WHERE OD.STTcd = 10
+          WHERE OD.STTcd = '10'
          <if test="(sname != null) and (!sname.equals(''))">
             <choose>
               <when
@@ -81,7 +81,7 @@
         ON OD.product_cd = PD.product_cd
         LEFT JOIN tb_scm_m_category MC
         ON MC.m_ct_cd = PD.m_ct_cd
-        WHERE OD.STTcd = 10
+        WHERE OD.STTcd = '10'
        <if test="(sname != null) and (!sname.equals(''))">
           <choose>
             <when
@@ -104,11 +104,12 @@
   <!-- 발주지시서 상태 업데이트 -->
   <update id="updateState" parameterType="int">
     /*kr.kosmo.jobkorea.pcs.dao.PcsDao*/
-    UPDATE tb_scm_purchase_list
-       SET purch_date = #{purch_date},
-           desired_delivery_date = #{desired_delivery_date},
-           purch_mng_id = #{purch_mng_id}
-     WHERE purch_list_no = #{purch_list_no};
+    UPDATE tb_scm_purchase_list as pl, tb_order as od
+       SET pl.purch_date = #{purch_date},
+           pl.desired_delivery_date = #{desired_delivery_date},
+           pl.purch_mng_id = #{purch_mng_id},
+           od.STTcd = '11'
+     WHERE pl.purch_list_no = #{purch_list_no} AND od.order_cd = #{order_cd}
   </update>
   
   <!-- 발주지시서 버튼 -->
@@ -301,7 +302,6 @@
    UPDATE tb_scm_purchase_list
       SET return_qty = #{return_qty},
           return_price = #{return_price},
-          return_date = #{return_date},
           request_return_date = #{request_return_date}
     WHERE purch_list_no = #{purch_list_no}
   </update>

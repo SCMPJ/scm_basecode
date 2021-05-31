@@ -192,6 +192,7 @@
     $("#purchQty").text(purch_qty);
     $("#purchMngId").text(purch_mng_id);
     $("#purchasePrice").text(numberWithCommas(purchase_price));
+
     
     // 날짜 타입 변환
     var date1 = purch_date.substr(0, 10);
@@ -255,8 +256,8 @@
   }
   
   /** 반품서 화면 띄우기 */ 
-  function fSelectRefundBtn(purch_list_no, supply_nm, supply_cd, prod_nm, m_ct_nm, product_cd, return_qty, return_price, return_date, request_return_date, warehouse_cd, return_mng_id) {
-    
+  function fSelectRefundBtn(purch_list_no, supply_nm, supply_cd, prod_nm, m_ct_nm, product_cd, return_qty, return_price, return_date, request_return_date, warehouse_cd, return_mng_id, purch_qty) {
+   
     var param = {
       purch_list_no : purch_list_no,
       supply_nm : supply_nm,
@@ -277,11 +278,13 @@
     $("#supply_cd").val(supply_cd);
     $("#prod_nm").val(prod_nm);
     $("#m_ct_nm").val(m_ct_nm);
-    $("#return_qty").val(return_qty);
+    $("#return_qty").val(purch_qty);
     $("#return_price").val(return_price);
     $("#return_date").val(return_date);
     $("#request_return_date").val(request_return_date);
     $("#return_mng_id").val(return_mng_id);
+    
+    $("#return_qty").attr('max', purch_qty);
     
     var resultCallback = function(data) {
       fSelectRefundBtnResult(data);
@@ -299,6 +302,7 @@
       $("#product_cd").val(data.pcsModel.product_cd);
       $("#warehouse_cd").val(data.pcsModel.warehouse_cd);
       $("#return_mng_id").val(data.pcsModel.return_mng_id);
+      $("#Pprice").val(data.pcsModel.purchase_price);
       
       console.log("fSelectRefundBtnResult : " + JSON.stringify(data));
     } else {
@@ -310,14 +314,20 @@
   function fsend() {
     var return_qty = $("#return_qty").val();
     var return_price = $("#return_price").val();
-    var return_date = $(".returnDateValue").val();
     var request_return_date = $(".requestReturnDateValue").val();
     var purch_list_no = $("#purch_list_no").val();
+    
+    if (return_qty === 0) {
+      swal("반품수량을 0보다 크게 해주세요.");
+      $('#return_qty').val(1);
+    } else if (return_qty > $("#return_qty").val()) {
+      swal("반품수량이 발주했던 수량보다 클 수 없습니다.");
+      $('#return_qty').val($("#return_qty").val());
+    }
     
     var param = {
         return_qty : return_qty, 
         return_price : return_price, 
-        return_date : return_date, 
         request_return_date : request_return_date, 
         purch_list_no : purch_list_no
       };
@@ -332,20 +342,29 @@
   
   function fsendResult(data) {
     if (data.result == "SUCCESS") {
-      swal(data.resultMsg);
-      location.reload('');
+      swal(data.resultMsg).then(function(){        
+	      location.reload('');
+      })
       console.log("fsendResult : " + JSON.stringify(data));
     } else {
       swal(data.resultMsg);
     }
   }
-  
+ 
+  function printName() {
+    var return_qty = document.getElementById('return_qty').value;
+    var purchase_price = document.getElementById('Pprice').value;
+    var return_total_price = purchase_price * return_qty;
+    
+    $('#return_price').val(return_total_price);
+  }
 </script>
 </head>
 <body>
     <form id="myForm" action="" method="">
         <input type="hidden" id="currentPage" value="1">
         <input type="hidden" id="order_cd" name="order_cd" value="">
+        <input type="hidden" id="Pprice" name="purchase_price" value="">
         <input type="hidden" name="action" id="action" value="">
         <!-- 모달 배경 -->
         <div id="mask"></div>
@@ -551,29 +570,16 @@
                             </tr>
                             <tr>
                                 <th scope="row">반품수량</th>
-                                <td><input type="text" class="form-control" name="return_qty" id="return_qty" /></td>
+                                <td><input type="number" class="form-control" name="return_qty" id="return_qty" oninput="printName();" min="1"/></td>
                                 <th scope="row">반품액</th>
                                 <td><input type="text" class="form-control" name="return_price" id="return_price" /></td>
                             </tr>
                             <tr>
-                                <th scope="row">반품날짜</th>
-                                <td colspan="3">
-                                 <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input returnDateValue" data-target="#datetimepicker2" value="">
-                                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
-                                      <div class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                            </tr>
-                            <tr>
                                 <th scope="row">반품요청날짜</th>
                                 <td colspan="3">
-                                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input requestReturnDateValue" data-target="#datetimepicker3" value="">
-                                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                  <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input requestReturnDateValue" data-target="#datetimepicker2" value="">
+                                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                       <div class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                       </div>
@@ -609,17 +615,11 @@
           autoclose: true,
       });
       $('#datetimepicker2').datetimepicker({
-        format: 'YYYY-MM-DD',
-        formatDate: 'YYYY-MM-DD',
-        language: 'ko',
-        autoclose: true,
-    });
-      $('#datetimepicker3').datetimepicker({
-        format: 'YYYY-MM-DD',
-        formatDate: 'YYYY-MM-DD',
-        language: 'ko',
-        autoclose: true,
-    });
+	        format: 'YYYY-MM-DD',
+	        formatDate: 'YYYY-MM-DD',
+	        language: 'ko',
+	        autoclose: true,
+	    });
     });
     </script>
 </body>
