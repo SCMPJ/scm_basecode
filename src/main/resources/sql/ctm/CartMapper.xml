@@ -103,51 +103,5 @@
 		WHERE product_cd = #{code}
 		AND loginID = #{loginID}
 	</delete>
-  <!-- 
-    장바구니 주문
-  <insert id="listCartOrder">
-  /*kr.kosmo.jobkorea.system.dao.CartDao.listCartOrder*/
-    INSERT INTO tb_order (
-                order_cd
-              , loginID
-              , product_cd
-              , order_date
-              , want_receive_date
-              , order_cnt
-              , amount
-              , tax
-              , warehouse_cd
-              , offline
-              , request
-              , STTcd
-              , deposit_yn
-              , cart_cd
-              ) 
-         SELECT 
-                123
-              , #{loginID}
-              , sc.product_cd
-              , #{order_date}
-              , #{want_receive_date}
-              , sc.shopping_qty
-              , sp.price * sc.shopping_qty
-              , sp.prict / 10 * sc.shopping
-              , sp.warehouse_cd
-              , 'n'
-              , #{request}
-              , 1
-              , 'n'
-              , sc.cart_cd 
-           FROM tb_shopping sc
-              , tb_scm_product sp
-          WHERE sc.product_cd = sp.product_cd
-  
-  </insert>
-  <delete id="listCartOrder">
-    /*kr.kosmo.jobkorea.system.dao.CartDao.listCartOrder*/
-    DELETE FROM tb_shopping 
-          WHERE product_cd = #{product_cd} AND loginID = #{loginID}
-  </delete>
-   -->
 </mapper>
 

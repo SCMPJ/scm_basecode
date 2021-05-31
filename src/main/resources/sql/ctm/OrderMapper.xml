@@ -114,11 +114,16 @@
                         		shopping_cart_date,
                         		loginID
 	                         )
-	VALUES (
-				#{productCode},
-				#{productCount},
-				NOW(),
-				#{loginId}
-	        )
+	SELECT #{productCode},
+		   #{productCount},
+		   NOW(),
+		   #{loginId}
+	FROM DUAL
+	WHERE NOT EXISTS (
+						SELECT product_cd
+						FROM tb_shopping
+						WHERE product_cd=#{productCode} AND loginID=#{loginId}
+					  )
+	
   </insert>
 </mapper>

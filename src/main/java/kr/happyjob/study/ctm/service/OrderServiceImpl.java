@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 		resultMsg = "상품을 장바구니에 담았습니다.";
 	} else {
 		result = "FAIL";
-		resultMsg = "상품 담기에 실패하였습니다.";
+		resultMsg = "장바구니에 동일한 제품이 이미 담겨있습니다.";
 	}
 	
 	Map<String, String> resultMap = new HashMap<String, String>();
