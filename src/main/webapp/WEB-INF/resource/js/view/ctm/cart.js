@@ -333,22 +333,15 @@ function fOrderModal() {
 /** 장바구니 주문 콜백 함수 */
 
 function fOrderCartItemResult(data) {
-
-  var currentPage = $("#currentPageCart").val();
-
-  if (data.oResult == "SUCCESS") {
+  if (data.result == "SUCCESS") {
     console.log("주문 성공");
-    
-    if (data.dResult == "SUCCESS") {
-      console.log("해당 물품 DB 삭제 성공");
-    }
-    // 모달 닫기
     deleteModal.close();
-
-    // 장바구니 목록 조회
-    fListCart(currentPage);
-
+    swal(data.resultMsg).then(function(){
+      location.href = '';
+    });
   } else {
-    swal(data.resultMsg);
+    swal(data.resultMsg).then(function(){
+      location.href = '';
+    });
   }
 }

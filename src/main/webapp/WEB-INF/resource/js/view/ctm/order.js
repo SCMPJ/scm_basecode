@@ -290,7 +290,7 @@ cartModal.addFooterBtn('담기', 'tingle-btn tingle-btn--primary', function() {
 function getInsertCartMessage(data) {
   if (data.result === "SUCCESS") {
     swal(data.resultMsg).then(function() {
-      location.href = '/ctm/cart.do';
+      window.location.reload();;
     });
     console.log("장바구니 담기 완료");
     return 1;
