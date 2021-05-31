@@ -25,7 +25,7 @@
       </c:if>
       <c:if test="${list.STTcd eq 12}">
       <td><a class="btnType3 color1" href="javascript:void(0);" style="cursor:not-allowed;"><span>입고완료</span></a></td>
-      <td><a class="btnType3 color2" href="javascript:fSelectRefundBtn('${list.purch_list_no}', '${list.supply_nm}', '${list.supply_cd}', '${list.prod_nm}', '${list.m_ct_nm}', '${list.product_cd}', '${list.return_qty}','${list.return_price}','${list.return_date}','${list.request_return_date}', '${list.warehouse_cd}', '${list.return_mng_id}');"><span>반품</span></a></td>
+      <td><a class="btnType3 color2" href="javascript:fSelectRefundBtn('${list.purch_list_no}', '${list.supply_nm}', '${list.supply_cd}', '${list.prod_nm}', '${list.m_ct_nm}', '${list.product_cd}', '${list.return_qty}','${list.return_price}','${list.return_date}','${list.request_return_date}', '${list.warehouse_cd}', '${list.return_mng_id}', '${list.purch_qty}');"><span>반품</span></a></td>
       </c:if>
     </tr>
   </c:forEach>
