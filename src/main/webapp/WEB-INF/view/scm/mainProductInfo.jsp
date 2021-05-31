@@ -250,12 +250,20 @@ function numberWithCommas(x) {
     if (!fValidateMainProduct()) {
       return;
     }
+    
+    // file form 값 생성
+    var frm = document.getElementById("myForm");
+    frm.enctype = 'multipart/form-data';
+    var fileData = new FormData(frm);
+
     var resultCallback = function(data) {
       console.log(data);
       fSaveMainProductResult(data);
     };
-    callAjax("/scm/saveMainProduct.do", "post", "json", true, $("#myForm").serialize(), resultCallback);
+    
+    callAjaxFileUploadSetFormData("/scm/saveMainProduct.do", "post", "json", true, fileData, resultCallback);
   }
+  
   //제품정보 저장 콜백 함수
   function fSaveMainProductResult(data) {
     var currentPage = "1";

@@ -1,6 +1,6 @@
 package kr.happyjob.study.scm.model;
 
-public class MainProductInfoModel {
+public class MainProductInfoModel extends FileModel{
   private String product_cd;
   private String prod_nm;
   private String l_ct_nm;

@@ -6,9 +6,17 @@ public class FileModel {
 	private String file_local_path;
 	private String file_relative_path;
 	private String file_ofname;
-	private int file_size;	
+	private int file_size;
+	private String product_cd;
 	
-	public int getFile_no() {
+	
+	public String getProduct_cd() {
+    return product_cd;
+  }
+  public void setProduct_cd(String product_cd) {
+    this.product_cd = product_cd;
+  }
+  public int getFile_no() {
 		return file_no;
 	}
 	public void setFile_no(int file_no) {
