@@ -30,7 +30,10 @@
 	  	<td>승인완료</td>
       </c:if>
     </tr>
+    <input type="hidden" name="purchaseTotalAmount" value="${list.purchaseTotalAmount}" /> 
+	<input type="hidden" name="supplyCode" value="${list.supplyCode}" />
   </c:forEach>
 </c:if>
 <!-- 이거 중간에 있으면 table 안먹힘  -->
 <input type="hidden" id="totcnt" name="totcnt" value="${purchaseListCnt}" />
+

@@ -72,10 +72,32 @@
 		</select>
 		
 		<!-- 발주지시서 업데이트 -->
-		<update id="updatePurchaseApprove" parameterType="int">
+		<update id="updatePurchaseApprove" parameterType="java.util.Map">
 			UPDATE tb_order AS o, tb_scm_purchase_list AS purch
 			SET o.STTcd = #{STTcd}, purch.approve_id = #{loginId}
-			WHERE o.order_cd = #{orderCode} AND purch.order_cd = #{orderCode}
+			WHERE o.order_cd = #{orderCode} AND purch.order_cd = #{orderCode};
+			
+			INSERT INTO tb_acc_slip(
+										slip_no,
+										account_cd,
+										detail_account_cd,
+										occur_date,
+										order_cd,
+										amt,
+										note,
+										direct_id,
+										client_cd
+								    )
+		    SELECT MAX(slip_no)+1,
+    	  		   'A100',
+    	  		   '101',
+    	  	   	   NOW(),
+    	  		   #{orderCode},
+    	  		   #{totalAmount},
+    	  		   null,
+    	  		   #{loginId},
+    	  		   #{supplyCode}
+  		    FROM tb_acc_slip;
 		</update>
 		
 		<!-- 반품지시서 데이터 조회 -->

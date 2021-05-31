@@ -84,6 +84,10 @@ allowPurchaseModal.addFooterBtn('승인', 'tingle-btn tingle-btn--primary', func
       orderCode: orderCd
   }
   
+  var totalAmount = $('input[name="purchaseTotalAmount"]').val();
+  
+  param['totalAmount'] = totalAmount;
+  
   var resultCallback = function(data) {
     getUpdateMessage(data);
   }
