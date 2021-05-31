@@ -25,6 +25,17 @@
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
        WHERE od.loginID = #{loginID}
+       <choose>
+        <when test="STTcd == null or STTcd == 'all'">
+          AND od.STTcd IN (1, 2, 13, 14, 15, 8, 3, 7)
+        </when>
+        <otherwise>
+            AND od.STTcd IN (#{STTcd})
+        </otherwise>
+      </choose>
+       <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+          AND od.order_date BETWEEN DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+       </if>
    ORDER BY FIELD(dc.detail_name, '입금대기', '입금완료', '승인대기(발주)', '승인완료(발주)', 
                                   '입고전', '입고완료', '배송준비', '배송중', 
                                   '배송완료', '구매확정', '반품대기', '승인대기(반품)', '승인완료(반품)',
@@ -42,6 +53,17 @@
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
        WHERE od.loginID = #{loginID}
+       <choose>
+        <when test="STTcd == null or STTcd == 'all'">
+          AND od.STTcd IN (1, 2, 13, 14, 15, 8, 3, 7)
+        </when>
+        <otherwise>
+            AND od.STTcd IN (#{STTcd})
+        </otherwise>
+      </choose>
+       <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+          AND od.order_date BETWEEN DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+       </if>
   </select>
   
   <!-- 반품신청 모달 -->

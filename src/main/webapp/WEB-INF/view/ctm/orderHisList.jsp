@@ -5,7 +5,7 @@
               
 <c:if test="${totalOrder eq 0 }">
   <tr>
-    <td colspan="6">구매하신 내역이 없습니다.</td>
+    <td colspan="12">구매하신 내역이 없습니다.</td>
   </tr>
 </c:if>
 
