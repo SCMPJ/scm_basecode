@@ -14,26 +14,28 @@
         FROM tb_scm_product sp
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
-      <where>
-      <if test="(sname != null) and (!sname.equals(''))">
-      <choose>
-        <when test="oname eq 'all'.toString()">
-            AND (lc.l_ct_nm LIKE CONCAT('%', #{sname}, '%')
-              or sp.prod_nm LIKE CONCAT('%', #{sname}, '%') 
-              or sp.product_cd LIKE CONCAT('%', #{sname}, '%'))
-        </when>
-        <when test= "(oname eq 'product_l_ct'.toString())">
-            AND lc.l_ct_nm LIKE concat('%', #{sname}, '%')
-        </when>
-        <when test= "(oname eq 'product_nm'.toString())">
-            AND sp.prod_nm LIKE concat('%', #{sname}, '%')
-        </when> 
-        <when test= "(oname eq 'product_cd'.toString())">
-            AND sp.product_cd LIKE concat('%', #{sname}, '%')
-        </when>  
-      </choose>
-      </if> 
-    </where>
+       WHERE 1=1
+	      <if test="sname != null and sname != ''">
+		      <choose>
+		        <when test="oname == 'all'">
+		            AND lc.l_ct_nm LIKE CONCAT('%', #{sname}, '%')
+		            OR sp.prod_nm LIKE CONCAT('%', #{sname}, '%') 
+		            OR sp.product_cd LIKE CONCAT('%', #{sname}, '%')
+		        </when>
+		        <when test= "oname == 'product_l_ct'">
+		            AND lc.l_ct_nm LIKE CONCAT('%', #{sname}, '%')
+		        </when>
+		        <when test= "oname == 'product_m_ct'">
+		            AND mc.m_ct_nm LIKE CONCAT('%', #{sname}, '%')
+		        </when>	        
+		        <when test= "oname == 'product_nm'">
+		            AND sp.prod_nm LIKE CONCAT('%', #{sname}, '%')
+		        </when> 
+		        <when test= "oname == 'product_cd'">
+		            AND sp.product_cd LIKE CONCAT('%', #{sname}, '%')
+		        </when>
+		      </choose>
+	      </if> 
       LIMIT #{pageIndex}, #{pageSize}
   </select>
   
@@ -43,26 +45,85 @@
         FROM tb_scm_product sp
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
-      <where>
-      <if test="(sname != null) and (!sname.equals(''))">
-      <choose>
-        <when test="oname eq 'all'.toString()">
-            AND (lc.l_ct_nm LIKE CONCAT('%', #{sname}, '%')
-              or sp.prod_nm LIKE CONCAT('%', #{sname}, '%') 
-              or sp.product_cd LIKE CONCAT('%', #{sname}, '%'))
-        </when>
-        <when test= "(oname eq 'product_l_ct'.toString())">
-            AND lc.l_ct_nm LIKE concat('%', #{sname}, '%')
-        </when>
-        <when test= "(oname eq 'product_nm'.toString())">
-            AND sp.prod_nm LIKE concat('%', #{sname}, '%')
-        </when> 
-        <when test= "(oname eq 'product_cd'.toString())">
-            AND sp.product_cd LIKE concat('%', #{sname}, '%')
-        </when> 
-      </choose>
-      </if> 
-    </where>
+       WHERE 1=1
+	      <if test="sname != null and sname != ''">
+		      <choose>
+		        <when test="oname == 'all'">
+		            AND lc.l_ct_nm LIKE CONCAT('%', #{sname}, '%')
+		            OR sp.prod_nm LIKE CONCAT('%', #{sname}, '%') 
+		            OR sp.product_cd LIKE CONCAT('%', #{sname}, '%')
+		        </when>
+		        <when test= "oname == 'product_l_ct'">
+		            AND lc.l_ct_nm LIKE CONCAT('%', #{sname}, '%')
+		        </when>
+		        <when test= "oname == 'product_m_ct'">
+		            AND mc.m_ct_nm LIKE CONCAT('%', #{sname}, '%')
+		        </when>	        
+		        <when test= "oname == 'product_nm'">
+		            AND sp.prod_nm LIKE CONCAT('%', #{sname}, '%')
+		        </when> 
+		        <when test= "oname == 'product_cd'">
+		            AND sp.product_cd LIKE CONCAT('%', #{sname}, '%')
+		        </when>
+		      </choose>
+	      </if> 
   </select>
   
+  <!-- 고객 단일 제품 구매 -->
+  <insert id="insertOrder">
+		INSERT INTO tb_order (
+		                        order_cd,
+		                        loginID,
+		                        product_cd,
+		                        order_date,
+		                        want_receive_date,
+		                        order_cnt,
+		                        amount,
+		                        tax,
+		                        warehouse_cd,
+		                        offline,
+		                        request,
+		                        STTcd,
+		                        deposit_yn
+		                      )
+		VALUES (
+					#{orderCode},
+					#{loginId},
+					#{productCode},
+					NOW(),
+					#{wantDate},
+					#{productCount},
+					#{totalPrice},
+					#{tax},
+					(
+						SELECT warehouse_cd 
+						FROM tb_scm_product 
+						WHERE product_cd = #{productCode}
+					),
+					'n',
+					#{request},
+					'1',
+					'n'
+		        )
+  </insert>
+   <!-- 고객 단일 제품 장바구니 담기 -->
+  <insert id="insertCart" parameterType="int">
+	INSERT INTO tb_shopping (
+                        		product_cd,
+                        		shopping_cart_qty,
+                        		shopping_cart_date,
+                        		loginID
+	                         )
+	SELECT #{productCode},
+		   #{productCount},
+		   NOW(),
+		   #{loginId}
+	FROM DUAL
+	WHERE NOT EXISTS (
+						SELECT product_cd
+						FROM tb_shopping
+						WHERE product_cd=#{productCode} AND loginID=#{loginId}
+					  )
+	
+  </insert>
 </mapper>

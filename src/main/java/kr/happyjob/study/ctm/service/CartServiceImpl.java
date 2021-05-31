@@ -68,7 +68,13 @@ public class CartServiceImpl implements CartService{
 		return cto;
 	}
 	
+	/* 주문된 제품 장바구니에서 제거 */
+	public int deleteOrderedCartItem(Map<String, Object> paramMap) throws Exception {
 		
+		int ctod = CartDao.deleteOrderedCartItem(paramMap);
+		
+		return ctod;
+	}
 }
 
 	

@@ -1,10 +1,10 @@
 package kr.happyjob.study.ctm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.common.uuidgenerator.Generator;
 import kr.happyjob.study.ctm.model.CartModel;
 import kr.happyjob.study.ctm.service.CartService;
 
@@ -95,6 +96,8 @@ public class CartController {
 			  HttpServletResponse response, HttpSession session) throws Exception {
 	    
 	    logger.info("+ Start " + className + ".deleteCartItem");
+	    paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+		   
 	    logger.info("   - paramMap : " + paramMap);
 	    
 	    String result = "SUCCESS";
@@ -141,35 +144,80 @@ public class CartController {
 	  /** 장바구니 주문  */
 	  @RequestMapping("orderCartItem.do")
 	  @ResponseBody
-	  public Map<String, Object> orderCartItem(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	  public Map<String, String> orderCartItem(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 			  HttpServletResponse response, HttpSession session) throws Exception {
 	    
 	    logger.info("+ Start " + className + ".orderCartItem");
+	    
+	    paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+	    
 	    logger.info("   - paramMap : " + paramMap);
 	    
-	    int checkCnt =  Integer.parseInt((String)paramMap.get("checkCnt"));
-		
-		String cartOrderListPdcdArr = (String) paramMap.get("cartOrderListPdcdArr");
-		String[] cartOrderListPdcdArray = cartOrderListPdcdArr.split(",");
-		
-		paramMap.put("checkCnt", checkCnt);
-		paramMap.put("pdcdarr", "cartOrderListPdcdArray");
-		paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+		ArrayList<Integer> checkMapperSuccessList = new ArrayList<Integer>(); 
 	    
-	    String result = "SUCCESS";
-	    String resultMsg = "주문 되었습니다.";
+	    for (String key : paramMap.keySet()) {
+	    	System.out.println(String.format("key -> %s, value -> %s",  key, paramMap.get(key)));
+	    	if (key.substring(0, 3).equals("PRO")) {
+	    		Map<String, Object> tempMap = new HashMap<String, Object>();
+	    		tempMap.putAll(paramMap);
+	    		tempMap.put("code", key.substring(7));
+	    		tempMap.put("qty", paramMap.get(key));
+	    		
+	    		Generator generator = new Generator();
+	    		String uuid = generator.uuidGenerator();
+	    		
+	    		tempMap.put("uuid", uuid);
+	    		
+	    		try {
+					int orderResult = CartService.orderCartItem(tempMap);
+					checkMapperSuccessList.add(orderResult);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    		
+	    		try {
+					int deleteResult = CartService.deleteOrderedCartItem(tempMap);
+					checkMapperSuccessList.add(deleteResult);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    			
+	    	}
+	    };
 	    
-	    // 장바구니 주문
-	    CartService.orderCartItem(paramMap);
+//	    int checkCnt =  Integer.parseInt((String)paramMap.get("checkCnt"));
+//		
+//		String cartOrderListPdcdArr = (String) paramMap.get("cartOrderListPdcdArr");
+//		String[] cartOrderListPdcdArray = cartOrderListPdcdArr.split(",");
+//		
+//		paramMap.put("checkCnt", checkCnt);
+//		paramMap.put("pdcdarr", "cartOrderListPdcdArray");
+//		paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+//	    
+//	    // 장바구니 주문
+//	    CartService.orderCartItem(paramMap);
 	    
-	    Map<String, Object> resultMap = new HashMap<String, Object>();
+	    String result = "";
+	    String resultMsg = "";
+	    
+	    Map<String, String> resultMap = new HashMap<String, String>();
+	    
+	    if(checkMapperSuccessList.contains(0)) {
+	    	result = "FAIL";
+	    	resultMsg = "주문을 실패하였습니다.";
+	    } else {
+	    	result = "SUCCESS";
+	    	resultMsg = "주문을 완료하였습니다.";
+	    };
+	    
 	    resultMap.put("result", result);
 	    resultMap.put("resultMsg", resultMsg);
 	    
+	    logger.info("Order & Delete CheckList: " + checkMapperSuccessList);
 	    logger.info("+ End " + className + ".orderCartItem");
 	    
 	    return resultMap;
 	  }
-	
-
 }
