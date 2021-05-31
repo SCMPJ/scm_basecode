@@ -34,9 +34,11 @@
       case 'btnSearchOrderForm':
         board_search();
         break;
-      case 'btnSubmitPcsOrderForm':
+      case 'btnSubmitReturnForm':
         fsend();
         break;
+      case 'btnCloseReturnForm':
+        gfCloseModal();
       }
     });
   }
@@ -220,7 +222,7 @@
       
       console.log("fSelectPurchBtnResult : " + JSON.stringify(data));
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -253,7 +255,8 @@
   }
   
   /** 반품서 화면 띄우기 */ 
-  function fSelectRefundBtn(purch_list_no, supply_nm, supply_cd, prod_nm, m_ct_nm, product_cd, return_qty, warehouse_cd, purch_mng_id) {
+  function fSelectRefundBtn(purch_list_no, supply_nm, supply_cd, prod_nm, m_ct_nm, product_cd, return_qty, return_price, return_date, request_return_date, warehouse_cd, return_mng_id) {
+    
     var param = {
       purch_list_no : purch_list_no,
       supply_nm : supply_nm,
@@ -262,8 +265,11 @@
       m_ct_nm : m_ct_nm,
       product_cd : product_cd,
       return_qty : return_qty,
+      return_price : return_price,
+      return_date : return_date,
+      request_return_date : request_return_date,
       warehouse_cd : warehouse_cd,
-      purch_mng_id : purch_mng_id
+      return_mng_id : return_mng_id
     };
     
     $("#purch_list_no").val(purch_list_no);
@@ -271,10 +277,11 @@
     $("#supply_cd").val(supply_cd);
     $("#prod_nm").val(prod_nm);
     $("#m_ct_nm").val(m_ct_nm);
-    $("#product_cd").val(product_cd);
     $("#return_qty").val(return_qty);
-    $("#warehouse_cd").val(warehouse_cd);
-    $("#purch_mng_id").val(purch_mng_id);
+    $("#return_price").val(return_price);
+    $("#return_date").val(return_date);
+    $("#request_return_date").val(request_return_date);
+    $("#return_mng_id").val(return_mng_id);
     
     var resultCallback = function(data) {
       fSelectRefundBtnResult(data);
@@ -289,27 +296,31 @@
       // 모달 팝업
       gfModalPop("#layer2");
       
+      $("#product_cd").val(data.pcsModel.product_cd);
+      $("#warehouse_cd").val(data.pcsModel.warehouse_cd);
+      $("#return_mng_id").val(data.pcsModel.return_mng_id);
+      
       console.log("fSelectRefundBtnResult : " + JSON.stringify(data));
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
   /** 발주서 목록 조회 */
   function fsend() {
-    var purch_list_no = $("#purchListNo").text();
-    var order_cd = $("#order_cd").val();
-    var supply_cd = $("#supply_cd").val();
-    var purch_date = $(".purchaseDateValue").val();
-    var desired_delivery_date = $(".desiredDeliveryDateValue").val();
- 
+    var return_qty = $("#return_qty").val();
+    var return_price = $("#return_price").val();
+    var return_date = $(".returnDateValue").val();
+    var request_return_date = $(".requestReturnDateValue").val();
+    var purch_list_no = $("#purch_list_no").val();
+    
     var param = {
-        purch_list_no : purch_list_no,
-        order_cd : order_cd,
-        supply_cd : supply_cd,
-        purch_date : purch_date,
-        desired_delivery_date : desired_delivery_date
-    }
+        return_qty : return_qty, 
+        return_price : return_price, 
+        return_date : return_date, 
+        request_return_date : request_return_date, 
+        purch_list_no : purch_list_no
+      };
     
     var resultCallback = function(data) {
       fsendResult(data);
@@ -321,11 +332,11 @@
   
   function fsendResult(data) {
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       location.reload('');
       console.log("fsendResult : " + JSON.stringify(data));
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -334,7 +345,7 @@
 <body>
     <form id="myForm" action="" method="">
         <input type="hidden" id="currentPage" value="1">
-        <input type="hidden" id="product_cd" name="product_cd" value="">
+        <input type="hidden" id="order_cd" name="order_cd" value="">
         <input type="hidden" name="action" id="action" value="">
         <!-- 모달 배경 -->
         <div id="mask"></div>
@@ -518,40 +529,70 @@
                         <tbody>
                             <tr>
                                 <th scope="row">반품번호</th>
-                                <td colspan="3"><input type="text" class="form-control" name="purch_list_no" id="purch_list_no" /></td>
+                                <td colspan="3"><input type="text" class="form-control" name="purch_list_no" id="purch_list_no" readonly="readonly"/></td>
                             </tr>
                             <tr>
                                 <th scope="row">공급처명</th>
-                                <td><input type="text" class="form-control" name="supply_nm" id="supply_nm" /></td>
+                                <td><input type="text" class="form-control" name="supply_nm" id="supply_nm" readonly="readonly"/></td>
                                 <th scope="row">공급처코드</th>
-                                <td><input type="text" class="form-control" name="supply_cd" id="supply_cd" /></td>
+                                <td><input type="text" class="form-control" name="supply_cd" id="supply_cd" readonly="readonly"/></td>
                             </tr>
                             <tr>
                                 <th scope="row">제품명</th>
-                                <td colspan="3"><input type="text" class="form-control" name="prod_nm" id="prod_nm" /></td>
+                                <td colspan="3"><input type="text" class="form-control" name="prod_nm" id="prod_nm" readonly="readonly"/></td>
                             </tr>
                             <tr>
                                 <th scope="row">상호명</th>
-                                <td colspan="3"><input type="text" class="form-control" name="m_ct_nm" id="m_ct_nm" /></td>
+                                <td colspan="3"><input type="text" class="form-control" name="m_ct_nm" id="m_ct_nm" readonly="readonly"/></td>
                             </tr>
                             <tr>
                                 <th scope="row">제품번호</th>
-                                <td><input type="text" class="form-control" name="product_cd" id="product_cd" /></td>
-                                <th scope="row">제품수량</th>
+                                <td colspan="3"><input type="text" class="form-control" name="product_cd" id="product_cd" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">반품수량</th>
                                 <td><input type="text" class="form-control" name="return_qty" id="return_qty" /></td>
+                                <th scope="row">반품액</th>
+                                <td><input type="text" class="form-control" name="return_price" id="return_price" /></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">반품날짜</th>
+                                <td colspan="3">
+                                 <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input returnDateValue" data-target="#datetimepicker2" value="">
+                                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                      <div class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">반품요청날짜</th>
+                                <td colspan="3">
+                                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input requestReturnDateValue" data-target="#datetimepicker3" value="">
+                                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                      <div class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th scope="row">창고코드</th>
-                                <td><input type="text" class="form-control" name="warehouse_cd" id="warehouse_cd" /></td>
+                                <td><input type="text" class="form-control" name="warehouse_cd" id="warehouse_cd" readonly="readonly"/></td>
                                 <th scope="row">담당자</th>
-                                <td><input type="text" class="form-control" name="purch_mng_id" id="purch_mng_id" /></td>
+                                <td><input type="text" class="form-control" name="return_mng_id" id="return_mng_id" readonly="readonly"/></td>
                             </tr>
                         </tbody>
                     </table>
                     <!-- e : 여기에 내용입력 -->
                     <div class="btn_areaC mt30">
-                        <a href="" class="btnType blue" id="btnSubmitPcsOrderForm" name="btn"><span>전송</span></a>
-                        <a href="" class="btnType gray" id="btnClosePcsOrderForm" name="btn"><span>닫기</span></a>
+                        <a href="" class="btnType blue" id="btnSubmitReturnForm" name="btn"><span>전송</span></a>
+                        <a href="" class="btnType gray" id="btnCloseReturnForm" name="btn"><span>닫기</span></a>
                     </div>
                 </dd>
             </dl>
@@ -567,6 +608,18 @@
           language: 'ko',
           autoclose: true,
       });
+      $('#datetimepicker2').datetimepicker({
+        format: 'YYYY-MM-DD',
+        formatDate: 'YYYY-MM-DD',
+        language: 'ko',
+        autoclose: true,
+    });
+      $('#datetimepicker3').datetimepicker({
+        format: 'YYYY-MM-DD',
+        formatDate: 'YYYY-MM-DD',
+        language: 'ko',
+        autoclose: true,
+    });
     });
     </script>
 </body>

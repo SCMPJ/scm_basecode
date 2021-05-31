@@ -273,6 +273,11 @@
          ,   DC.detail_name
          ,   PD.product_cd
          ,   PL.return_qty
+         ,   PL.return_price
+         ,   PL.return_qty
+         ,   PL.return_date
+         ,   PL.return_mng_id
+         ,   PL.request_return_date
       FROM tb_scm_purchase_list as PL
           LEFT JOIN tb_order as OD
         ON PL.order_cd = OD.order_cd
@@ -288,8 +293,16 @@
           WHERE group_code = 'STTcd'
         ) DC ON OD.STTcd = DC.detail_code
      WHERE PL.purch_list_no = #{purch_list_no}
-       AND PL.order_cd = #{order_cd}
-       AND PL.supply_cd = #{supply_cd}
-       AND PD.product_cd = #{product_cd}
   </select>
+  
+  <!-- 반품서 버튼 클릭 시 상태 업데이트 -->
+  <update id="updateReturnState" parameterType="int">
+    /*kr.kosmo.jobkorea.pcs.dao.PcsDao*/
+   UPDATE tb_scm_purchase_list
+      SET return_qty = #{return_qty},
+          return_price = #{return_price},
+          return_date = #{return_date},
+          request_return_date = #{request_return_date}
+    WHERE purch_list_no = #{purch_list_no}
+  </update>
 </mapper>

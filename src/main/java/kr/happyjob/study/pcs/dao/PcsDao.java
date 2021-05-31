@@ -32,4 +32,7 @@ public interface PcsDao {
   
   /** 입고완료 누르면 재고 업데이트*/
   public int updateStock(Map<String, Object> paramMap);
+  
+  /** 반품버튼 클릭 시 반품상태 업데이트 */
+  public int updateReturnState(Map<String, Object> paramMap);
 }
