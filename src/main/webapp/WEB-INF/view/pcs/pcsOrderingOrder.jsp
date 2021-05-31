@@ -277,13 +277,16 @@
   
   function fsendResult(data) {
     if (data.result == "SUCCESS") {
-      swal(data.resultMsg);
-      location.reload('');
+      swal(data.resultMsg).then(function(){
+        location.reload('');
+      });
+      
       console.log("fSelectPurchBtnResult : " + JSON.stringify(data));
     } else {
       swal(data.resultMsg);
     }
   }
+
 </script>
 </head>
 <body>
