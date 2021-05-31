@@ -81,10 +81,10 @@ function board_search(currentPage) {
   var oname = searchKey.options[searchKey.selectedIndex].value;
 
   var param = {
-  sname : sname.val(),
-  oname : oname,
-  currentPage : currentPage,
-  pageSize : pageSizeProduct
+    sname : sname.val(),
+    oname : oname,
+    currentPage : currentPage,
+    pageSize : pageSizeProduct
   }
 
   var resultCallback = function(data) {
@@ -122,8 +122,13 @@ puchaseModal.addFooterBtn('구매', 'tingle-btn tingle-btn--primary', function()
   
   console.log(wantDate, request);
   
+  if (!wantDate) {
+    swal("배송날짜를 입력해주세요.");
+    return;
+  }
+  
   param['wantDate'] = wantDate;
-  param['request'] = request;
+  param['request'] = request || '';
   
   console.log(param);
   
@@ -138,7 +143,7 @@ puchaseModal.addFooterBtn('구매', 'tingle-btn tingle-btn--primary', function()
 function getInsertMessage(data) {
   if (data.result === "SUCCESS") {
     swal(data.resultMsg).then(function() {
-      href.location = '/ctm/orderList.do';
+      location.href = '/ctm/orderList.do';
     });
     console.log("주문 완료");
     return 1;
@@ -227,19 +232,77 @@ function purchaseItem(prod_cd) {
       totalPrice: totalPrice,
       productCode: productCode,
       tax: totalTax
-  }
+  };
   
   puchaseModal.open();
 };
 
+
+// 장바구니 모달
+var cartModal = new tingle.modal({
+  footer : true,
+  stickyFooter : false,
+  closeMethods : [ 'button' ],
+  closeLabel : "Close",
+  cssClass : [ 'custom-class-1', 'custom-class-2' ],
+  onOpen : function() {
+    console.log('modal open');
+  },
+  onClose : function() {
+    console.log('modal closed');
+  },
+  beforeClose : function() {
+    // here's goes some logic
+    // e.g. save content before closing the modal
+    return true; // close the modal
+    return false; // nothing happens
+  }
+});
+
 function putToCartList(prod_cd) {
   console.log("putToCartList!! for ", prod_cd);
+  var productCode = prod_cd;
   var productCount = $('input[name='+prod_cd+'Count]').val();
-  var productName = $('input[name='+prod_cd+'productName]').val();
-  var middleCategory = $('input[name='+prod_cd+'middleCategory]').val();
-  var productPrice = $('input[name='+prod_cd+'productPrice]').val();
   
   if (productCount === '0') {
     return swal("수량을 1 이상의 값으로 해주세요.");
   }
+  
+  param = {
+      productCode: productCode,
+      productCount: productCount
+  };
+  
+  cartModal.setContent('<center><h1>장바구니에 담으시겠습니까?</h2></center>');
+  
+  cartModal.open();
 };
+
+cartModal.addFooterBtn('담기', 'tingle-btn tingle-btn--primary', function() {
+  var resultCallback = function(data) {
+    getInsertCartMessage(data);
+  }
+
+  callAjax("/ctm/sendItemToCart.do", "post", "json", true, param, resultCallback);
+  cartModal.close();
+});
+
+function getInsertCartMessage(data) {
+  if (data.result === "SUCCESS") {
+    swal(data.resultMsg).then(function() {
+      location.href = '/ctm/cart.do';
+    });
+    console.log("장바구니 담기 완료");
+    return 1;
+  } else {
+    swal(data.resultMsg).then(function() {
+      window.location.reload();
+    });
+    console.log("장바구니 담기 실패");
+    return 0;
+  }
+}
+
+cartModal.addFooterBtn('취소', 'tingle-btn tingle-btn--danger', function() {
+  cartModal.close();
+});

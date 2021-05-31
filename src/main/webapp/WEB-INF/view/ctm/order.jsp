@@ -38,7 +38,8 @@
 								<div class="conTitle" style="margin: 0 25px 10px 0; float: left; width: 100%">
 									<select id="searchKey" name="searchKey" style="width: 10%;" v-model="searchKey">
 										<option value="all" selected="selected">전체</option>
-										<option value="product_l_ct">상호명</option>
+										<option value="product_l_ct">품목명</option>
+										<option value="product_m_ct">상호명</option>
 										<option value="product_nm">제품명</option>
 										<option value="product_cd">제품코드</option>
 									</select> 
