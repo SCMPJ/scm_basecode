@@ -144,7 +144,7 @@ public class CartController {
 	  /** 장바구니 주문  */
 	  @RequestMapping("orderCartItem.do")
 	  @ResponseBody
-	  public Map<String, Object> orderCartItem(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	  public Map<String, String> orderCartItem(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 			  HttpServletResponse response, HttpSession session) throws Exception {
 	    
 	    logger.info("+ Start " + className + ".orderCartItem");
@@ -152,27 +152,24 @@ public class CartController {
 	    paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
 	    
 	    logger.info("   - paramMap : " + paramMap);
-
-	    String oResult = "SUCCESS";
-	    String oResultMsg = "해당 상품 주문 되었습니다.";
-	    String dResult = "SUCCESS";
-	    String dResultMsg = "해당 상품 삭제 되었습니다.";
 	    
 		ArrayList<Integer> checkMapperSuccessList = new ArrayList<Integer>(); 
 	    
-	    paramMap.forEach((key, value) -> {
-	    	System.out.println(String.format("key -> %s, value -> %s",  key, value));
+	    for (String key : paramMap.keySet()) {
+	    	System.out.println(String.format("key -> %s, value -> %s",  key, paramMap.get(key)));
 	    	if (key.substring(0, 3).equals("PRO")) {
-	    		paramMap.put("code", key.substring(7));
-	    		paramMap.put("qty", value);
+	    		Map<String, Object> tempMap = new HashMap<String, Object>();
+	    		tempMap.putAll(paramMap);
+	    		tempMap.put("code", key.substring(7));
+	    		tempMap.put("qty", paramMap.get(key));
 	    		
 	    		Generator generator = new Generator();
 	    		String uuid = generator.uuidGenerator();
 	    		
-	    		paramMap.put("uuid", uuid);
+	    		tempMap.put("uuid", uuid);
 	    		
 	    		try {
-					int orderResult = CartService.orderCartItem(paramMap);
+					int orderResult = CartService.orderCartItem(tempMap);
 					checkMapperSuccessList.add(orderResult);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -180,16 +177,15 @@ public class CartController {
 				}
 	    		
 	    		try {
-					int deleteResult = CartService.deleteOrderedCartItem(paramMap);
+					int deleteResult = CartService.deleteOrderedCartItem(tempMap);
 					checkMapperSuccessList.add(deleteResult);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    	} else {
-	    		return;
+	    			
 	    	}
-	    });
+	    };
 	    
 //	    int checkCnt =  Integer.parseInt((String)paramMap.get("checkCnt"));
 //		
@@ -203,12 +199,21 @@ public class CartController {
 //	    // 장바구니 주문
 //	    CartService.orderCartItem(paramMap);
 	    
+	    String result = "";
+	    String resultMsg = "";
 	    
-	    Map<String, Object> resultMap = new HashMap<String, Object>();
-	    resultMap.put("oResult", oResult);
-	    resultMap.put("oResultMsg", oResultMsg);
-	    resultMap.put("dResult", dResult);
-	    resultMap.put("dResultMsg", dResultMsg);
+	    Map<String, String> resultMap = new HashMap<String, String>();
+	    
+	    if(checkMapperSuccessList.contains(0)) {
+	    	result = "FAIL";
+	    	resultMsg = "주문을 실패하였습니다.";
+	    } else {
+	    	result = "SUCCESS";
+	    	resultMsg = "주문을 완료하였습니다.";
+	    };
+	    
+	    resultMap.put("result", result);
+	    resultMap.put("resultMsg", resultMsg);
 	    
 	    logger.info("Order & Delete CheckList: " + checkMapperSuccessList);
 	    logger.info("+ End " + className + ".orderCartItem");
