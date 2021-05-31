@@ -8,7 +8,7 @@
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <script type="text/javascript">
   //주문이력 화면 페이징 처리
-  var pageSizeProduct = 5; //주문이력 화면 페이지 사이즈
+  var pageSizeProduct = 10; //주문이력 화면 페이지 사이즈
   var pageBlockSizeProduct = 5; //주문이력 화면 페이지 블록 갯수
 
   //OnLoad event
@@ -47,17 +47,17 @@
   
   //입금대기 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
   function fnotYetDeposit() {
-    alert("아직 입금이 완료되지 않았습니다.");
+    swal("아직 입금이 완료되지 않았습니다.");
     return;
   };
   //입금완료~배송준비 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
   function fYetDelivery() {
-    alert("배송 준비중입니다.");
+    swal("배송 준비중입니다.");
     return;
   };
   //배송중 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
   function fNowDelivery() {
-    alert("배송중입니다.");
+    swal("배송중입니다.");
     return;
   };
 
@@ -86,26 +86,10 @@
     // 총 개수 추출
     var totalOrder = $("#totalOrder").val();
     //페이지 네비게이션 생성
-    var paginationHtml = getPaginationHtml(currentPage, totalOrder, pageSizeProduct, pageBlockSizeProduct, 'fOrderHisList');
+    var paginationHtml = getPaginationHtml(currentPage, totalOrder, pageSizeProduct, pageBlockSizeProduct, 'fSearchOrderList');
     $("#productPagination").empty().append(paginationHtml);
     //현재 페이지 설정
     $("#currentPageProduct").val(currentPage);
-  }
-
-  /* 검색 기능*/
-  function board_search(currentPage) {
-    currentPage = currentPage || 1;
-    var searchKey = document.getElementById("searchKey");
-
-    var param = {
-    currentPage : currentPage,
-    pageSize : pageSizeProduct
-    }
-
-    var resultCallback = function(data) {
-      forderHisListResult(data, currentPage);
-    };
-    callAjax("/ctm/orderHisList.do", "post", "text", true, param, resultCallback);
   }
 
   /* 반품 모달 실행 */
@@ -131,7 +115,7 @@
       gfModalPop("#layerRefund")
       fInitFormRefund(data.refundInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
 
@@ -173,7 +157,7 @@
    callAjax("/ctm/submitRefund.do", "post", "json", true, $("#myForm")
        .serialize(), resultCallback);
     } else {
-      alert("취소 하셨습니다.");
+      swal("취소 하셨습니다.");
     }
   }
     
@@ -181,11 +165,11 @@
   function fSubmitRefundResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fOrderHisList(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -212,7 +196,7 @@
       gfModalPop("#layerDeposit")
       fInitFormDeposit(data.depositInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
 
@@ -242,7 +226,7 @@
    callAjax("/ctm/submitDeposit.do", "post", "json", true, $("#myForm")
        .serialize(), resultCallback);
     } else {
-      alert("취소 하셨습니다.");
+      swal("취소 하셨습니다.");
     }
   }
     
@@ -250,11 +234,11 @@
   function fSubmitDepositResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fOrderHisList(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -281,7 +265,7 @@
       gfModalPop("#layerConfirm")
       fInitFormConfirm(data.confirmInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
 
@@ -319,7 +303,7 @@
    callAjax("/ctm/submitConfirm.do", "post", "json", true, $("#myForm")
        .serialize(), resultCallback);
     } else {
-      alert("취소 하셨습니다.");
+      swal("취소 하셨습니다.");
     }
   }
     
@@ -327,13 +311,46 @@
   function fSubmitConfirmResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fOrderHisList(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
+  
+  //검색
+  function fSearchOrderList(currentPage){
+    currentPage = currentPage || 1;
+    
+    var param = $('#myForm').serialize();
+    
+    param += "&currentPage="+currentPage;
+    param += "&pageSize="+pageSizeProduct;
+    
+    console.log("검색조건에 대한 param : " + param);
+    console.log("currentPage : " + currentPage);
+    
+    var startDate = $('#startDate').val();
+    var endDate = $('#endDate').val();
+
+    // 날짜가 올바르지 않거나 널값인 경우 랜딩
+    if(startDate > endDate){
+      swal("\n시작일자는 종료일자보다 클 수가 없습니다.").then(function(){
+        window.location.reload();
+      })
+    }
+  
+    var resultCallback = function(data) {
+      forderHisListResult(data, currentPage);
+    };
+
+  //Ajax실행 방식
+  //callAjax("Url",type,return,async or sync방식,넘겨준 값,Callback함수 이름)
+  callAjax("/ctm/orderHisList.do", "post", "text", true, param, resultCallback);
+    
+  }
+  
 </script>
 </head>
 <body>
@@ -362,34 +379,28 @@
               <div class="ProductList">
                 <div class="conTitle row" style="float: left; width: 100%; display: flex; justify-content: flex-end;">
                   <!-- datepicker -->
-                  <div class='col-md-3 col-xs-4'>
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="">
-                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                          <div class="input-group-text">
-                            <i class="fa fa-calendar"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="divider" style="top: 35%; left: 68.8%;">~</span>
-                  <div class='col-md-3 col-xs-4'>
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" value="">
-                        <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
-                          <div class="input-group-text">
-                            <i class="fa fa-calendar"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <span style="width: 590px;">
+                      <select id="STTcd" name="STTcd" style="width: 100px;">
+                      <option value="all">전체</option>
+                      <option value="1">입금대기</option>
+                      <option value="2">입금완료</option>
+                      <option value="13">배송대기</option>
+                      <option value="14">배송중</option>
+                      <option value="15">배송완료</option>
+                      <option value="8">구매확정</option>
+                      <option value="3">반품대기</option>
+                      <option value="7">반품완료</option>
+                    </select>
+                    <input type="date" name="startDate" id="startDate" style="width: 200px; height: 28px;">
+                    <span>~</span>
+                    <input type="date" name="endDate" id="endDate" style="width: 200px; height: 28px;">
+                                      <a id="searchEnter" 
+                                          class="btn btnTypeBox" 
+                                          href="javascript:fSearchOrderList()"
+                                          style="border:1px solid #adb0b5;">검색</a>
+                                  </span>
                   <!-- // datepicker -->
-                  <a href="" class="btnType blue" id="searchBtn" name="btn"> <span>검 색</span>
-                  </a>
+                 
                 </div>
                 <table class="col">
                   <caption>caption</caption>

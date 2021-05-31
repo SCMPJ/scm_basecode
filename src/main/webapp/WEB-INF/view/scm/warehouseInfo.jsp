@@ -179,7 +179,7 @@
       gfModalPop("#layer1")
       fInitFormWarehouse(data.warehouseInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   /** 창고정보 폼 초기화 */

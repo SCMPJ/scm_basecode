@@ -177,7 +177,7 @@
       gfModalPop("#layer1")
       fInitFormSupplier(data.supplierInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -263,11 +263,11 @@
       currentPage = $("#currentPageSupplier").val();
     }
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fListSupplier(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
