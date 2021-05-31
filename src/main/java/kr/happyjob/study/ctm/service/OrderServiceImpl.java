@@ -59,4 +59,30 @@ public class OrderServiceImpl implements OrderService {
 	logger.info("+ end " + className + ".insertOrder");
     return resultMap;
   }
+  // 고객 단일 제품 장바구니 테이블에 INSERT 
+  @Override
+  public Map<String, String> insertCart(Map<String, Object> paramMap) throws Exception {
+	logger.info("+ Start " + className + ".insertCart");
+	  
+	String result = "";
+	String resultMsg = "";
+	  
+	logger.info("====== 기업고객이 장바구니에 담습니다. ======");
+	int insertCartResult = OrderDao.insertCart(paramMap);
+	
+	if (insertCartResult == 1) {
+		result = "SUCCESS";
+		resultMsg = "상품을 장바구니에 담았습니다.";
+	} else {
+		result = "FAIL";
+		resultMsg = "상품 담기에 실패하였습니다.";
+	}
+	
+	Map<String, String> resultMap = new HashMap<String, String>();
+	resultMap.put("result", result);
+	resultMap.put("resultMsg", resultMsg);
+
+	logger.info("+ end " + className + ".insertCart");
+    return resultMap;
+  }
 }
