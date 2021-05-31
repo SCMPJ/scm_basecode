@@ -15,7 +15,7 @@
 	flex-direction: column;
 }
 
-img {
+.product_img {
 	width: 200px;
 	height: 150px;
 }
@@ -48,4 +48,21 @@ textarea {
 label {
     display: block;
     margin-bottom: 10px;
+}
+
+.orderBtn {
+	color: white;
+	width: 80px;
+	height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	margin-right: 5px;
+	padding-right: 10px;
+	padding-top: 7px;
+}
+
+.button_box {
+	margin-top: 10px;
 }

@@ -10,7 +10,7 @@
 	<c:set var="nRow" value="${pageSize*(currentPageProduct-1)}" />
 	<c:forEach items="${productListModel}" var="list">
 		<div class="product_container-big">
-			<img style="height: 200px;" src="http://img.danawa.com/prod_img/500000/135/584/img/12584135_1.jpg?shrink=360:360&_v=20201030144612" />
+			<img class="product_img" style="height: 200px;" src="http://img.danawa.com/prod_img/500000/135/584/img/12584135_1.jpg?shrink=360:360&_v=20201030144612" />
 			<div class="product_container">
 				<div class="product_box">
 					<span>제품명</span>
@@ -36,9 +36,9 @@
 					<span>수량</span>
 					<input type="number" name="${list.product_cd}Count" value="0" min="0"/>
 				</div>
-				<div class="product_box">
-					<a href="javascript:purchaseItem('${list.product_cd}')" class="btnType blue">구매하기</a>
-					<a href="javascript:putToCartList('${list.product_cd}')" class="btnType">장바구니</a>
+				<div class="product_box button_box">
+					<a href="javascript:purchaseItem('${list.product_cd}')" class="btnType blue orderBtn">구매하기</a>
+					<a href="javascript:putToCartList('${list.product_cd}')" class="btnType orderBtn">장바구니</a>
 				</div>
 			</div>
 		</div>
