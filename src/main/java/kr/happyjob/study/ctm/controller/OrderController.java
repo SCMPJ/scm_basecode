@@ -89,4 +89,28 @@ public class OrderController {
 	return resultMap;
 	
   }
+  
+  // 주문페이지에서 한 품목을 장바구니 담기 하였을 때 실행  
+  @RequestMapping("sendItemToCart.do")
+  @ResponseBody
+  public Map<String, String> sendItemToCart(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception {
+  
+	logger.info("+ Start" + className + ".sendItemToCart");
+	
+	String loginId = (String) session.getAttribute("loginId");
+	
+	paramMap.put("loginId", loginId); // 로그인 아이디, 기업고객 아이디 가져올 때 쓰임
+	logger.info("paramMap:" + paramMap);
+	
+	int productCount = Integer.parseInt((String) paramMap.get("productCount"));
+	paramMap.put("productCount", productCount);
+			
+	Map<String, String> resultMap = orderService.insertCart(paramMap);
+	
+	logger.info("+ end " + className + ".sendItemToCart");
+	
+	return resultMap;
+	
+  }
 }
