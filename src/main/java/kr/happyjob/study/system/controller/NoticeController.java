@@ -83,18 +83,13 @@ public class NoticeController {
 	  
 	  // 권한 설명
 	  // 0(전체)
-	  // 1(고객)
-	  // 2(직원) >> E = SCM, F = PCS, F = DLV 
+	  // 1(직원)  E = SCM, F = PCS, F = DLV 
 	  int auth;
 	  
 	  switch(userType) {
 	    case "E" :
 	    case "F" :
-	    case "G" :
-	      auth = 2;
-	      break;
-	      
-	    case "J" :
+      case "G" :
 	      auth = 1;
 	      break;
 	      

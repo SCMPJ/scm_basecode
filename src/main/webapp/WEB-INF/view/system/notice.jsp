@@ -752,8 +752,7 @@
                 <th scope="row" class="auth_block">열람권한</th>
                 <td colspan="3"><select class="auth_block" id="notice_auth">
                     <option value="0">전체</option>
-                    <option value="1">고객</option>
-                    <option value="2">직원</option>
+                    <option value="1">직원</option>
                 </select> <c:if test="${sessionScope.userType == 'E'}">
                     <div class="btn-group">
                       <button class="btn-default btn-sm" id="write_button">저장</button>
