@@ -11,13 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import kr.happyjob.study.common.comnUtils.FileUtilCho;
 import kr.happyjob.study.scm.dao.MainProductInfoDao;
 import kr.happyjob.study.scm.model.GetWarehouseModel;
 import kr.happyjob.study.scm.model.MainProductInfoModel;
 import kr.happyjob.study.scm.model.MainProductModalModel;
-import kr.happyjob.study.common.comnUtils.FileUtil;
-import kr.happyjob.study.common.comnUtils.FileUtilCho;
-import kr.happyjob.study.common.comnUtils.FileUtilModel;
 
 @Service
 public class MainProductInfoServiceImpl implements MainProductInfoService {
@@ -81,8 +79,8 @@ public class MainProductInfoServiceImpl implements MainProductInfoService {
     FileUtilCho fileUtilCho = new FileUtilCho(mpRequest, rootPath, itemFilePath);
     Map<String, Object> listFileUtilModel = fileUtilCho.uploadFiles();
     
-    
-    String logicalpath = File.separator + productPath + File.separator + listFileUtilModel.get("file_nm");
+    String delimiter = "/";
+    String logicalpath = delimiter + productPath + delimiter + listFileUtilModel.get("file_nm");
     listFileUtilModel.put("logi", logicalpath);
     
     paramMap.put("file", listFileUtilModel);

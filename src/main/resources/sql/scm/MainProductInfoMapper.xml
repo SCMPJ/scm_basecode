@@ -125,7 +125,7 @@ WHERE  PD.product_cd = #{product_cd}
                   )
           SELECT  MAX(file_no)+1, 
                   #{file.file_loc}, 
-                  #{file.logicalpath}, 
+                  #{file.logi}, 
                   #{file.file_nm}, 
                   #{file.file_size},
                   #{product_cd}
