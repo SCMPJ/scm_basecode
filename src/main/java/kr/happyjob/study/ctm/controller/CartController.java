@@ -1,10 +1,10 @@
 package kr.happyjob.study.ctm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.common.uuidgenerator.Generator;
 import kr.happyjob.study.ctm.model.CartModel;
 import kr.happyjob.study.ctm.service.CartService;
 
@@ -95,6 +96,8 @@ public class CartController {
 			  HttpServletResponse response, HttpSession session) throws Exception {
 	    
 	    logger.info("+ Start " + className + ".deleteCartItem");
+	    paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+		   
 	    logger.info("   - paramMap : " + paramMap);
 	    
 	    String result = "SUCCESS";
@@ -145,31 +148,71 @@ public class CartController {
 			  HttpServletResponse response, HttpSession session) throws Exception {
 	    
 	    logger.info("+ Start " + className + ".orderCartItem");
+	    
+	    paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+	    
 	    logger.info("   - paramMap : " + paramMap);
+
+	    String oResult = "SUCCESS";
+	    String oResultMsg = "해당 상품 주문 되었습니다.";
+	    String dResult = "SUCCESS";
+	    String dResultMsg = "해당 상품 삭제 되었습니다.";
 	    
-	    int checkCnt =  Integer.parseInt((String)paramMap.get("checkCnt"));
-		
-		String cartOrderListPdcdArr = (String) paramMap.get("cartOrderListPdcdArr");
-		String[] cartOrderListPdcdArray = cartOrderListPdcdArr.split(",");
-		
-		paramMap.put("checkCnt", checkCnt);
-		paramMap.put("pdcdarr", "cartOrderListPdcdArray");
-		paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+		ArrayList<Integer> checkMapperSuccessList = new ArrayList<Integer>(); 
 	    
-	    String result = "SUCCESS";
-	    String resultMsg = "주문 되었습니다.";
+	    paramMap.forEach((key, value) -> {
+	    	System.out.println(String.format("key -> %s, value -> %s",  key, value));
+	    	if (key.substring(0, 3).equals("PRO")) {
+	    		paramMap.put("code", key.substring(7));
+	    		paramMap.put("qty", value);
+	    		
+	    		Generator generator = new Generator();
+	    		String uuid = generator.uuidGenerator();
+	    		
+	    		paramMap.put("uuid", uuid);
+	    		
+	    		try {
+					int orderResult = CartService.orderCartItem(paramMap);
+					checkMapperSuccessList.add(orderResult);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    		
+	    		try {
+					int deleteResult = CartService.deleteOrderedCartItem(paramMap);
+					checkMapperSuccessList.add(deleteResult);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	} else {
+	    		return;
+	    	}
+	    });
 	    
-	    // 장바구니 주문
-	    CartService.orderCartItem(paramMap);
+//	    int checkCnt =  Integer.parseInt((String)paramMap.get("checkCnt"));
+//		
+//		String cartOrderListPdcdArr = (String) paramMap.get("cartOrderListPdcdArr");
+//		String[] cartOrderListPdcdArray = cartOrderListPdcdArr.split(",");
+//		
+//		paramMap.put("checkCnt", checkCnt);
+//		paramMap.put("pdcdarr", "cartOrderListPdcdArray");
+//		paramMap.put("loginID", (String) session.getAttribute("loginId")); // 로그인 아이디
+//	    
+//	    // 장바구니 주문
+//	    CartService.orderCartItem(paramMap);
+	    
 	    
 	    Map<String, Object> resultMap = new HashMap<String, Object>();
-	    resultMap.put("result", result);
-	    resultMap.put("resultMsg", resultMsg);
+	    resultMap.put("oResult", oResult);
+	    resultMap.put("oResultMsg", oResultMsg);
+	    resultMap.put("dResult", dResult);
+	    resultMap.put("dResultMsg", dResultMsg);
 	    
+	    logger.info("Order & Delete CheckList: " + checkMapperSuccessList);
 	    logger.info("+ End " + className + ".orderCartItem");
 	    
 	    return resultMap;
 	  }
-	
-
 }
