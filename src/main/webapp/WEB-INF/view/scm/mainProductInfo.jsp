@@ -133,7 +133,7 @@
       gfModalPop("#layer1")
       fInitFormMainProduct(data.mainProductInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
    
@@ -263,11 +263,11 @@ function numberWithCommas(x) {
       currentPage = $("#currentPageMainProduct").val();
     }
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fListMainProduct(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
     fInitFormMainProduct();
   }
@@ -388,7 +388,7 @@ function numberWithCommas(x) {
       gfModalPop("#prodInfo")
       fInitFormMainProductModal(data.mainProductModalModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   /* 제품 상세정보 폼 초기화*/

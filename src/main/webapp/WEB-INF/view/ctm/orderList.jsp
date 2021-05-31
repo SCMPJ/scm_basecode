@@ -47,17 +47,17 @@
   
   //입금대기 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
   function fnotYetDeposit() {
-    alert("아직 입금이 완료되지 않았습니다.");
+    swal("아직 입금이 완료되지 않았습니다.");
     return;
   };
   //입금완료~배송준비 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
   function fYetDelivery() {
-    alert("배송 준비중입니다.");
+    swal("배송 준비중입니다.");
     return;
   };
   //배송중 상태일때 반품,확인 버튼 클릭할 때 나타나는 경고창
   function fNowDelivery() {
-    alert("배송중입니다.");
+    swal("배송중입니다.");
     return;
   };
 
@@ -115,7 +115,7 @@
       gfModalPop("#layerRefund")
       fInitFormRefund(data.refundInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
 
@@ -157,7 +157,7 @@
    callAjax("/ctm/submitRefund.do", "post", "json", true, $("#myForm")
        .serialize(), resultCallback);
     } else {
-      alert("취소 하셨습니다.");
+      swal("취소 하셨습니다.");
     }
   }
     
@@ -165,11 +165,11 @@
   function fSubmitRefundResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fOrderHisList(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -196,7 +196,7 @@
       gfModalPop("#layerDeposit")
       fInitFormDeposit(data.depositInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
 
@@ -226,7 +226,7 @@
    callAjax("/ctm/submitDeposit.do", "post", "json", true, $("#myForm")
        .serialize(), resultCallback);
     } else {
-      alert("취소 하셨습니다.");
+      swal("취소 하셨습니다.");
     }
   }
     
@@ -234,11 +234,11 @@
   function fSubmitDepositResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fOrderHisList(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
@@ -265,7 +265,7 @@
       gfModalPop("#layerConfirm")
       fInitFormConfirm(data.confirmInfoModel);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
 
@@ -303,7 +303,7 @@
    callAjax("/ctm/submitConfirm.do", "post", "json", true, $("#myForm")
        .serialize(), resultCallback);
     } else {
-      alert("취소 하셨습니다.");
+      swal("취소 하셨습니다.");
     }
   }
     
@@ -311,11 +311,11 @@
   function fSubmitConfirmResult(data) {
     var currentPage = "1";
     if (data.result == "SUCCESS") {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
       gfCloseModal();
       fOrderHisList(currentPage);
     } else {
-      alert(data.resultMsg);
+      swal(data.resultMsg);
     }
   }
   
