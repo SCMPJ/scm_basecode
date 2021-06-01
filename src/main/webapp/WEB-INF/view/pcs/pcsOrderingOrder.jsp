@@ -218,17 +218,17 @@
     $("#mCtNm2").text(m_ct_nm);
     $("#purchQty2").text(purch_qty);
     $("#purchasePrice2").text(numberWithCommas(purchase_price));
+    $("#warehouseNm2").text(warehouse_nm);
     // 날짜 타입 변환
-    var date1 = purch_date.substr(0, 10);
+/*     var date1 = purch_date.substr(0, 10);
     var date2 = purch_date.substr(24, 29);
     purch_date = date1 + ',' + date2;
-    $("#purchaseDate2").text(formatDate(purch_date));
+    $("#purchaseDate2").text(purch_date ? formatDate(purch_date) : "아직 값을 입력받지 못했습니다.");
     var date3 = desired_delivery_date.substr(0, 10);
     var date4 = desired_delivery_date.substr(24, 29);
     desired_delivery_date = date3 + ',' + date4;
-    $("#desiredDeliveryDate2").text(formatDate(desired_delivery_date));
-    $("#warehouseNm2").text(warehouse_nm);
-    $("#purchMngId2").text(purch_mng_id);
+    $("#desiredDeliveryDate2").text(desired_delivery_date ? formatDate(desired_delivery_date) : "아직 값을 입력받지 못했습니다."); */
+    //$("#purchMngId2").text(purch_mng_id ? purch_mng_id : "아직 값을 입력받지 못했습니다.");
     
     gfModalPop("#layer2");
   }
@@ -522,22 +522,22 @@
                                 <th scope="row">금액</th>
                                 <td id="purchasePrice2"></td>
                             </tr>
-                            <tr>
+<!--                             <tr>
                                 <th scope="row">발주날짜</th>
                                 <td id="purchaseDate2"></td>
                             </tr>
                             <tr>
                                 <th scope="row">배송희망날짜</th>
                                 <td id="desiredDeliveryDate2"></td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <th scope="row">창고명</th>
                                 <td id="warehouseNm2"></td>
                             </tr>
-                            <tr>
+<!--                             <tr>
                                 <th scope="row">담당자</th>
                                 <td id="purchMngId2"></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                     <!-- e : 여기에 내용입력 -->
