@@ -193,7 +193,16 @@
   <insert id="insertAmt">
   
    INSERT INTO tb_acc_slip(slip_no, account_cd, detail_account_cd, occur_date, order_cd, amt, direct_id, client_cd) 
-         VALUES ((SELECT IFNULL(MAX(slip_no) + 1, 1) FROM tb_acc_slip  t1),'A100', '101', now(), #{order_cd}, #{return_price}, #{direct_id}, #{supply_cd})
+         VALUES (
+                 (SELECT IFNULL(MAX(slip_no) + 1, 1) FROM tb_acc_slip  t1),
+                 'A100',
+                 '101', 
+                 now(), 
+                 #{order_cd}, 
+                 -1 *  #{return_price}, 
+                 #{direct_id}, 
+                 #{supply_cd}
+                 )
 
   </insert>
    

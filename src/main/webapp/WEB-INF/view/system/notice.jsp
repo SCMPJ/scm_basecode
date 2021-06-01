@@ -142,6 +142,7 @@
     $('#delete_file_button').click(function() {
       $('#delete_file_button').hide();
       $('#file_path').val('');
+      console.log('파일경로삭제',$('#file_path').val())
     })
 
     // onload 끝
@@ -175,7 +176,6 @@
     var resultCallback = function(result) {
       selectListCallBack(result, currentPage);
     };
-    console.log('//', param)
     callAjax("/system/notice.do", "post", "text", true, param, resultCallback);
   }
 
@@ -209,11 +209,11 @@
     var content = $('#notice_content').val();
     var auth = $('#notice_auth').val();
 
-    if (title == '') {
+    if (!title) {
       swal('제목을  입력해주세요');
       $('#notice_title').focus();
       return false;
-    } else if (content == '') {
+    } else if (!content) {
       swal('내용을  입력해주세요');
       $('#notice_content').focus();
       return false;
@@ -393,56 +393,43 @@
       // 기존 첨부파일 유무 확인
       var file_no = $('#file_no').val();
       var file_name = $('#file_name').val();
-      //이걸 이동해보자
-      //fileData.append('file_no', file_no);
       fileData.append('file_nm', file_name);
       
       // 기존 첨부파일 삭제 여부 확인
       var file_path = $('#file_path').val();
-      console.log('파일경로!',file_path)
       
       // 첨부 파일 변경, 추가 여부 확인
       var modifiedFile = document.getElementById('upload_modify_file').files[0];
-      //var uploadModifyFile = document.getElementById("upload_modify_file")
+      console.log('첨부파일여부확인', modifiedFile)
       
       // file_no이 null이면 원본 글에  파일 없음
       if(!file_no && !modifiedFile) { // 첨부파일이 없던 글이,글만 수정되는 경우
-        console.log('글만수정, 파일없음') 
+        console.log('첨부파일없음글만수정')
         var isFile = 'noFile';
-         fileData.append('file_no', 0);
-         fileData.append('noFile', isFile);
+        // 첨부파일이 없던 글은 file_no을 추가해 주어야 함(서버 에러 방지 및 식별용)
+        fileData.append('noFile', isFile);
+        fileData.append('file_no', 0);
+      }
+      else if (file_no && !file_path) {
+        console.log('파일경로확인', file_path);
+        fileData.append('deleted', 'file_deleted');
+        fileData.append('file_no', file_no);
+        fileData.append('file_nm', file_name);
       }
       else if(file_no && !modifiedFile) {
         // 첨부파일이 있던 글이, 글만 수정되는 경우
-         fileData.append('file_no', file_no);
+        console.log('첨부파일있음글만수정')
          fileData.append('noFile', isFile);
-        
+         fileData.append('file_no', file_no);
       }
       else if(!file_no && modifiedFile) {// 첨부파일 신규 등록
-        // 첨부파일 업로드 과정        
-        // 컨트롤러에서 이것을 처리하는 로직이 없음
-        console.log('추가!')
-        console.log('기존글파일신규등록, 파일번호 확인', file_no );
-        console.log('기존글파일신규등록', 'file', modifiedFile );
-        
-        fileData.append('file_no', 0);
         fileData.append('added', 'addedFile');
+        fileData.append('file_no', 0);
         fileData.append('file', modifiedFile);
       }
-      else if (file_no && !file_path) {
-        
-          console.log('삭제!file_nm확인 ')
-          console.log('삭제!file_no ', file_no)
-          fileData.append('file_no', file_no);
-          fileData.append('file_nm', file_name);
-          fileData.append('deleted', 'file_deleted');
-      }
       else if (file_no && modifiedFile) { // 글 수정 + 파일 수정/추가
-        console.log('이게호출되야 하는데?', modifiedFile)  
-        //var uploadModifyFile = document.getElementById("upload_modify_file")
-        // 파일 수정을 알리는 식별문자 
-        fileData.append('file_no', file_no);
         fileData.append('modified','file_modified');
+        fileData.append('file_no', file_no);
         fileData.append('file', modifiedFile);
       }
 
@@ -456,7 +443,6 @@
         }
       }
 
-     // callAjax("/system/modifyNotice.do", "post", "text", true, param, resultCallback);
       callAjaxFileUploadSetFormData("/system/modifyNotice.do", "post", "json", true, fileData, resultCallback);
     }
   }
@@ -503,7 +489,6 @@
   function fadeInModal(identifier, notice_id) {
 
     if (identifier == 'w') {
-
       // 모달 변경
       swapModal(identifier);
       // 모달 초기화 & 값변경
@@ -512,25 +497,20 @@
       gfModalPop("#layer1");
 
     } else if (identifier == 'r') {
-
       swapModal(identifier);
-
       // 공지사항 모달 초기화
       initModal(identifier);
-
       // 공지사항 단건 조회
       selectDetail(notice_id, identifier);
-
     } else if (identifier == 'm') {
-
       // 수정은 단건 조회에서 불러온 데이터를 그대로 가지고
       // 모달만 변경시키면 된다.
       // 추가:글자수 카운팅 설정
       swapModal(identifier);
       var count = $('#notice_content').val().length;
       document.getElementById("count").innerHTML = count;
-
     }
+    
   }
 
   // initModal
@@ -539,14 +519,12 @@
     var title = $('#notice_title').val();
 
     if (identifier == 'w') {
-
       $('#notice_title').val('');
       $('#notice_content').val('');
-      // 파일 초기화 추가해야 함
       $('#uploadFile').val('');
       $('#notice_auth').val('0');
-
-    } else if (identifier == 'r') {
+    } 
+    else if (identifier == 'r') {
       console.log('단건조회', result)
       if (result) {
         $('#notice_id').val(result.notice_id);
@@ -578,6 +556,7 @@
         $('#upload_modify_file').val('');
       }
     }
+    
   }
 
   // 날짜검증

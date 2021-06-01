@@ -78,7 +78,6 @@ public class NoticeController {
 	  
 	  // 총 로우의 개수
 	  int totalCount;
-	  
 	  String userType = (String) session.getAttribute("userType");
 	  
 	  // 권한 설명
@@ -99,13 +98,10 @@ public class NoticeController {
 	  }
 	  
 	  param.put("auth", auth);
-	  
+	  System.out.println("파라미터확인" + param);
+	 // log.info("selectNotice - param:"+ param);
 	  // 검색어 유무 확인
-	  if(!param.containsKey("option")) {
-	    totalCount = noticeService.countNoticeList(auth);
-	  }
-	  else {
-	    
+	  if(param.containsKey("option")) {
 	    String option = (String) param.get("option");
       String keyword = (String) param.get("keyword");
       String formerDate = (String) param.get("formerDate");
@@ -117,7 +113,10 @@ public class NoticeController {
       param.put("latterDate", latterDate);
       
       totalCount = noticeService.countConditionList(param);
-	    
+	  }
+	  else {
+	    // 검색어가 없는 경우	    
+	    totalCount = noticeService.countNoticeList(auth);
 	  }
 	  
 	  List<NoticeModel> noticeList = noticeService.selectNoticeList(param); 
