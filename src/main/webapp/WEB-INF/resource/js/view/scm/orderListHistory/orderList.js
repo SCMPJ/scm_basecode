@@ -164,7 +164,7 @@ function purchaseMultiply() {
 
   $("#sumAmt").empty().append("합계 (원) : " + result.toLocaleString('ko-KR'));
   $("#sumAmt-han").empty().append(num2han(result) + "원");
-  $("input[name=purchaseCount").empty().val(cnt);
+  $("input[name=purchaseCount]").empty().val(cnt);
   $("input[name=totalAmount]").empty().val(result);
   return;
 }
