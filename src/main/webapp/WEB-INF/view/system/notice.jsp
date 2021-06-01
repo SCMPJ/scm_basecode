@@ -771,12 +771,18 @@
                 <td style="border-right: none;"><input type="file" class="inputTxt p100" id="upload_modify_file" accept="image/*" /></td>
                 <td style="border-left: none;"><button id="delete_file_button">첨부파일 삭제</button></td>
               <tr>
-              <tr>
-                <th scope="row" class="auth_block">열람권한</th>
-                <td colspan="3"><select class="auth_block" id="notice_auth">
+              <tr class="auth_block">
+                <th scope="row">열람권한</th>
+                <td colspan="3">
+                  <select class="auth_block" id="notice_auth">
                     <option value="0">전체</option>
                     <option value="1">직원</option>
-                </select> <c:if test="${sessionScope.userType == 'E'}">
+                  </select> 
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3" style="position:absolute; top:100%; left:35%; border-right:none;border-left:none">
+                  <c:if test="${sessionScope.userType == 'E'}">
                     <div class="btn-group">
                       <button class="btn-default btn-sm" id="write_button">저장</button>
                       <button class="btn-default btn-sm" id="modify_button">저장</button>
@@ -784,7 +790,8 @@
                       <button class="btn-default btn-sm" id="delete_button">삭제</button>
                       <button class="btn-default btn-sm" id="close_button">취소</button>
                     </div>
-                  </c:if></td>
+                  </c:if>
+                </td>
               </tr>
             </tbody>
           </table>
