@@ -92,7 +92,20 @@ public class MainProductInfoServiceImpl implements MainProductInfoService {
   
   // 제품정보 수정
   @Override
-  public int updateMainProduct(Map<String, Object> paramMap) throws Exception {
+  public int updateMainProduct(Map<String, Object> paramMap, HttpServletRequest request) throws Exception {
+    MultipartHttpServletRequest umpRequest = (MultipartHttpServletRequest)request;
+    
+    // 파일 저장  std_id = 작성자 id , hwk_id = 과제 id  
+    String itemFilePath = productPath + File.separator;
+    FileUtilCho fileUtilCho = new FileUtilCho(umpRequest, rootPath, itemFilePath);
+    Map<String, Object> listFileUtilModel = fileUtilCho.uploadFiles();
+    
+    String delimiter = "/";
+    String logicalpath = delimiter + productPath + delimiter + listFileUtilModel.get("file_nm");
+    listFileUtilModel.put("logi", logicalpath);
+    
+    paramMap.put("file", listFileUtilModel);
+    
     int ret = mainProductInfoDao.updateMainProduct(paramMap);
     return ret;
   };

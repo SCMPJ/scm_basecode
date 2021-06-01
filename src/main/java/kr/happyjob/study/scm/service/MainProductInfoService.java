@@ -28,7 +28,7 @@ public interface MainProductInfoService {
   public int insertMainProduct(Map<String, Object> paramMap, HttpServletRequest request) throws Exception;
   
   /* 제품정보 수정 */
-  public int updateMainProduct(Map<String, Object> paramMap) throws Exception;
+  public int updateMainProduct(Map<String, Object> paramMap, HttpServletRequest request) throws Exception;
   
   /* 제품정보 삭제 */
   public int deleteMainProduct(Map<String, Object> paramMap) throws Exception;
