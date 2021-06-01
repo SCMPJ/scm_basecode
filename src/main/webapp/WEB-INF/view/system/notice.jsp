@@ -85,27 +85,6 @@
       }
     });
 
-    /* 공지사항 검색 버튼 이벤트 */
-    $('#search_button').on('click', function() {
-      
-      isSearch = true;
-      var validate = validateDate(); 
-      
-      if (validate) {
-        
-        option = $('#option').val();
-        keyword = $('#keyword').val();
-        formerDate = $("#datetimepicker1").find("input").val();
-        latterDate = $("#datetimepicker3").find("input").val();
-      
-        selectList();
-      }
-      else {
-        return false;
-      }
-      //searchList();
-    });
-
     /* 공지사항 작성 모달 이벤트 */
     $('#write_modal_button').click(function() {
       var identifier = 'w';
@@ -144,6 +123,26 @@
       $('#file_path').val('');
       console.log('파일경로삭제',$('#file_path').val())
     })
+    
+     /* 공지사항 검색 버튼 이벤트 */
+    $('#search_button').on('click', function() {
+      
+      isSearch = true;
+      var validate = validateDate(); 
+      
+      if (validate) {
+        
+        option = $('#option').val();
+        keyword = $('#keyword').val();
+        formerDate = $("#datetimepicker1").find("input").val();
+        latterDate = $("#datetimepicker3").find("input").val();
+      
+        selectList();
+      }
+      else {
+        return false;
+      }
+    });
 
     // onload 끝
   });
@@ -153,6 +152,84 @@
   var formerDate;
   var latterDate;
   var isSearch;
+  
+  //날짜검증
+  function validateDate() {
+    
+    var validateFormerDate = $("#datetimepicker1").find('input').val();
+    var validateLatterDate = $("#datetimepicker3").find('input').val();
+    var currentPage = 1;
+    var delimiter = '-';
+    var today = new Date();
+
+    // JavsScript는 월이 0부터 시작하므로 +1
+    // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
+    today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
+    console.log('날짜검증',validateFormerDate)
+    
+    // 날짜가 2개 중 하나라도 설정되면 반드시 2개다 설정되어야 함
+    if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
+      swal('기간을 설정해 주세요');
+      return false;
+    } else if (validateFormerDate > validateLatterDate) {
+      swal('기간을 확인해 주세요');
+      return false;
+    } else if (validateFormerDate > today || validateLatterDate > today ) {
+      swal('오늘 이후는 검색할 수 없습니다');
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
+  // 이미지 파일 검증
+  function validateFile() {
+    
+    var imgFile = document.getElementById('uploadFile');
+    var fileForm = /(.*?)\.(jpg|jpeg|png|bmp)$/;
+    var maxSize = 5 * 1024 * 1024; 
+    var fileSize = imgFile.files[0].size;
+    var fileLength = imgFile.files[0].name.length;
+    var maxLength = 100;
+    
+    if(!imgFile.value.match(fileForm)) {
+      swal('이미지 파일만 업로드해 주세요');
+      return false;
+    }
+    else if(fileSize > maxSize) {
+      swal('파일은 5MB이하만 업로드 하실 수 있습니다');
+      return false;
+    }
+    else if(fileLength > maxLength) {
+      swal('파일명은 100자 이하만 가능합니다')
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  /* 공지사항 글 작성 null 체크 함수 */
+  // reqired가 동작하지 않아서 작성
+  function validateIsNull() {
+
+    // 제목, 내용이 입력되었는지 확인
+    var title = $('#notice_title').val();
+    var content = $('#notice_content').val();
+    var auth = $('#notice_auth').val();
+
+    if (!title) {
+      swal('제목을  입력해주세요');
+      $('#notice_title').focus();
+      return false;
+    } else if (!content) {
+      swal('내용을  입력해주세요');
+      $('#notice_content').focus();
+      return false;
+    } else {
+      return true;
+    }
+  }
   
  
   /* 공지사항 목록 조회 함수 */
@@ -199,28 +276,8 @@
     // 현재 페이지 설정
     $("#currentPageCod").val(currentPage);
   }
+  
 
-  /* 공지사항 글 작성 null 체크 함수 */
-  // reqired가 동작하지 않아서 작성
-  function validateIsNull() {
-
-    // 제목, 내용이 입력되었는지 확인
-    var title = $('#notice_title').val();
-    var content = $('#notice_content').val();
-    var auth = $('#notice_auth').val();
-
-    if (!title) {
-      swal('제목을  입력해주세요');
-      $('#notice_title').focus();
-      return false;
-    } else if (!content) {
-      swal('내용을  입력해주세요');
-      $('#notice_content').focus();
-      return false;
-    } else {
-      return true;
-    }
-  }
 
   /* 공지사항 글 작성 함수 */
   function writeNotice() {
@@ -510,7 +567,6 @@
       var count = $('#notice_content').val().length;
       document.getElementById("count").innerHTML = count;
     }
-    
   }
 
   // initModal
@@ -556,64 +612,8 @@
         $('#upload_modify_file').val('');
       }
     }
-    
-  }
-
-  // 날짜검증
-  function validateDate() {
-    
-    var validateFormerDate = $("#datetimepicker1").find('input').val();
-    var validateLatterDate = $("#datetimepicker3").find('input').val();
-    var currentPage = 1;
-    var delimiter = '-';
-    var today = new Date();
-
-    // JavsScript는 월이 0부터 시작하므로 +1
-    // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
-    today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
-    console.log('날짜검증',validateFormerDate)
-    
-    // 날짜가 2개 중 하나라도 설정되면 반드시 2개다 설정되어야 함
-    if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
-      swal('기간을 설정해 주세요');
-      return false;
-    } else if (validateFormerDate > validateLatterDate) {
-      swal('기간을 확인해 주세요');
-      return false;
-    } else if (validateFormerDate > today || validateLatterDate > today ) {
-      swal('오늘 이후는 검색할 수 없습니다');
-      return false;
-    } else {
-      return true;
-    }
   }
   
-  // 이미지 파일 검증
-  function validateFile() {
-    
-    var imgFile = document.getElementById('uploadFile');
-    var fileForm = /(.*?)\.(jpg|jpeg|png|bmp)$/;
-    var maxSize = 5 * 1024 * 1024; 
-    var fileSize = imgFile.files[0].size;
-    var fileLength = imgFile.files[0].name.length;
-    var maxLength = 100;
-    
-    if(!imgFile.value.match(fileForm)) {
-      swal('이미지 파일만 업로드해 주세요');
-      return false;
-    }
-    else if(fileSize > maxSize) {
-      swal('파일은 5MB이하만 업로드 하실 수 있습니다');
-      return false;
-    }
-    else if(fileLength > maxLength) {
-      swal('파일명은 100자 이하만 가능합니다')
-      return false;
-    }
-    else {
-      return true;
-    }
-  }
 </script>
 </head>
 <body>
@@ -761,16 +761,10 @@
               </tr>
               <tr id="download_file">
                 <th scope="row">첨부파일</th>
-                <td style="border-right: none;">
-                  <input id="file_no" type="hidden">
-                  <input id="file_path" type="hidden">
-                  <input id="file_name" value="" readonly>
-                </td>
-                <td style="border-left: none;">
-                  <a class="btn" id="download" href="" download>
+                <td style="border-right: none;"><input id="file_no" type="hidden"> <input id="file_path" type="hidden"> <input id="file_name" value="" readonly></td>
+                <td style="border-left: none;"><a class="btn" id="download" href="" download>
                     <button class="btn-default btn-sm">다운로드</button>
-                   </a>
-                </td>
+                </a></td>
               <tr>
               <tr id="modify_file">
                 <th scope="row">첨부파일 변경</th>

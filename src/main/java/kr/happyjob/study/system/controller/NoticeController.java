@@ -36,7 +36,6 @@ public class NoticeController {
 	NoticeService noticeService;
 	
 	// 파일 업로드에 사용 될 property
-	
 	// 물리경로(상위)
 	@Value("${fileUpload.rootPath}")
 	private String rootPath;
@@ -212,12 +211,9 @@ public class NoticeController {
 	  
 	  int result = 0;
 	  // 첨부파일이 없다가 새로 등록되는 경우는 신규등록과 같은 절차를 거쳐야 한다
-	  // 첨부파일이 없는 경우에는 file_no == 0
 	  int file_no = Integer.parseInt((String)param.get("file_no"));
 	  int notice_id = Integer.parseInt((String)param.get("notice_id"));
 	  String file_nm = (String)param.get("file_nm");
-	  
-	  System.out.println("file_no확인" + file_no);
 	  
 	  // 첨부파일의 존재유무 확인
 	  if(param.containsKey("noFile")) { // 글만 수정되는 경우
@@ -240,34 +236,28 @@ public class NoticeController {
 	    fileUtil.deleteFiles(param);
 	    if(deleteResult == 1) {
   	    if (file_nm != null && !"".equals(file_nm)) {
-         //File file = new File(rootFilePath + file_nm);
   	      File file = new File(imgPath + file_nm);
           File folder = new File(imgPath);
           if (file.exists()) file.delete();
           if (folder.exists()) folder.delete();
-          //
+          
           result = 1;
         }
 	    }
 	  }
 	  else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
 	    // 첨부파일 신규등록 || 첨부파일 수정
-      // 파일 업로드(공통과정)
-	    System.out.println("파일업로드 또는 수정");
+	    
 	    // 기존 파일 번호
 	    int formerFileNo = file_no;
 	    
 	    // 신규파일 등록을 위한 파일번호
 	    file_no = noticeService.selectFileNo();
-      System.out.println("새로저장할파일번호" + file_no);
 	    
-	    // 여길 바꿔보자
 	    String imgPath =  noticePath + File.separator + file_no + File.separator;
 	    FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
-//	    fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
-	    // 여기에서 오류 발생
-	    // 기존 파일 번호를 사용하여 폴더에 저장하고 있음
-      Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
+      
+	    Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
       
       String delimiter = "/";
       String file_ofname = (String) fileUtilModel.get("file_nm");
@@ -300,13 +290,11 @@ public class NoticeController {
           // 물리경로에서 파일 삭제
           if(deleteResult == 1) {
             if (file_nm != null && !"".equals(file_nm)) {
-              //File file = new File(rootFilePath + file_nm);
               File file = new File(imgPath + file_nm);
-              //폴더삭제코드 추가
               File folder = new File(imgPath);
               if (file.exists()) file.delete();
               if (folder.exists()) folder.delete();
-              //
+              
               result = 1;
             }
           }
@@ -323,13 +311,7 @@ public class NoticeController {
 	public int deleteNotice(@RequestParam Map<String, Object> param) throws Exception {
 	  System.out.println("글삭제호출!!" + param);
 	  
-	  //****
-	  // 글삭제할 때는 form이 아니어도 됨
-	  // 삭제할 파일 번호(file_no), file_name만 있으면 됨
-	  
-	  int result =0;
-	  
-	  // result가  아니여야 함
+	  int result = 0;
 	  int noticeResult = noticeService.deleteNotice(param);
 	  
 	  if(noticeResult == 1) {
@@ -349,11 +331,7 @@ public class NoticeController {
           if (folder.exists()) folder.delete();
       }
       result = 1;
-      return result;
 	  }
-	  
-	  
 	  return result;
 	}
-	
 }
