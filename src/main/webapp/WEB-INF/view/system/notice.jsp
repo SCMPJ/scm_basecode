@@ -460,7 +460,6 @@
       console.log('수정함수공통호출,첨부파일여부확인', modifiedFile)
       
       // file_no이 null이면 원본 글에  파일 없음
-      
       if (file_no && !file_path && !modifiedFile) {
         fileData.append('deleted', 'file_deleted');
         fileData.append('file_no', file_no);
