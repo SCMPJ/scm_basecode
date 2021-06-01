@@ -457,27 +457,20 @@
       
       // 첨부 파일 변경, 추가 여부 확인
       var modifiedFile = document.getElementById('upload_modify_file').files[0];
-      console.log('첨부파일여부확인', modifiedFile)
+      console.log('수정함수공통호출,첨부파일여부확인', modifiedFile)
       
       // file_no이 null이면 원본 글에  파일 없음
-      if(!file_no && !modifiedFile) { // 첨부파일이 없던 글이,글만 수정되는 경우
-        console.log('첨부파일없음글만수정')
-        var isFile = 'noFile';
-        // 첨부파일이 없던 글은 file_no을 추가해 주어야 함(서버 에러 방지 및 식별용)
-        fileData.append('noFile', isFile);
-        fileData.append('file_no', 0);
-      }
-      else if (file_no && !file_path) {
-        console.log('파일경로확인', file_path);
+      
+      if (file_no && !file_path && !modifiedFile) {
         fileData.append('deleted', 'file_deleted');
         fileData.append('file_no', file_no);
         fileData.append('file_nm', file_name);
       }
-      else if(file_no && !modifiedFile) {
-        // 첨부파일이 있던 글이, 글만 수정되는 경우
-        console.log('첨부파일있음글만수정')
-         fileData.append('noFile', isFile);
-         fileData.append('file_no', file_no);
+      else if ((!file_no && !modifiedFile) || (file_no && !modifiedFile)) { // 첨부파일이 없던 글이,글만 수정되는 경우
+        var isFile = 'noFile';
+        // 첨부파일이 없던 글은 file_no을 추가해 주어야 함(서버 에러 방지 및 식별용)
+        fileData.append('noFile', isFile);
+        fileData.append('file_no', 0);
       }
       else if(!file_no && modifiedFile) {// 첨부파일 신규 등록
         fileData.append('added', 'addedFile');
@@ -563,7 +556,9 @@
       // 수정은 단건 조회에서 불러온 데이터를 그대로 가지고
       // 모달만 변경시키면 된다.
       // 추가:글자수 카운팅 설정
+      console.log('이건호출..?',identifier)
       swapModal(identifier);
+      initModal(identifier);
       var count = $('#notice_content').val().length;
       document.getElementById("count").innerHTML = count;
     }
@@ -599,18 +594,15 @@
           $('#file_path').val(result.file_relative_path);
         }
         else {
-          $('#download_file').hide();
+            $('#file_no').val('');
+            $('#download_file').hide();
         }
-      } else { // 수정모달
-        $('#notice_id').val('');
-        $('#notice_title').val('');
-        $('#notice_date').text('');
-        $('#notice_content').val('');
-        $('#notice_auth').val('0');
-        $('#file_name').val('');
-        $('#download_file').hide();
-        $('#upload_modify_file').val('');
-      }
+      } 
+    }
+    else if (identifier == 'm') { // 수정모달
+      console.log('수정모달호출')
+      $('#upload_modify_file').val('');
+      $('#download_file').hide();
     }
   }
   
@@ -722,6 +714,7 @@
     </div>
     <!-- 공지사항 모달 시작-->
     <div id="layer1" class="layerPop layerType2" style="width: 600px;">
+      <input type="hidden" id="notice_id">
       <dl>
         <dt id="dt_write">
           <strong>글쓰기</strong>
@@ -738,7 +731,6 @@
               <col width="120px">
               <col width="*">
             </colgroup>
-            <input type="hidden" id="notice_id">
             <tbody>
               <tr>
                 <th scope="row">제목</th>

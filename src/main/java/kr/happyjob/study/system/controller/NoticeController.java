@@ -97,7 +97,6 @@ public class NoticeController {
 	  }
 	  
 	  param.put("auth", auth);
-	  System.out.println("파라미터확인" + param);
 	 // log.info("selectNotice - param:"+ param);
 	  // 검색어 유무 확인
 	  if(param.containsKey("option")) {
@@ -139,8 +138,6 @@ public class NoticeController {
 	  int auth = Integer.parseInt((String) param.get("auth"));
 	  
 	  param.put("auth", auth);
-	  
-	  System.out.println("수정할파라미터확인" + param);
 	  
 	  int result = 0;
 	  
@@ -205,32 +202,31 @@ public class NoticeController {
 	@RequestMapping(value="modifyNotice.do", method=RequestMethod.POST)
 	public int updateNotice(@RequestParam Map<String, Object> param, HttpServletRequest request) throws Exception {
 	  MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
-	  System.out.println("파라미터확인" + param);
 	  int auth = Integer.parseInt((String)param.get("auth"));
 	  param.put("auth", auth);
 	  
 	  int result = 0;
 	  // 첨부파일이 없다가 새로 등록되는 경우는 신규등록과 같은 절차를 거쳐야 한다
-	  int file_no = Integer.parseInt((String)param.get("file_no"));
+	  int file_no;
 	  int notice_id = Integer.parseInt((String)param.get("notice_id"));
 	  String file_nm = (String)param.get("file_nm");
 	  
 	  // 첨부파일의 존재유무 확인
 	  if(param.containsKey("noFile")) { // 글만 수정되는 경우
-	    System.out.println("글만 수정");
 	    result = noticeService.updateNotice(param);
 	  }
 	  else if(param.containsKey("deleted")) {
 	    // 기존 첨부파일 삭제  + 글수정
-	    
-	    System.out.println("첨부파일삭제!");
-	    System.out.println("file_nm확인" + file_nm);
+	    file_no = Integer.parseInt((String)param.get("file_no"));
 	    
 	    String imgPath = rootPath + File.separator + noticePath + File.separator + file_no + File.separator;
 	    FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
 	    
+	    // 글 업데이트
+	    int updateResult = noticeService.updateNotice(param);
 	    // DB에서 파일 삭제
 	    int deleteResult = noticeService.deleteFile(file_no);
+	    
 	    
 	    // 물리경로에서 파일 삭제
 	    fileUtil.deleteFiles(param);
@@ -247,8 +243,8 @@ public class NoticeController {
 	  }
 	  else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
 	    // 첨부파일 신규등록 || 첨부파일 수정
-	    
 	    // 기존 파일 번호
+	    file_no = Integer.parseInt((String)param.get("file_no"));
 	    int formerFileNo = file_no;
 	    
 	    // 신규파일 등록을 위한 파일번호
@@ -284,7 +280,6 @@ public class NoticeController {
         if(formerFileNo != 0) {
           imgPath = rootPath + File.separator + noticePath + File.separator + formerFileNo + File.separator;
           //db에서 삭제
-          System.out.println("db에서삭제할 파일번호" + formerFileNo);
           int deleteResult = noticeService.deleteFile(formerFileNo);
           
           // 물리경로에서 파일 삭제
@@ -309,7 +304,6 @@ public class NoticeController {
 	@ResponseBody
 	@RequestMapping(value="deleteNotice.do", method=RequestMethod.POST)
 	public int deleteNotice(@RequestParam Map<String, Object> param) throws Exception {
-	  System.out.println("글삭제호출!!" + param);
 	  
 	  int result = 0;
 	  int noticeResult = noticeService.deleteNotice(param);
