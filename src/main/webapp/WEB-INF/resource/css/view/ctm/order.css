@@ -66,3 +66,7 @@ label {
 .button_box {
 	margin-top: 10px;
 }
+
+.tingle-modal-box__content h1 {
+	font-size: 20px;
+}
