@@ -253,7 +253,6 @@
                     <div class="input-group">
                       <select style="width: 90px; height: 34px;" id="options">
                         <option value="all" selected>전체</option>
-                        <option value="supply" id="supply">공급처명</option>
                         <option value="product" id="product">제품명</option>
                         <option value="category" id="category">상호명</option>
                       </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
