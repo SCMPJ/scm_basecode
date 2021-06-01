@@ -773,11 +773,12 @@
               <tr>
               <tr>
                 <th scope="row" class="auth_block">열람권한</th>
-                <td colspan="3"><select class="auth_block" id="notice_auth">
+                <td colspan="3">
+                <select class="auth_block" id="notice_auth">
                     <option value="0">전체</option>
                     <option value="1">직원</option>
                 </select> <c:if test="${sessionScope.userType == 'E'}">
-                    <div class="btn-group">
+                    <div class="btn-group" style="position: absolute; top: 82%;left: 35%;">
                       <button class="btn-default btn-sm" id="write_button">저장</button>
                       <button class="btn-default btn-sm" id="modify_button">저장</button>
                       <button class="btn-default btn-sm" id="modify_modal_button">수정</button>
