@@ -11,7 +11,7 @@
   // 페이징 설정
   var pageSize = 5;
   var pageBlock = 5;
-
+  
   /* OnLoad event */
   $(function() {
     // 공지사항 목록 조회
@@ -87,7 +87,23 @@
 
     /* 공지사항 검색 버튼 이벤트 */
     $('#search_button').on('click', function() {
-      selectList();
+      
+      isSearch = true;
+      var validate = validateDate(); 
+      
+      if (validate) {
+        
+        option = $('#option').val();
+        keyword = $('#keyword').val();
+        formerDate = $("#datetimepicker1").find("input").val();
+        latterDate = $("#datetimepicker3").find("input").val();
+      
+        selectList();
+      }
+      else {
+        return false;
+      }
+      //searchList();
     });
 
     /* 공지사항 작성 모달 이벤트 */
@@ -130,14 +146,17 @@
 
     // onload 끝
   });
-
+  
+  var option;
+  var keyword;
+  var formerDate;
+  var latterDate;
+  var isSearch;
+  
+ 
   /* 공지사항 목록 조회 함수 */
   function selectList(currentPage) {
     
-    var option = $('#options').val();
-    var keyword = $('#keyword').val();
-    var formerDate = $("#datetimepicker1").find("input").val();
-    var latterDate = $("#datetimepicker3").find("input").val();
     currentPage = currentPage || 1;
     
     // 검색조건이 없을 경우의 파라미터
@@ -146,22 +165,17 @@
         pageSize : pageSize
     };
     
-    if(keyword ||formerDate){
-      // 검색폼 검증
-     var validate = validateSearchForm(); 
-     // 검색조건이 있을 경우의 파라미터 추가
-     if(validate) {
+    if(isSearch){
         param.option = option;
-        param.keyword = keyword;
+        param.keyword = keyword.trim();
         param.formerDate = formerDate;
         param.latterDate = latterDate;
-     }
     }
     // 콜백
     var resultCallback = function(result) {
       selectListCallBack(result, currentPage);
     };
-
+    console.log('//', param)
     callAjax("/system/notice.do", "post", "text", true, param, resultCallback);
   }
 
@@ -208,7 +222,7 @@
     }
   }
 
-  /* 공지사항 글 작성  함수 */
+  /* 공지사항 글 작성 함수 */
   function writeNotice() {
     // 공지사항 글 작성 null 체크
     var validate = validateIsNull();
@@ -227,13 +241,21 @@
       fileData.append('content', content);
       fileData.append('auth', auth);
 
+      
       var uploadFile = document.getElementById("uploadFile").files[0];
       // 파일 첨부 여부를 판단하기 위한 변수
       var isFile = false;
      // fileData.append('file', uploadFile.files[0]);
      
       if(uploadFile) {
-        fileData.append('flie', uploadFile);
+        var validate = validateFile();
+        console.log('파일검증확인', validate);
+        if (validate) {
+          fileData.append('flie', uploadFile);
+        }
+        else {
+          return false;
+        }
       } else {
         fileData.append('isFile', isFile);
       }
@@ -521,6 +543,7 @@
       $('#notice_title').val('');
       $('#notice_content').val('');
       // 파일 초기화 추가해야 함
+      $('#uploadFile').val('');
       $('#notice_auth').val('0');
 
     } else if (identifier == 'r') {
@@ -540,12 +563,11 @@
           $('#file_name').val(result.file_ofname);
           $('#file_no').val(result.file_no);
           $('#file_path').val(result.file_relative_path);
-          console.log('대입확인',  $('#file_path').val())
         }
         else {
           $('#download_file').hide();
         }
-      } else {
+      } else { // 수정모달
         $('#notice_id').val('');
         $('#notice_title').val('');
         $('#notice_date').text('');
@@ -553,17 +575,16 @@
         $('#notice_auth').val('0');
         $('#file_name').val('');
         $('#download_file').hide();
+        $('#upload_modify_file').val('');
       }
     }
   }
 
-  // 검색폼 검증
-  function validateSearchForm() {
-
-    var option = $('#options').val();
-    var keyword = $('#keyword').val();
-    var formerDate = $("#datetimepicker1").find("input").val();
-    var latterDate = $("#datetimepicker3").find("input").val();
+  // 날짜검증
+  function validateDate() {
+    
+    var validateFormerDate = $("#datetimepicker1").find('input').val();
+    var validateLatterDate = $("#datetimepicker3").find('input').val();
     var currentPage = 1;
     var delimiter = '-';
     var today = new Date();
@@ -571,17 +592,46 @@
     // JavsScript는 월이 0부터 시작하므로 +1
     // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
     today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
+    console.log('날짜검증',validateFormerDate)
     
-    if (!formerDate || !latterDate) {
+    // 날짜가 2개 중 하나라도 설정되면 반드시 2개다 설정되어야 함
+    if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
       swal('기간을 설정해 주세요');
       return false;
-    } else if (formerDate > latterDate) {
+    } else if (validateFormerDate > validateLatterDate) {
       swal('기간을 확인해 주세요');
       return false;
-    } else if (formerDate > today || latterDate > today ) {
+    } else if (validateFormerDate > today || validateLatterDate > today ) {
       swal('오늘 이후는 검색할 수 없습니다');
       return false;
     } else {
+      return true;
+    }
+  }
+  
+  // 이미지 파일 검증
+  function validateFile() {
+    
+    var imgFile = document.getElementById('uploadFile');
+    var fileForm = /(.*?)\.(jpg|jpeg|png|bmp)$/;
+    var maxSize = 5 * 1024 * 1024; 
+    var fileSize = imgFile.files[0].size;
+    var fileLength = imgFile.files[0].name.length;
+    var maxLength = 100;
+    
+    if(!imgFile.value.match(fileForm)) {
+      swal('이미지 파일만 업로드해 주세요');
+      return false;
+    }
+    else if(fileSize > maxSize) {
+      swal('파일은 5MB이하만 업로드 하실 수 있습니다');
+      return false;
+    }
+    else if(fileLength > maxLength) {
+      swal('파일명은 100자 이하만 가능합니다')
+      return false;
+    }
+    else {
       return true;
     }
   }
@@ -616,7 +666,7 @@
                   <!-- searchbar -->
                   <div class="col-lg-6">
                     <div class="input-group">
-                      <select style="width: 90px; height: 34px;" id="options">
+                      <select style="width: 90px; height: 34px;" id="option">
                         <option value="all" selected>전체</option>
                         <option value="title" id="title">제목</option>
                         <option value="content" id="content">내용</option>
@@ -728,7 +778,7 @@
               </tr>
               <tr id="add_file">
                 <th scope="row">첨부파일</th>
-                <td colspan="3"><input type="file" class="inputTxt p100" id="uploadFile" accept++="image/*" /></td>
+                <td colspan="3"><input type="file" class="inputTxt p100" id="uploadFile" accept="image/*" /></td>
               </tr>
               <tr id="download_file">
                 <th scope="row">첨부파일</th>
