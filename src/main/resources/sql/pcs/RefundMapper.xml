@@ -186,7 +186,7 @@
                 '101', 
                 now(),
                 #{order_cd}, 
-                #{return_price}, 
+                -1 * #{return_price}, 
                 #{direct_id}, 
                 #{supply_cd}
                 )

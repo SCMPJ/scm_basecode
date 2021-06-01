@@ -37,5 +37,10 @@ public interface NoticeDao {
   // 파일 정보 업로드
   public int insertFile(Map<String, Object> param);
   
+  // 파일 수정
+  public int updateFile(Map<String, Object> param);
+  
+  // 파일 삭제
+  public int deleteFile(int file_no);
   
 }

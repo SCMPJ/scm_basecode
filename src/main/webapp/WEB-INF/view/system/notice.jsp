@@ -7,15 +7,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>JobKorea</title>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
   // 페이징 설정
   var pageSize = 5;
   var pageBlock = 5;
-
+  
   /* OnLoad event */
   $(function() {
-
     // 공지사항 목록 조회
     selectList();
 
@@ -87,11 +85,6 @@
       }
     });
 
-    /* 공지사항 검색 버튼 이벤트 */
-    $('#search_button').on('click', function() {
-      selectList();
-    });
-
     /* 공지사항 작성 모달 이벤트 */
     $('#write_modal_button').click(function() {
       var identifier = 'w';
@@ -127,48 +120,139 @@
     // 파일 삭제 버튼 이벤트
     $('#delete_file_button').click(function() {
       $('#delete_file_button').hide();
-      $('#file_name').val();
+      $('#file_path').val('');
+      console.log('파일경로삭제',$('#file_path').val())
     })
+    
+     /* 공지사항 검색 버튼 이벤트 */
+    $('#search_button').on('click', function() {
+      
+      isSearch = true;
+      var validate = validateDate(); 
+      
+      if (validate) {
+        
+        option = $('#option').val();
+        keyword = $('#keyword').val();
+        formerDate = $("#datetimepicker1").find("input").val();
+        latterDate = $("#datetimepicker3").find("input").val();
+      
+        selectList();
+      }
+      else {
+        return false;
+      }
+    });
 
     // onload 끝
   });
+  
+  var option;
+  var keyword;
+  var formerDate;
+  var latterDate;
+  var isSearch;
+  
+  //날짜검증
+  function validateDate() {
+    
+    var validateFormerDate = $("#datetimepicker1").find('input').val();
+    var validateLatterDate = $("#datetimepicker3").find('input').val();
+    var currentPage = 1;
+    var delimiter = '-';
+    var today = new Date();
 
+    // JavsScript는 월이 0부터 시작하므로 +1
+    // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
+    today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
+    console.log('날짜검증',validateFormerDate)
+    
+    // 날짜가 2개 중 하나라도 설정되면 반드시 2개다 설정되어야 함
+    if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
+      swal('기간을 설정해 주세요');
+      return false;
+    } else if (validateFormerDate > validateLatterDate) {
+      swal('기간을 확인해 주세요');
+      return false;
+    } else if (validateFormerDate > today || validateLatterDate > today ) {
+      swal('오늘 이후는 검색할 수 없습니다');
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
+  // 이미지 파일 검증
+  function validateFile() {
+    
+    var imgFile = document.getElementById('uploadFile');
+    var fileForm = /(.*?)\.(jpg|jpeg|png|bmp)$/;
+    var maxSize = 5 * 1024 * 1024; 
+    var fileSize = imgFile.files[0].size;
+    var fileLength = imgFile.files[0].name.length;
+    var maxLength = 100;
+    
+    if(!imgFile.value.match(fileForm)) {
+      swal('이미지 파일만 업로드해 주세요');
+      return false;
+    }
+    else if(fileSize > maxSize) {
+      swal('파일은 5MB이하만 업로드 하실 수 있습니다');
+      return false;
+    }
+    else if(fileLength > maxLength) {
+      swal('파일명은 100자 이하만 가능합니다')
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  /* 공지사항 글 작성 null 체크 함수 */
+  // reqired가 동작하지 않아서 작성
+  function validateIsNull() {
+
+    // 제목, 내용이 입력되었는지 확인
+    var title = $('#notice_title').val();
+    var content = $('#notice_content').val();
+    var auth = $('#notice_auth').val();
+
+    if (!title) {
+      swal('제목을  입력해주세요');
+      $('#notice_title').focus();
+      return false;
+    } else if (!content) {
+      swal('내용을  입력해주세요');
+      $('#notice_content').focus();
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
+ 
   /* 공지사항 목록 조회 함수 */
   function selectList(currentPage) {
     
-    var option = $('#options').val();
-    var keyword = $('#keyword').val();
-    var formerDate = $("#datetimepicker1").find("input").val();
-    var latterDate = $("#datetimepicker3").find("input").val();
     currentPage = currentPage || 1;
     
+    // 검색조건이 없을 경우의 파라미터
     var param = {
         currentPage : currentPage,
         pageSize : pageSize
     };
     
-    if(keyword ||formerDate){
-      console.log('키워드', keyword)
-     var validate = validateSearchForm(); 
-      console.log('validate', validate)
-     if(validate) {
-       console.log('...')
+    if(isSearch){
         param.option = option;
-        param.keyword = keyword;
+        param.keyword = keyword.trim();
         param.formerDate = formerDate;
         param.latterDate = latterDate;
-     }
-      
     }
-
-    console.log('파라미터 :', param);
     // 콜백
     var resultCallback = function(result) {
       selectListCallBack(result, currentPage);
     };
-
-    //Ajax실행 방식
-    //callAjax("Url",type,return,async or sync방식,넘겨준거,값,Callback함수 이름)
     callAjax("/system/notice.do", "post", "text", true, param, resultCallback);
   }
 
@@ -181,12 +265,6 @@
     // 신규 목록 생성
     $("#noticeList").append(result);
 
-    // 검색창 초기화
-    // 값을 초기화 하면 검색해온 결과 페이지가 넘어갈 때 초기화 되는 문제 발생
-    // val('')을 하면 안 되고 다른 방법으로 값을 가려야 할 것 같음
-    //$('#keyword').val('');
-    //$('#options').val('all');
-
     // 리스트 로우의 총 개수 추출
     var totalCount = $("#totalCount").val();
 
@@ -198,30 +276,10 @@
     // 현재 페이지 설정
     $("#currentPageCod").val(currentPage);
   }
+  
 
-  /* 공지사항 글 작성 null 체크 함수 */
-  // reqired가 동작하지 않아서 작성
-  function validateIsNull() {
 
-    // 제목, 내용이 입력되었는지 확인
-    var title = $('#notice_title').val();
-    var content = $('#notice_content').val();
-    var auth = $('#notice_auth').val();
-
-    if (title == '') {
-      swal('제목을  입력해주세요');
-      $('#notice_title').focus();
-      return false;
-    } else if (content == '') {
-      swal('내용을  입력해주세요');
-      $('#notice_content').focus();
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  /* 공지사항 글 작성  함수 */
+  /* 공지사항 글 작성 함수 */
   function writeNotice() {
     // 공지사항 글 작성 null 체크
     var validate = validateIsNull();
@@ -240,11 +298,26 @@
       fileData.append('content', content);
       fileData.append('auth', auth);
 
-      var uploadFile = document.getElementById("uploadFile")
-      fileData.append('file', uploadFile.files[0]);
-
+      
+      var uploadFile = document.getElementById("uploadFile").files[0];
+      // 파일 첨부 여부를 판단하기 위한 변수
+      var isFile = false;
+     // fileData.append('file', uploadFile.files[0]);
+     
+      if(uploadFile) {
+        var validate = validateFile();
+        console.log('파일검증확인', validate);
+        if (validate) {
+          fileData.append('flie', uploadFile);
+        }
+        else {
+          return false;
+        }
+      } else {
+        fileData.append('isFile', isFile);
+      }
+     
       // 콜백 함수
-      // 파일 업로드 관련해서 수정해야 함
       function resultCallback(result) {
 
         if (result == 1) {
@@ -265,9 +338,7 @@
   /* 공지사항 단건 조회 함수 */
   function selectDetail(notice_id, identifier) {
 
-    var param = notice_id;
-
-    param = {
+    var param = {
       notice_id : notice_id
     }
 
@@ -351,7 +422,7 @@
       var file = $('#file_name').val();
 
       if (!file) {
-        $('#modify_file').hide();
+        $('#delete_file_button').hide();
       }
     }
   }
@@ -367,44 +438,56 @@
       var content = $("#notice_content").val();
       var auth = $("#notice_auth").val();
       
-      param = {
-          notice_id : notice_id,
-          title : title,
-          content : content,
-          auth : auth,
-          }
+      var form = $("#myForm")[0];
+      form.enctype = 'multipart/form-data';
+      var fileData = new FormData(form);
+      
+      fileData.append('notice_id', notice_id);
+      fileData.append('title', title);
+      fileData.append('content', content);
+      fileData.append('auth', auth);
       
       // 기존 첨부파일 유무 확인
       var file_no = $('#file_no').val();
+      var file_name = $('#file_name').val();
+      fileData.append('file_nm', file_name);
       
-      // file_no이 0이면 파일 없음
-      if(file_no) {
-        
-        // 기존 첨부파일 삭제 여부 확인
-        var file = $('#file_name').val();
-        // 첨부 파일 변경 여부 확인
-        var modifiedFile = $('#upload_modify_file');
-        
-        if (file == '') {
-          // 서버에서 삭제 여부 판단 후 삭제 진행
-          param.file = file;
-        } 
-        else if (modifiedFile) {
-          // 파일이 변경되었을 경우 
-    
-          var form = $("#myForm")[0];
-          form.enctype = 'multipart/form-data';
-          var fileData = new FormData(form);
-    
-          // file에 데이터 추가
-          fileData.append('title', title);
-          fileData.append('content', content);
-          fileData.append('auth', auth);
-    
-          var uploadModifyFile = document.getElementById("upload_modify_file")
-          fileData.append('file', uploadModifyFile.files[0]);
-     
-        }
+      // 기존 첨부파일 삭제 여부 확인
+      var file_path = $('#file_path').val();
+      
+      // 첨부 파일 변경, 추가 여부 확인
+      var modifiedFile = document.getElementById('upload_modify_file').files[0];
+      console.log('첨부파일여부확인', modifiedFile)
+      
+      // file_no이 null이면 원본 글에  파일 없음
+      if(!file_no && !modifiedFile) { // 첨부파일이 없던 글이,글만 수정되는 경우
+        console.log('첨부파일없음글만수정')
+        var isFile = 'noFile';
+        // 첨부파일이 없던 글은 file_no을 추가해 주어야 함(서버 에러 방지 및 식별용)
+        fileData.append('noFile', isFile);
+        fileData.append('file_no', 0);
+      }
+      else if (file_no && !file_path) {
+        console.log('파일경로확인', file_path);
+        fileData.append('deleted', 'file_deleted');
+        fileData.append('file_no', file_no);
+        fileData.append('file_nm', file_name);
+      }
+      else if(file_no && !modifiedFile) {
+        // 첨부파일이 있던 글이, 글만 수정되는 경우
+        console.log('첨부파일있음글만수정')
+         fileData.append('noFile', isFile);
+         fileData.append('file_no', file_no);
+      }
+      else if(!file_no && modifiedFile) {// 첨부파일 신규 등록
+        fileData.append('added', 'addedFile');
+        fileData.append('file_no', 0);
+        fileData.append('file', modifiedFile);
+      }
+      else if (file_no && modifiedFile) { // 글 수정 + 파일 수정/추가
+        fileData.append('modified','file_modified');
+        fileData.append('file_no', file_no);
+        fileData.append('file', modifiedFile);
       }
 
       // 콜백
@@ -417,8 +500,7 @@
         }
       }
 
-     // callAjax("/system/modifyNotice.do", "post", "text", true, param, resultCallback);
-
+      callAjaxFileUploadSetFormData("/system/modifyNotice.do", "post", "json", true, fileData, resultCallback);
     }
   }
 
@@ -426,11 +508,21 @@
   function deleteNotice() {
     var isDelete = confirm('정말 삭제하시겠습니까?');
 
+    // file_no, file_nm
     // 삭제
     if (isDelete) {
       var notice_id = $('#notice_id').val();
+      var file_no = $('#file_no').val();
+      var file_nm = $('#file_name').val();
+      
+      if(!file_no) {
+        file_no = 0;
+      }
+      
       var param = {
-        notice_id : notice_id
+        notice_id : notice_id,
+        file_no : file_no,
+        file_nm : file_nm
       }
 
       // 콜백
@@ -454,7 +546,6 @@
   function fadeInModal(identifier, notice_id) {
 
     if (identifier == 'w') {
-
       // 모달 변경
       swapModal(identifier);
       // 모달 초기화 & 값변경
@@ -463,24 +554,18 @@
       gfModalPop("#layer1");
 
     } else if (identifier == 'r') {
-
       swapModal(identifier);
-
       // 공지사항 모달 초기화
       initModal(identifier);
-
       // 공지사항 단건 조회
       selectDetail(notice_id, identifier);
-
     } else if (identifier == 'm') {
-
       // 수정은 단건 조회에서 불러온 데이터를 그대로 가지고
       // 모달만 변경시키면 된다.
       // 추가:글자수 카운팅 설정
       swapModal(identifier);
       var count = $('#notice_content').val().length;
       document.getElementById("count").innerHTML = count;
-
     }
   }
 
@@ -490,13 +575,12 @@
     var title = $('#notice_title').val();
 
     if (identifier == 'w') {
-
       $('#notice_title').val('');
       $('#notice_content').val('');
-      // 파일 초기화 추가해야 함
+      $('#uploadFile').val('');
       $('#notice_auth').val('0');
-
-    } else if (identifier == 'r') {
+    } 
+    else if (identifier == 'r') {
       console.log('단건조회', result)
       if (result) {
         $('#notice_id').val(result.notice_id);
@@ -512,8 +596,12 @@
           $('#download').attr("href", result.file_relative_path);
           $('#file_name').val(result.file_ofname);
           $('#file_no').val(result.file_no);
+          $('#file_path').val(result.file_relative_path);
         }
-      } else {
+        else {
+          $('#download_file').hide();
+        }
+      } else { // 수정모달
         $('#notice_id').val('');
         $('#notice_title').val('');
         $('#notice_date').text('');
@@ -521,40 +609,11 @@
         $('#notice_auth').val('0');
         $('#file_name').val('');
         $('#download_file').hide();
+        $('#upload_modify_file').val('');
       }
     }
   }
-
-  // 검색폼 검증
-  function validateSearchForm() {
-
-    var option = $('#options').val();
-    var keyword = $('#keyword').val();
-    var formerDate = $("#datetimepicker1").find("input").val();
-    var latterDate = $("#datetimepicker3").find("input").val();
-    var currentPage = 1;
-    var today = new Date();
-
-    // JavsScript는 월이 0부터 시작하므로 +1
-    // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
-    today = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-    
-    if (formerDate && !latterDate) {
-      swal('기간을 설정해 주세요');
-      return false;
-    } else if (!formerDate && latterDate) {
-      swal('기간을 설정해 주세요');
-      return false;
-    } else if (formerDate > latterDate) {
-      swal('기간을 확인해 주세요');
-      return false;
-    } else if (latterDate > today) {
-      swal('오늘 이후는 검색할 수 없습니다');
-      return false;
-    } else {
-      return true;
-    }
-  }
+  
 </script>
 </head>
 <body>
@@ -586,7 +645,7 @@
                   <!-- searchbar -->
                   <div class="col-lg-6">
                     <div class="input-group">
-                      <select style="width: 90px; height: 34px;" id="options">
+                      <select style="width: 90px; height: 34px;" id="option">
                         <option value="all" selected>전체</option>
                         <option value="title" id="title">제목</option>
                         <option value="content" id="content">내용</option>
@@ -702,12 +761,10 @@
               </tr>
               <tr id="download_file">
                 <th scope="row">첨부파일</th>
-                <td style="border-right: none;">
-                  <input id="file_no" type="hidden">
-                  <input id="file_name" value="" readonly>
-                </td>
-                <td style="border-left: none;"><a class="btn" id="download" href="" download><button class="btn-default btn-sm">다운로드</button>
-                    </button></a></td>
+                <td style="border-right: none;"><input id="file_no" type="hidden"> <input id="file_path" type="hidden"> <input id="file_name" value="" readonly></td>
+                <td style="border-left: none;"><a class="btn" id="download" href="" download>
+                    <button class="btn-default btn-sm">다운로드</button>
+                </a></td>
               <tr>
               <tr id="modify_file">
                 <th scope="row">첨부파일 변경</th>
@@ -718,13 +775,10 @@
                 <th scope="row" class="auth_block">열람권한</th>
                 <td colspan="3"><select class="auth_block" id="notice_auth">
                     <option value="0">전체</option>
-                    <option value="1">고객</option>
-                    <option value="2">직원</option>
+                    <option value="1">직원</option>
                 </select> <c:if test="${sessionScope.userType == 'E'}">
                     <div class="btn-group">
-                      <!-- 공지사항 신규 작성 버튼 -->
                       <button class="btn-default btn-sm" id="write_button">저장</button>
-                      <!-- 공지사항 수정글 작성 버튼 -->
                       <button class="btn-default btn-sm" id="modify_button">저장</button>
                       <button class="btn-default btn-sm" id="modify_modal_button">수정</button>
                       <button class="btn-default btn-sm" id="delete_button">삭제</button>

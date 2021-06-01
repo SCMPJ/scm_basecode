@@ -36,7 +36,6 @@ public class NoticeServiceImpl implements NoticeService {
 	  return noticeDao.countConditionList(param);
 	}
 	
-	
   // 공지사항 단건 조회	
 	@Override
 	public NoticeModel selectNoticeDetail(int notice_id) throws Exception {
@@ -86,5 +85,20 @@ public class NoticeServiceImpl implements NoticeService {
     // TODO Auto-generated method stub
     return noticeDao.insertFile(param);
   }
+  
+  // 파일 수정
+  @Override
+  public int updateFile(Map<String, Object> param) throws Exception {
+    // TODO Auto-generated method stub
+    return noticeDao.updateFile(param);
+  }
+  
+  // 파일 삭제
+  @Override
+  public int deleteFile(int file_no) throws Exception {
+    // TODO Auto-generated method stub
+    return noticeDao.deleteFile(file_no);
+  }
+
   
 }

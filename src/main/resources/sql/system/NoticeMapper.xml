@@ -22,13 +22,18 @@
           <if test="formerDate!= ''">
             AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
           </if>
-          
         </when>
         <when test="option eq 'title'.toString()">
           AND title LIKE CONCAT('%', #{keyword}, '%')
+           <if test="formerDate!= ''">
+            AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
+          </if>
         </when>
         <when test="option eq 'content'.toString()">
           AND content LIKE CONCAT('%', #{keyword}, '%')
+           <if test="formerDate!= ''">
+            AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
+          </if>
         </when>
        </choose>
      </if>
@@ -58,29 +63,34 @@
      SELECT COUNT(notice_id)
        FROM tb_scm_notice
       WHERE (auth = #{auth} or auth = 0)
-           <if test="keyword != ''">
-             <choose>
-              <when test="option eq 'all'.toString()">
-               AND (title LIKE CONCAT('%', #{keyword}, '%') or content LIKE CONCAT('%', #{keyword}, '%'))
-                <if test="formerDate!= ''">
-                  AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
-                </if>
-                
-              </when>
-              <when test="option eq 'title'.toString()">
-                AND title LIKE CONCAT('%', #{keyword}, '%')
-              </when>
-              <when test="option eq 'content'.toString()">
-                AND content LIKE CONCAT('%', #{keyword}, '%')
-              </when>
-             </choose>
-           </if>
-           
-           <if test="keyword == ''">
-             <if test="formerDate != ''">
-              AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
-             </if>
-           </if>     
+       <if test="keyword != ''">
+       <choose>
+        <when test="option eq 'all'.toString()">
+         AND (title LIKE CONCAT('%', #{keyword}, '%') or content LIKE CONCAT('%', #{keyword}, '%'))
+          <if test="formerDate!= ''">
+            AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
+          </if>
+        </when>
+        <when test="option eq 'title'.toString()">
+          AND title LIKE CONCAT('%', #{keyword}, '%')
+           <if test="formerDate!= ''">
+            AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
+          </if>
+        </when>
+        <when test="option eq 'content'.toString()">
+          AND content LIKE CONCAT('%', #{keyword}, '%')
+           <if test="formerDate!= ''">
+            AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
+          </if>
+        </when>
+       </choose>
+     </if>
+     
+     <if test="keyword == ''">
+       <if test="formerDate != ''">
+        AND DATE(date) BETWEEN (#{formerDate}) AND (#{latterDate})
+       </if>
+     </if>
   </select>
   
   <!-- 공지사항 단건 조회 -->
@@ -117,8 +127,15 @@
   <!-- 공지사항 작성 -->
   <insert id="insertNotice" parameterType="java.util.Map">
     
-    INSERT INTO 
-                tb_scm_notice(title, content, date, view_cnt, auth, file_no)
+    INSERT INTO tb_scm_notice
+               (
+                title, 
+                content, 
+                date, 
+                view_cnt, 
+                auth, 
+                file_no
+                )
          VALUES 
                 (
                   #{title}, 
@@ -138,6 +155,9 @@
            title = #{title},
            content = #{content},
            auth = #{auth}
+           <if test="file_no != 0">
+            ,file_no = #{file_no}
+           </if>
      WHERE notice_id = #{notice_id}
   </update>
   
@@ -156,7 +176,7 @@
   <!-- 파일 업로드 -->
   <insert id="insertFile">
   
-     INSERT INTO tb_file
+     INSERT INTO  tb_file
                  (
                   file_no, 
                   file_local_path, 
@@ -171,8 +191,26 @@
                   #{file_ofname}, 
                   #{file_size}
                   )
-  
   </insert>
+  
+  <!-- 파일 수정 -->
+  <update id="updateFile">
+    UPDATE tb_file
+       SET 
+           file_local_path = #{file_local_path},
+           file_relative_path = #{file_relative_path},
+           file_ofname = #{file_ofname},
+           file_size = #{file_size}
+     WHERE 
+           file_no = #{file_no}
+  
+  </update>
+  
+  <!-- 파일 삭제 -->
+  <delete id="deleteFile" parameterType="int">
+    DELETE FROM tb_file
+          WHERE file_no = #{file_no}
+  </delete>
  
 </mapper>
 
