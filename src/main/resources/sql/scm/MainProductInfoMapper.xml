@@ -143,6 +143,28 @@ WHERE  PD.product_cd = #{product_cd}
     
     <!-- 제품정보 수정 -->
     <update id="updateMainProduct" parameterType="java.util.Map">
+      DELETE 
+        FROM tb_file
+       WHERE product_cd = #{product_cd};
+       
+       INSERT INTO tb_file
+                (
+                 file_no, 
+                 file_local_path, 
+                 file_relative_path, 
+                 file_ofname, 
+                 file_size,
+                 product_cd
+                 )
+         SELECT  MAX(file_no)+1, 
+                 #{file.file_loc}, 
+                 #{file.logi}, 
+                 #{file.file_nm}, 
+                 #{file.file_size},
+                 #{product_cd}
+                        
+           FROM tb_file;
+      
       UPDATE tb_scm_product
          SET prod_nm = #{prod_nm},
              m_ct_cd = #{m_ct_cd},
@@ -151,7 +173,9 @@ WHERE  PD.product_cd = #{product_cd}
              price = #{price},
              warehouse_cd = #{warehouse_cd},
              detail = #{detail}
-       WHERE product_cd = #{product_cd}
+       WHERE product_cd = #{product_cd};
+       
+     
     </update>
     
     <!-- 창고명, 창고코드 조회 -->

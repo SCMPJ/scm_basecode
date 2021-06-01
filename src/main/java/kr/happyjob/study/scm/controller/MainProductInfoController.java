@@ -116,7 +116,7 @@ public class MainProductInfoController {
       resultMsg = "등록 완료"; }
     } else if ("U".equals(action)) {
       // 수정
-      mainProductInfoService.updateMainProduct(paramMap);
+      mainProductInfoService.updateMainProduct(paramMap, request);
       resultMsg = "수정 완료";
     } else if ("D".equals(action)) {
       // 삭제
