@@ -293,9 +293,10 @@
   /* 공지사항 글 작성 함수 */
   function writeNotice() {
     // 공지사항 글 작성 null 체크
-    var validate = validateIsNull();
-
-    if (validate) {
+    var validatedFile = validateFile();
+    var validateNull = validateIsNull();
+    
+    if (validatedFile && validateNull) {
       var title = $('#notice_title').val();
       var content = $('#notice_content').val();
       var auth = $('#notice_auth').val();

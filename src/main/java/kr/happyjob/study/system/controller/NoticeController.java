@@ -63,6 +63,7 @@ public class NoticeController {
   @RequestMapping(value="notice.do", method=RequestMethod.POST)
   public String selectNotice(@RequestParam(required = false) Map<String, Object> param, Model model, HttpSession session)throws Exception {
     
+    log.info("notice.do - Param -" + param);
     // 현재 페이지 번호
     int currentPage = Integer.parseInt((String) param.get("currentPage"));
     
@@ -97,7 +98,6 @@ public class NoticeController {
     }
     
     param.put("auth", auth);
-   // log.info("selectNotice - param:"+ param);
     // 검색어 유무 확인
     if(param.containsKey("option")) {
       String option = (String) param.get("option");
@@ -132,7 +132,8 @@ public class NoticeController {
   @ResponseBody
   @RequestMapping(value="writeNotice.do", method=RequestMethod.POST)
   public int insertNotice(@RequestParam Map<String, Object> param, HttpServletRequest request) throws Exception {
-   
+    
+    log.info("writeNotice.do - Param -" + param);
     MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
     
     int auth = Integer.parseInt((String) param.get("auth"));
@@ -158,7 +159,8 @@ public class NoticeController {
       String file_local_path = (String) fileUtilModel.get("file_loc");
       String file_size = (String) fileUtilModel.get("file_size");
       String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
-      System.out.println("업로드파일명확인" + file_ofname);
+      
+      log.info("uploadedFile -" + file_relative_path);
       
       // DB에 등록할 파일 정보
       param.put("file_no", file_no);
@@ -169,7 +171,11 @@ public class NoticeController {
       
       // DB에 파일  등록  
       int fileResult = noticeService.insertFile(param);
-      result = noticeService.insertNotice(param);
+      
+      if(fileResult == 1) {
+        result = noticeService.insertNotice(param);
+      }
+      else result = 0;
     }
       // 첨부파일이 없을 경우
       // 공지사항만 등록 
@@ -182,8 +188,8 @@ public class NoticeController {
   @ResponseBody
   @RequestMapping(value="detailNotice.do", method=RequestMethod.POST)
   public NoticeModel selectDetailNotice(@RequestParam Map<String, Object> param) throws Exception {
-//    public NoticeModel selectDetailNotice(@RequestParam Map<String, Object> notice_id) {
     
+    log.info("detailNotice.do - Param -" + param);
     int notice_id = Integer.parseInt((String) param.get("notice_id"));
     
     // 조회수 증가
@@ -204,6 +210,8 @@ public class NoticeController {
   @ResponseBody
   @RequestMapping(value="modifyNotice.do", method=RequestMethod.POST)
   public int updateNotice(@RequestParam Map<String, Object> param, HttpServletRequest request) throws Exception {
+   
+    log.info("modifyNotice.do - Param -" + param);
     MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
     int auth = Integer.parseInt((String)param.get("auth"));
     param.put("auth", auth);
@@ -211,7 +219,6 @@ public class NoticeController {
     int result = 0;
     // 첨부파일이 없다가 새로 등록되는 경우는 신규등록과 같은 절차를 거쳐야 한다
     int file_no;
-    int notice_id = Integer.parseInt((String)param.get("notice_id"));
     String file_nm = (String)param.get("file_nm");
     
     // 첨부파일의 존재유무 확인
@@ -227,22 +234,27 @@ public class NoticeController {
       
       // 글 업데이트
       int updateResult = noticeService.updateNotice(param);
-      // DB에서 파일 삭제
-      int deleteResult = noticeService.deleteFile(file_no);
       
-      
-      // 물리경로에서 파일 삭제
-      fileUtil.deleteFiles(param);
-      if(deleteResult == 1) {
-        if (file_nm != null && !"".equals(file_nm)) {
-          File file = new File(imgPath + file_nm);
-          File folder = new File(imgPath);
-          if (file.exists()) file.delete();
-          if (folder.exists()) folder.delete();
-          
-          result = 1;
+      if(updateResult == 1) {
+        // DB에서 파일 삭제
+        int deleteResult = noticeService.deleteFile(file_no);
+        
+        // 물리경로에서 파일 삭제
+        fileUtil.deleteFiles(param);
+        if(deleteResult == 1) {
+          if (file_nm != null && !"".equals(file_nm)) {
+            File file = new File(imgPath + file_nm);
+            File folder = new File(imgPath);
+            if (file.exists()) file.delete();
+            if (folder.exists()) folder.delete();
+            log.info("deletedFile" + file_nm);
+            result = 1;
+          }
         }
+        else result = 0;
+        
       }
+      else result = 0;
     }
     else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
       // 첨부파일 신규등록 || 첨부파일 수정
@@ -294,7 +306,7 @@ public class NoticeController {
               File folder = new File(imgPath);
               if (file.exists()) file.delete();
               if (folder.exists()) folder.delete();
-              
+              log.info("deletedFile -" + file_nm);
               result = 1;
             }
           }
@@ -307,9 +319,10 @@ public class NoticeController {
   
   /* 공지사항 삭제 */
   @ResponseBody
-  @RequestMapping(value="deleteNotice.do", method=RequestMethod.POST)
+  @RequestMapping(value="deleteNotice", method=RequestMethod.POST)
   public int deleteNotice(@RequestParam Map<String, Object> param) throws Exception {
     
+    log.info("deleteNotice.do - Param -" + param);
     int result = 0;
     int noticeResult = noticeService.deleteNotice(param);
     
@@ -328,6 +341,7 @@ public class NoticeController {
           File folder = new File(imgPath);
           if (file.exists()) file.delete();
           if (folder.exists()) folder.delete();
+          log.info("deletedFile -" + file_nm);
       }
       result = 1;
     }
