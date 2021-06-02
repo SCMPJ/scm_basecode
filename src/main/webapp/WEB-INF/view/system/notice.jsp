@@ -165,7 +165,6 @@
     // JavsScript는 월이 0부터 시작하므로 +1
     // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
     today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
-    console.log('날짜검증',validateFormerDate, validateLatterDate)
     
     // 날짜가 2개 중 하나라도 설정되면 반드시 2개다 설정되어야 함
     if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
@@ -175,7 +174,6 @@
     else if (validateFormerDate > validateLatterDate) {
       // validateFormerDate가 validateFormerDate보다 클 경우는 2개의 날짜를 교환
       // google이 날짜검색 시 이 방식을 사용하고 있음
-      console.log('???')
         var temp;
         temp = validateFormerDate;
         validateFormerDate = validateLatterDate;
@@ -255,8 +253,9 @@
     
     if(isSearch){
         param.option = option;
-        console.log('트림',keyword.trim())
-        param.keyword = keyword.trim();
+        keyword = keyword.trim();
+        param.keyword = keyword;
+        $('#keyword').val(keyword);
         param.formerDate = formerDate;
         param.latterDate = latterDate;
     }
