@@ -152,13 +152,10 @@ public class NoticeController {
       Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
       
       String delimiter = "/";
-      String random_id = (String) fileUtilModel.get("random_id");
       String file_ofname = (String) fileUtilModel.get("file_nm");
-      file_ofname = random_id + file_ofname;
       String file_local_path = (String) fileUtilModel.get("file_loc");
       String file_size = (String) fileUtilModel.get("file_size");
       String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
-      System.out.println("업로드파일명확인" + file_ofname);
       
       // DB에 등록할 파일 정보
       param.put("file_no", file_no);
@@ -230,7 +227,6 @@ public class NoticeController {
       // DB에서 파일 삭제
       int deleteResult = noticeService.deleteFile(file_no);
       
-      
       // 물리경로에서 파일 삭제
       fileUtil.deleteFiles(param);
       if(deleteResult == 1) {
@@ -259,9 +255,7 @@ public class NoticeController {
       Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
       
       String delimiter = "/";
-      String random_id = (String) fileUtilModel.get("random_id");
       String file_ofname = (String) fileUtilModel.get("file_nm");
-      file_ofname = random_id + file_ofname;
       String file_local_path = (String) fileUtilModel.get("file_loc");
       String file_size = (String) fileUtilModel.get("file_size");
       String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
