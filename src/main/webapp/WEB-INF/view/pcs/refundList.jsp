@@ -14,6 +14,10 @@
   // 페이징 설정
   var pageSize = 5;
   var pageBlock = 5;
+  var isSearch;
+  var option;
+  var keyword;
+  var date;
 
   /* OnLoad event */ 
   $(function() {
@@ -38,7 +42,23 @@
 
     // 반품서 목록 조회 호출
     selectList();
-
+    
+    // 검색 버튼 이벤트
+    $('#search_button').click(function() {
+      
+      isSearch = true;
+      var validate = validateDate();
+      console.log('//', validate)
+      if(validate) {
+        option = $('#option').val();
+        keyword = $('#keyword').val();
+        date = $('#datetimepicker1').find("input").val();
+        selectList();
+      }
+      else {
+        return false;
+      }
+    });
   });
   
   /* 검색일 검증 */
@@ -51,53 +71,42 @@
     
     if(date > today) {
       swal('오늘 이후는 검색할 수 없습니다');
+      $("#datetimepicker1").find("input").val(today);
       return false;
     }
-    console.log('실행안됨')
-    return true;
+    else {
+      return true;
+    };
   }
 
    /* 반품서 목록 조회 */
   function selectList(currentPage) {
-   
-    var option = $('#options').val();
-    var keyword = $('#keyword').val();
-    var date = $("#datetimepicker1").find("input").val();
     
     currentPage = currentPage || 1;
 
     console.log("currentPage : " + currentPage);
-
-    if (keyword || date) {
-      var validate = validateDate();
       
-      if (validate) {
+      if (isSearch) {
         var param = {
-        option : option,
-        keyword : keyword,
-        date : date,
-        currentPage : currentPage,
-        pageSize : pageSize
+          option : option,
+          keyword : keyword,
+          date : date,
+          currentPage : currentPage,
+          pageSize : pageSize
         }
       }
       else {
-        return false;
-      }
-    } else {
-      
-      var param = {
-      currentPage : currentPage,
-      pageSize : pageSize
+        var param = {
+          currentPage : currentPage,
+          pageSize : pageSize
+        }
       }
 
-    }
-
-    var resultCallback = function(data) {
-      selectListCallBack(data, currentPage);
+      var resultCallback = function(data) {
+        selectListCallBack(data, currentPage);
     };
 
     //Ajax실행 방식
-    //callAjax("Url",type,return,async or sync방식,넘겨준거,값,Callback함수 이름)
     callAjax("/pcs/refund/list.do", "post", "text", true, param, resultCallback);
   }
 
@@ -112,7 +121,6 @@
     
     // 리스트 로우의 총 개수 추출
     var totalCount = $("#totalCount").val();
-    console.log('반품서 목록 파라미터 확인:',currentPage, totalCount, pageSize, pageBlock)
     
     // 페이지 네비게이션 생성
     var paginationHtml = getPaginationHtml(currentPage, totalCount, pageSize, pageBlock, 'selectList');
@@ -151,16 +159,14 @@
       gfModalPop("#layer1");
       initModal(data);
     };
-
+    
     callAjax("/pcs/refund/detail.do", "post", "json", true, param, resultCallback);
   }
 
 
   /* 반품서 모달 초기화,데이터 설정 함수 */
   function initModal(result) {
-
     if (result == '' || result == null || result == undefined) {
-
       $('#purch_list_no').val('');
       $('#supply_nm').val('');
       $('#supply_cd').val('');
@@ -174,7 +180,6 @@
       $('return_mng_id').val('');
       $('#purch_date').val('');
       $('#desired_delivery_date').val('');
-
     } else {
       $('#purch_list_no').val(result.purch_list_no);
       $('#supply_nm').val(result.supply_nm);
@@ -189,14 +194,11 @@
       $('#return_mng_id').val(result.return_mng_id);
       $('#purch_date').val(result.purch_date);
       $('#desired_delivery_date').val(result.desired_delivery_date);
-
     }
-
   }
 
   /* 반품 완료 처리 */
   function insertReturnDate(purch_list_no, currentPage, order_cd, supply_cd) {
-   
     // tb_acc_slip 에 사용될 값 가져오기
     var return_price = $('#return_price').val();
    
@@ -209,7 +211,6 @@
     
     // 콜백 함수
     function resultCallback(data) {
-      
       if (data == 1) {
        selectList(currentPage);
       } else {
@@ -218,13 +219,12 @@
     }
     
     callAjax("/pcs/refund/returndate.do", "post", "json", true, param, resultCallback);
-
   }
 </script>
 </head>
 <body>
-  <form id="myForm" action="" method="">
-    <input type="hidden" id="currentPageCod" value="1"> <input type="hidden" id="currentPageComnDtlCod" value="1"> <input type="hidden" id="tmpGrpCod" value=""> <input type="hidden" id="tmpGrpCodNm" value=""> <input type="hidden" name="action" id="action" value="">
+  <form id="myForm" action="">
+    <input type="hidden" id="currentPageCod" value="1"> 
     <!-- 모달 배경 -->
     <div id="mask"></div>
     <div id="wrap_area">
@@ -234,53 +234,54 @@
       <div id="container">
         <ul>
           <li class="lnb">
-            <!-- lnb 영역 --> <jsp:include page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include> <!--// lnb 영역 -->
+            <jsp:include page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include>
           </li>
           <li class="contents">
             <!-- contents -->
             <h3 class="hidden">contents 영역</h3> <!-- content -->
             <div class="content">
               <p class="Location">
-                <a href="#" class="btn_set home">메인으로</a> <a href="../pcsOrderForm.do" class="btn_nav">구매</a> <span class="btn_nav bold">반품서</span> <a href="javascript:window.location.reload();" class="btn_set refresh">새로고침</a>
+                <a href="${pageContext.request.contextPath}/system/notice.do" class="btn_set home">메인으로</a>
+                <a href="${pageContext.request.contextPath}/pcs/pcsOrderForm.do" class="btn_nav">구매</a> 
+                <span class="btn_nav bold">반품서</span> 
+                <a href="javascript:window.location.reload();" class="btn_set refresh">새로고침</a>
               </p>
               <p class="conTitle">
                 <span>반품서 목록</span>
               </p>
-              <form class="search-container">
-                <div class="row">
-                  <!-- searchbar -->
-                  <div class="col-lg-6">
-                    <div class="input-group">
-                      <select style="width: 90px; height: 34px;" id="options">
-                        <option value="all" selected>전체</option>
-                        <option value="product" id="product">제품명</option>
-                        <option value="category" id="category">상호명</option>
-                      </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
-                    </div>
+              <div class="row">
+                <!-- searchbar -->
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <select style="width: 90px; height: 34px;" id="option">
+                      <option value="all" selected>전체</option>
+                      <option value="product" id="product">제품명</option>
+                      <option value="category" id="category">상호명</option>
+                    </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
                   </div>
-                  <!-- // searchbar -->
-                  <!-- date -->
-                  <div class='col-md-3 col-xs-4'>
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="">
-                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                          <div class="input-group-text">
-                            <i class="fa fa-calendar"></i>
-                          </div>
+                </div>
+                <!-- // searchbar -->
+                <!-- date -->
+                <div class='col-md-3 col-xs-4'>
+                  <div class="form-group">
+                    <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" style="pointer-events : none;">
+                      <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text">
+                          <i class="fa fa-calendar"></i>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <!-- // date -->
-                  <!-- button -->
-                  <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" onclick="selectList()">검색</button>
-                  </div>
-                  <!-- // button -->
                 </div>
-                <!-- /.row -->
-              </form>
+                <!-- // date -->
+                <!-- button -->
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" id="search_button">검색</button>
+                </div>
+                <!-- // button -->
+              </div>
+              <!-- /.row -->
               <div class="divComGrpCodList">
                 <table class="col">
                   <caption>caption</caption>
@@ -314,6 +315,7 @@
               <div class="paging_area" id="pagination"></div>
               <h3 class="hidden">풋터 영역</h3>
               <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
+            </div>
           </li>
         </ul>
       </div>
