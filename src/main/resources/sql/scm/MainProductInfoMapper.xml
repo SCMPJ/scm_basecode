@@ -133,6 +133,12 @@ WHERE  PD.product_cd = #{product_cd}
                         
             FROM tb_file;
     </insert>
+    <!-- 파일 로컬경로 조회 -->
+    <select id="selectFilePath"  resultType="String">
+      SELECT file_local_path
+        FROM tb_file
+       WHERE product_cd = #{product_cd}
+    </select>
     
     <!-- 제품정보 삭제 -->
     <delete id="deleteMainProduct" parameterType="java.util.Map">

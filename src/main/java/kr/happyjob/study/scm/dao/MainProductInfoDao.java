@@ -24,5 +24,7 @@ public interface MainProductInfoDao {
   public int deleteMainProduct(Map<String, Object> paramMap) throws Exception;
   //창고정보 조회
   public GetWarehouseModel getWarehouseInfo(Map<String, Object> paramMap) throws Exception;
+  //이미지 로컬경로 조회
+  public String selectFilePath(Map<String, Object> paramMap) throws Exception;
   
 }
