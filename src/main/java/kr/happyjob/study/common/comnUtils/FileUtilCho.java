@@ -78,6 +78,8 @@ public class FileUtilCho {
     	Map<String,Object> map = new HashMap<String, Object>();
     	
         while(files.hasNext()){
+          
+          
         	
             String uploadFile = files.next();
 
@@ -85,20 +87,22 @@ public class FileUtilCho {
           //  String fileDvsCod = multipartFile.getName();
 
             if (!multipartFile.isEmpty()) {
-            	
-            
+              
+              String uuid = UUID.randomUUID().toString();
             	String file_nm = multipartFile.getOriginalFilename();
                 String fileExtension = file_nm.substring(file_nm.lastIndexOf(".")+1);
-                String file_loc = rootFilePath+itemFilePath + file_nm;
+                String file_loc = rootFilePath+itemFilePath + uuid + file_nm;
                
                /* String thumbnailFileName = tmpFileName +"_thumbnail."+fileExtension;*/
                 String file_Size = Long.toString(multipartFile.getSize());
+                
                 
                 
                 map.put("file_nm", file_nm);
                 map.put("file_size", file_Size);
                 map.put("file_loc", file_loc);
                 map.put("fileExtension", fileExtension);
+                map.put("random_id", uuid);
                
                 logger.info("file 정보 : " + map);
                 
@@ -108,6 +112,7 @@ public class FileUtilCho {
               
             }
         }
+        
         
         return map;
 	}

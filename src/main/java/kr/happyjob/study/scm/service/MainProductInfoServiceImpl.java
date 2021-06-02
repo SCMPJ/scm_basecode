@@ -3,6 +3,7 @@ package kr.happyjob.study.scm.service;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,13 +75,15 @@ public class MainProductInfoServiceImpl implements MainProductInfoService {
   public int insertMainProduct(Map<String, Object> paramMap,HttpServletRequest request) throws Exception {
     MultipartHttpServletRequest mpRequest = (MultipartHttpServletRequest)request;
     
+
+    
     // 파일 저장  std_id = 작성자 id , hwk_id = 과제 id  
     String itemFilePath = productPath + File.separator;
     FileUtilCho fileUtilCho = new FileUtilCho(mpRequest, rootPath, itemFilePath);
     Map<String, Object> listFileUtilModel = fileUtilCho.uploadFiles();
     
     String delimiter = "/";
-    String logicalpath = delimiter + productPath + delimiter + listFileUtilModel.get("file_nm");
+    String logicalpath = delimiter + productPath + delimiter + listFileUtilModel.get("random_id")+listFileUtilModel.get("file_nm");
     listFileUtilModel.put("logi", logicalpath);
     
     paramMap.put("file", listFileUtilModel);
