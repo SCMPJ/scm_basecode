@@ -89,7 +89,6 @@
     $('#write_modal_button').click(function() {
       var identifier = 'w';
       fadeInModal(identifier);
-      console.log('//')
     });
 
     /* 공지사항 작성 버튼 이벤트 */
@@ -106,7 +105,6 @@
     $('#modify_modal_button').click(function() {
       var identifier = 'm';
       fadeInModal(identifier);
-      console.log('수정')
     });
 
     // 공지사항 수정 버튼 이벤트
@@ -318,7 +316,6 @@
      
       if(uploadFile) {
         var validate = validateFile();
-        console.log('파일검증확인', validate);
         if (validate) {
           fileData.append('flie', uploadFile);
         }
@@ -470,7 +467,6 @@
       
       // 첨부 파일 변경, 추가 여부 확인
       var modifiedFile = document.getElementById('upload_modify_file').files[0];
-      console.log('수정함수공통호출,첨부파일여부확인', modifiedFile)
       
       // file_no이 null이면 원본 글에  파일 없음
       if (file_no && !file_path && !modifiedFile) {
@@ -586,7 +582,6 @@
       $('#notice_auth').val('0');
     } 
     else if (identifier == 'r') {
-      console.log('단건조회', result)
       if (result) {
         $('#notice_id').val(result.notice_id);
         $('#notice_title').val(result.title);
