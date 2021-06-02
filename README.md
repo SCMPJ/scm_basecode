@@ -65,12 +65,12 @@
 
 1. 모델 분석
   - 주문 처리 flow
-    - ![주문처리](https://user-images.githubusercontent.com/46353755/120425446-31f59700-c3a9-11eb-8aa5-750acefe5b82.png)
+    ![주문처리](https://user-images.githubusercontent.com/46353755/120425446-31f59700-c3a9-11eb-8aa5-750acefe5b82.png)
   - 반품 처리 flow
-    - ![반품처리](https://user-images.githubusercontent.com/46353755/120425458-3752e180-c3a9-11eb-9112-375dd9b586cb.png)
+    ![반품처리](https://user-images.githubusercontent.com/46353755/120425458-3752e180-c3a9-11eb-9112-375dd9b586cb.png)
 2. 메뉴 분석
   - 메뉴 구성도
-    - ![메뉴구성도](https://user-images.githubusercontent.com/46353755/120425510-4fc2fc00-c3a9-11eb-821f-e303c7c26ee3.png)
+    ![메뉴구성도](https://user-images.githubusercontent.com/46353755/120425510-4fc2fc00-c3a9-11eb-821f-e303c7c26ee3.png)
   - [메뉴 분배 엑셀 시트](https://drive.google.com/file/d/18ESviVPlBGmbFSp0f9Qea4YL6BMrv5TY/view?usp=sharing)
   - [코드 명명규칙](https://www.notion.so/0c355022a01f4024a99f92d6f217fd61?v=a3d057f7ece24f86bfe40ea3cddc065f)
   - [용어 사전](https://www.notion.so/84d7b17dd9584471b33632da5488b669?v=e2724827f1324f3ca263c31d99a3ef35)
