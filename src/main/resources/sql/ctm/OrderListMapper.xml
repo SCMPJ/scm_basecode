@@ -49,6 +49,11 @@
   <select id="totalCntOrder"  resultType="int">
       SELECT COUNT(1) AS tot_cnt 
         FROM tb_order od
+        JOIN (
+              SELECT detail_code, group_code, detail_name
+              FROM tb_detail_code
+              WHERE group_code = 'STTcd'
+              ) dc ON od.STTcd = dc.detail_code
         LEFT OUTER JOIN tb_scm_product sp ON od.product_cd = sp.product_cd
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd

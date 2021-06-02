@@ -67,6 +67,7 @@
 		SELECT			TA.group_code as grp_cod
 			,	TA.group_name as grp_cod_nm
 			,	TA.use_yn as use_poa
+      , TA.note as grp_cod_eplti
 			,	TA.reg_date as fst_enlm_dtt
 			,	TA.regId as fst_rgst_sst_id
 			,	TA.update_date as fnl_mdfd_dtt

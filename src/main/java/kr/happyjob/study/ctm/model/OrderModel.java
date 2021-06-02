@@ -17,6 +17,8 @@ public class OrderModel {
 	private String l_ct_cd;
 	// 제품 상세 정보
 	private String detail;
+	// 제품 이미지
+	private String file_relative_path;
 
 	public String getL_ct_cd() {
 		return l_ct_cd;
@@ -81,4 +83,13 @@ public class OrderModel {
 	public void setDetail(String detail) {
 		this.detail = detail;
 	}
+
+  public String getFile_relative_path() {
+    return file_relative_path;
+  }
+
+  public void setFile_relative_path(String file_relative_path) {
+    this.file_relative_path = file_relative_path;
+  }
+	
 }

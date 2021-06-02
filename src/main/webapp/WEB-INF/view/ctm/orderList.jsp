@@ -466,8 +466,12 @@
                 <th scope="row">반품사유</th>
               </tr>
               <tr>
-                <td rowspan = "5" style="text-align:center; width:300px; hight:300px;">
-                  <img id="tempImg" style="object-fit: cover; max-width:100%; max-hight:100%;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
+                <td rowspan = "5" style="text-align:center; width:200px; height:200px;">
+                  <img id="tempImg" style="object-fit: cover; 
+                                           width: 200px; 
+                                           height: 200px;" 
+                                    src="/images/admin/comm/no_image.png" 
+                                    alt="제품사진미리보기">
                 </td>
                 <th scope="row">제품명</th>
                 <td><input type="text" name="prod_nm" id="prod_nm" style="width:250px;"/></td> 
@@ -492,57 +496,11 @@
               </tr>
               <tr>
                 <th scope="row">상세주소</th>
-                <td><input type="text" name="addr" id="addr" /></td>
-              </tr>
-              <tr>
-              <td class="thumb">
-                            <span> 
-                <input name="thumbnail" type="file" id="thumbnail" accept="image/* " required>
-    
-                    <!-- 파일 미리보기 스크립트 영역 -->
-                       <script>
-                       var file = document.querySelector('#thumbnail');
-                    
-                       file.onchange = function () { 
-                           var fileList = file.files ;
-                           
-                           // 읽기
-                           var reader = new FileReader();
-                           reader.readAsDataURL(fileList [0]);
-                           //로드 한 후
-                           reader.onload = function  () {
-                               //로컬 이미지를 보여주기
-                               
-                               //썸네일 이미지 생성
-                               var tempImage = new Image(); //drawImage 메서드에 넣기 위해 이미지 객체화
-                               tempImage.src = reader.result; //data-uri를 이미지 객체에 주입
-                               tempImage.onload = function() {
-                                   //리사이즈를 위해 캔버스 객체 생성
-                                   var canvas = document.createElement('canvas');
-                                   var canvasContext = canvas.getContext("2d");
-                                   
-                                   //캔버스 크기 설정
-                                   canvas.width = 300; //가로 300px
-                                   canvas.height = 300; //세로 300px
-                                   
-                                   
-                                   //이미지를 캔버스에 그리기
-                                   canvasContext.drawImage(this, 0, 0, 300, 300);
-                                   //캔버스에 그린 이미지를 다시 data-uri 형태로 변환
-                                   var dataURI = canvas.toDataURL("image/jpeg");
-                                   
-                                   //썸네일 이미지 보여주기
-                                   document.querySelector('#tempImg').src = dataURI;
-                               };
-                           }; 
-                       };
-                                </script>
-                                <!-- 파일 미리보기 스크립트 영역 끝 -->
-                                </span>
-                   <input type="hidden" name="loginID" id="loginID" />             
-                 </td>
-                
-              </tr>
+                <td>
+                  <input type="text" name="addr" id="addr" />
+                  <input type="hidden" name="loginID" id="loginID" />  
+                </td>
+              </tr>         
             </tbody>
           </table>
           <div class="btn_areaC mt30">
@@ -625,8 +583,13 @@
                 <th scope="row">요구사항</th>
               </tr>
               <tr>
-                <td rowspan = "5" style="text-align:center; width:300px; hight:300px;">
-                  <img id="ConTempImg" style="object-fit: cover; max-width:100%; max-hight:100%;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
+                <td rowspan = "5" style="text-align:center; width:200px; hight:200px;">
+                  <img id="ConTempImg" style="object-fit: cover; 
+                                              width: 200px; 
+                                              height: 200px;"  
+                                       src="/images/admin/comm/no_image.png" 
+                                       alt="제품사진미리보기">
+                                              
                 </td>
                 <th scope="row">제품명</th>
                 <td><input type="text" name="ConProd_nm" id="ConProd_nm" style="width:250px;"/></td> 
@@ -651,53 +614,6 @@
               <tr>
                 <th scope="row">상세주소</th>
                 <td><input type="text" name="ConAddr" id="ConAddr" /></td>
-              </tr>
-              <tr>
-              <td class="thumb">
-                            <span> 
-                <input name="ConThumbnail" type="file" id="ConThumbnail" accept="image/* " required>
-    
-                    <!-- 파일 미리보기 스크립트 영역 -->
-                       <script>
-                       var file = document.querySelector('#ConThumbnail');
-                    
-                       file.onchange = function () { 
-                           var fileList = file.files ;
-                           
-                           // 읽기
-                           var reader = new FileReader();
-                           reader.readAsDataURL(fileList [0]);
-                           //로드 한 후
-                           reader.onload = function  () {
-                               //로컬 이미지를 보여주기
-                               
-                               //썸네일 이미지 생성
-                               var tempImage = new Image(); //drawImage 메서드에 넣기 위해 이미지 객체화
-                               tempImage.src = reader.result; //data-uri를 이미지 객체에 주입
-                               tempImage.onload = function() {
-                                   //리사이즈를 위해 캔버스 객체 생성
-                                   var canvas = document.createElement('canvas');
-                                   var canvasContext = canvas.getContext("2d");
-                                   
-                                   //캔버스 크기 설정
-                                   canvas.width = 300; //가로 300px
-                                   canvas.height = 300; //세로 300px
-                                   
-                                   
-                                   //이미지를 캔버스에 그리기
-                                   canvasContext.drawImage(this, 0, 0, 300, 300);
-                                   //캔버스에 그린 이미지를 다시 data-uri 형태로 변환
-                                   var dataURI = canvas.toDataURL("image/jpeg");
-                                   
-                                   //썸네일 이미지 보여주기
-                                   document.querySelector('#ConTempImg').src = dataURI;
-                               };
-                           }; 
-                       };
-                                </script>
-                                <!-- 파일 미리보기 스크립트 영역 끝 -->
-                                </span>
-                 </td>
               </tr>
             </tbody>
           </table>

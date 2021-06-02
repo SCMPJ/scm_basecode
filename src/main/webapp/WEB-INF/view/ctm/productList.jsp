@@ -10,7 +10,7 @@
 	<c:set var="nRow" value="${pageSize*(currentPageProduct-1)}" />
 	<c:forEach items="${productListModel}" var="list">
 		<div class="product_container-big">
-			<img class="product_img" style="height: 200px;" src="http://img.danawa.com/prod_img/500000/135/584/img/12584135_1.jpg?shrink=360:360&_v=20201030144612" />
+			<img class="product_img" style="height: 200px;" src="${list.file_relative_path}" />
 			<div class="product_container">
 				<div class="product_box">
 					<span>제품명</span>

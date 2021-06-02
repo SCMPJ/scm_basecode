@@ -21,13 +21,13 @@ public class OrderServiceImpl implements OrderService {
   // Get class name for logger
   private final String className = this.getClass().toString();
   
-  //공급처 목록 조회
+  // 제품 목록 조회
   @Override
   public List<OrderModel> productList(Map<String, Object> paramMap) throws Exception {
     List<OrderModel> productList = OrderDao.productList(paramMap);
     return productList;
   }
-  //공급처 목록 카운트
+  // 제품 목록 카운트
   @Override
   public int totalCntProduct(Map<String, Object> paramMap) throws Exception {
     int totalCntProduct = OrderDao.totalCntProduct(paramMap);
