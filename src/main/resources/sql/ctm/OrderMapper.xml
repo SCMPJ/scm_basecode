@@ -11,9 +11,11 @@
            , sp.prod_nm
            , sp.detail
            , sp.price 
+           , f.file_relative_path
         FROM tb_scm_product sp
         LEFT OUTER JOIN tb_scm_m_category mc ON sp.m_ct_cd = mc.m_ct_cd
         LEFT OUTER JOIN tb_scm_l_category lc ON mc.l_ct_cd = lc.l_ct_cd
+        LEFT OUTER JOIN tb_file f ON f.product_cd = sp.product_cd
        WHERE 1=1
 	      <if test="sname != null and sname != ''">
 		      <choose>

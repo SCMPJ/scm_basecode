@@ -533,8 +533,8 @@ function numberWithCommas(x) {
               </tr>
               <tr>
               
-              <td rowspan="4" style="text-align:center; width:300px; hight:300px;">
-                  <img id="tempImg" style="object-fit: cover; max-width:100%; max-hight:100%;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
+              <td rowspan="4" style="text-align:center; width:200px; height:200px;">
+                  <img id="tempImg" style="width:200px; height:200px;" src="/images/admin/comm/no_image.png" alt="제품사진미리보기">
                  </td>   
                 
                  <th scope="row">품목명<span class="font_red">*</span></th>
@@ -670,8 +670,8 @@ function numberWithCommas(x) {
           </tr>
           
           <tr>
-            <td rowspan="4" style="text-align: center; width: 300px; hight: 300px;">
-            <img id="pitempImg" style="object-fit: cover; max-width: 100%; max-hight: 100%;" src="/images/admin/comm/no_image.png"></td>
+            <td rowspan="4" style="text-align: center; width: 200px; height: 200px;">
+            <img id="pitempImg" style="width: 200px; height: 200px;" src="/images/admin/comm/no_image.png"></td>
             <th scope="row">품목명</th>
             <td><input type="text" class="inputTxt p100" name="pil_ct_nm" id="pil_ct_nm"/></td>
             <th scope="row">상호명</th>
@@ -698,47 +698,6 @@ function numberWithCommas(x) {
             <th rowspan="2" scope="row">상세정보</th>
             <td rowspan="2" colspan="5"><textarea class="ui-widget ui-widget-content ui-corner-all" 
                                                   id="pidetail" name="pidetail" style="height: 130px; outline: none; resize: none;"></textarea></td>
-          </tr>
-          
-          <tr>
-            <!-- <td class="thumb"><span> <input name="pithumbnail" type="file" id="pithumbnail" accept="image/* " required> 파일 미리보기 스크립트 영역 
-                  <script>
-                          var file = document.querySelector('#pithumbnail');
-
-                          file.onchange = function() {
-                            var fileList = file.files;
-
-                            // 읽기
-                            var reader = new FileReader();
-                            reader.readAsDataURL(fileList[0]);
-                            //로드 한 후
-                            reader.onload = function() {
-                              //로컬 이미지를 보여주기
-
-                              //썸네일 이미지 생성
-                              var tempImage = new Image(); //drawImage 메서드에 넣기 위해 이미지 객체화
-                              tempImage.src = reader.result; //data-uri를 이미지 객체에 주입
-                              tempImage.onload = function() {
-                                //리사이즈를 위해 캔버스 객체 생성
-                                var canvas = document.createElement('canvas');
-                                var canvasContext = canvas.getContext("2d");
-
-                                //캔버스 크기 설정
-                                canvas.width = 300; //가로 300px
-                                canvas.height = 300; //세로 300px
-
-                                //이미지를 캔버스에 그리기
-                                canvasContext.drawImage(this, 0, 0, 300, 300);
-                                //캔버스에 그린 이미지를 다시 data-uri 형태로 변환
-                                var dataURI = canvas.toDataURL("image/jpeg");
-
-                                //썸네일 이미지 보여주기
-                                document.querySelector('#pitempImg').src = dataURI;
-                              };
-                            };
-                          };
-                        </script> 파일 미리보기 스크립트 영역 끝
-            </span></td> -->
           </tr>
         </tbody>
           </table>

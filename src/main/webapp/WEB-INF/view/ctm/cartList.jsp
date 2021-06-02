@@ -23,8 +23,8 @@
 		    </td>
 			<!-- 제품이미지 -->
 			<td>
-				<img style="height: 200px;"
-					 src="http://img.danawa.com/prod_img/500000/135/584/img/12584135_1.jpg?shrink=360:360&_v=20201030144612" />
+				<img class="product_img"
+					 src="${list.file_relative_path}" />
 				<!-- 제품명 -->
 				<div>
 					<input type="hidden" 

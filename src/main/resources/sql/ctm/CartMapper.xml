@@ -11,13 +11,16 @@
 			   , pd.product_cd as product_cd
 			   , pd.detail as detail
 			   , sc.shopping_cart_qty
+         , f.file_relative_path
 	      FROM tb_shopping sc
 	         , tb_scm_product pd
 	         , tb_scm_m_category mcg
 	         , tb_scm_l_category lcg
+           , tb_file f
 	     WHERE pd.m_ct_cd = mcg.m_ct_cd 
 	       AND mcg.l_ct_cd = lcg.l_ct_cd 
 	       AND pd.product_cd = sc.product_cd	
+         AND f.product_cd = pd.product_cd
 	       AND sc.loginID = #{loginID}
 	   	 LIMIT #{pageIndex}, #{pageSize}
 	</select>

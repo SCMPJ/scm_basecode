@@ -36,6 +36,7 @@ LEFT JOIN tb_scm_warehouse WH ON WH.warehouse_cd = PD.warehouse_cd
       </if> 
     </where>
   ORDER BY PD.enroll_date DESC
+         , PD.product_cd ASC
      LIMIT #{pageIndex}, #{pageSize}
   </select>
   <!-- 제품목록 카운트 -->
