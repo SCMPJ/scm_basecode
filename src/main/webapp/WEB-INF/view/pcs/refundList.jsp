@@ -191,7 +191,6 @@
       $('#desired_delivery_date').val(result.desired_delivery_date);
 
     }
-
   }
 
   /* 반품 완료 처리 */
@@ -223,8 +222,8 @@
 </script>
 </head>
 <body>
-  <form id="myForm" action="" method="">
-    <input type="hidden" id="currentPageCod" value="1"> <input type="hidden" id="currentPageComnDtlCod" value="1"> <input type="hidden" id="tmpGrpCod" value=""> <input type="hidden" id="tmpGrpCodNm" value=""> <input type="hidden" name="action" id="action" value="">
+  <form id="myForm" action="">
+    <input type="hidden" id="currentPageCod" value="1"> 
     <!-- 모달 배경 -->
     <div id="mask"></div>
     <div id="wrap_area">
@@ -246,41 +245,39 @@
               <p class="conTitle">
                 <span>반품서 목록</span>
               </p>
-              <form class="search-container">
-                <div class="row">
-                  <!-- searchbar -->
-                  <div class="col-lg-6">
-                    <div class="input-group">
-                      <select style="width: 90px; height: 34px;" id="options">
-                        <option value="all" selected>전체</option>
-                        <option value="product" id="product">제품명</option>
-                        <option value="category" id="category">상호명</option>
-                      </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
-                    </div>
+              <div class="row">
+                <!-- searchbar -->
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <select style="width: 90px; height: 34px;" id="options">
+                      <option value="all" selected>전체</option>
+                      <option value="product" id="product">제품명</option>
+                      <option value="category" id="category">상호명</option>
+                    </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
                   </div>
-                  <!-- // searchbar -->
-                  <!-- date -->
-                  <div class='col-md-3 col-xs-4'>
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="">
-                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                          <div class="input-group-text">
-                            <i class="fa fa-calendar"></i>
-                          </div>
+                </div>
+                <!-- // searchbar -->
+                <!-- date -->
+                <div class='col-md-3 col-xs-4'>
+                  <div class="form-group">
+                    <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="">
+                      <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text">
+                          <i class="fa fa-calendar"></i>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <!-- // date -->
-                  <!-- button -->
-                  <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" onclick="selectList()">검색</button>
-                  </div>
-                  <!-- // button -->
                 </div>
-                <!-- /.row -->
-              </form>
+                <!-- // date -->
+                <!-- button -->
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" onclick="selectList()">검색</button>
+                </div>
+                <!-- // button -->
+              </div>
+              <!-- /.row -->
               <div class="divComGrpCodList">
                 <table class="col">
                   <caption>caption</caption>
@@ -314,6 +311,7 @@
               <div class="paging_area" id="pagination"></div>
               <h3 class="hidden">풋터 영역</h3>
               <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
+            </div>
           </li>
         </ul>
       </div>

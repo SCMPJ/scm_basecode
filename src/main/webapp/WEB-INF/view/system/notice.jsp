@@ -618,7 +618,7 @@
 </script>
 </head>
 <body>
-  <form id="myForm" action="" method="">
+  <form id="myForm" action="">
     <input type="hidden" id="currentPageCod" value="1"> 
     <input type="hidden" id="notice_id">
     <input id="file_no" type="hidden">
