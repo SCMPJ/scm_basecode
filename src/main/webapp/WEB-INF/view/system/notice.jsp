@@ -754,7 +754,8 @@
                 <td colspan="3"><textarea class="inputTxt p100" name="notice_content" id="notice_content" placeholder="최대 1000자까지 입력 가능합니다" required></textarea>
                   <p class="pull-right" id="count_cotent">
                     <span id="count">0</span>/1000
-                  </p></td>
+                  </p>
+                </td>
               </tr>
               <tr id="add_file">
                 <th scope="row">첨부파일</th>
@@ -762,15 +763,21 @@
               </tr>
               <tr id="download_file">
                 <th scope="row">첨부파일</th>
-                <td style="border-right: none;"><input id="file_no" type="hidden"> <input id="file_path" type="hidden"> <input id="file_name" value="" readonly></td>
-                <td style="border-left: none;"><a class="btn" id="download" href="" download>
+                <td style="border-right: none;">
+                  <input id="file_no" type="hidden">
+                  <input id="file_path" type="hidden"> 
+                  <input id="file_name" value="" readonly>
+                </td>
+                <td style="border-left: none;">
+                  <a class="btn" id="download" href="" download>
                     <button class="btn-default btn-sm">다운로드</button>
-                </a></td>
+                  </a>
+                </td>
               <tr>
               <tr id="modify_file">
                 <th scope="row">첨부파일 변경</th>
-                <td style="border-right: none;"><input type="file" class="inputTxt p100" id="upload_modify_file" accept="image/*" /></td>
-                <td style="border-left: none;"><button id="delete_file_button">첨부파일 삭제</button></td>
+                <td style="border-right: none;"><input type="file" class="btn-default btn-sm" id="upload_modify_file" accept="image/*" /></td>
+                <td style="border-left: none;"><button class="btn-default btn-sm" id="delete_file_button">첨부파일 삭제</button></td>
               <tr>
               <tr class="auth_block">
                 <th scope="row">열람권한</th>
