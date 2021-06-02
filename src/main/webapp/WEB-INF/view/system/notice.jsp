@@ -165,19 +165,27 @@
     // JavsScript는 월이 0부터 시작하므로 +1
     // 오늘 날짜와 latterDate를 비교하기 위해서 형식 맞춰줘야 함
     today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
-    console.log('날짜검증',validateFormerDate)
     
     // 날짜가 2개 중 하나라도 설정되면 반드시 2개다 설정되어야 함
     if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
       swal('기간을 설정해 주세요');
       return false;
-    } else if (validateFormerDate > validateLatterDate) {
-      swal('기간을 확인해 주세요');
-      return false;
-    } else if (validateFormerDate > today || validateLatterDate > today ) {
-      swal('오늘 이후는 검색할 수 없습니다');
-      return false;
-    } else {
+    } 
+    else if (validateFormerDate > validateLatterDate) {
+      // validateFormerDate가 validateFormerDate보다 클 경우는 2개의 날짜를 교환
+      // google이 날짜검색 시 이 방식을 사용하고 있음
+        var temp;
+        temp = validateFormerDate;
+        validateFormerDate = validateLatterDate;
+        validateLatterDate = temp;
+        $("#datetimepicker1").find('input').val(validateFormerDate);
+        $("#datetimepicker3").find('input').val(validateLatterDate);
+    } 
+    else if (validateFormerDate > today || validateLatterDate > today ) {
+        swal('오늘 이후는 검색할 수 없습니다');
+        return false;
+    } 
+    else {
       return true;
     }
   }
@@ -245,7 +253,9 @@
     
     if(isSearch){
         param.option = option;
-        param.keyword = keyword.trim();
+        keyword = keyword.trim();
+        param.keyword = keyword;
+        $('#keyword').val(keyword);
         param.formerDate = formerDate;
         param.latterDate = latterDate;
     }
@@ -608,8 +618,11 @@
 </script>
 </head>
 <body>
-  <form id="myForm" action="" method="">
-    <input type="hidden" id="currentPageCod" value="1"> <input type="hidden" id="currentPageComnDtlCod" value="1"> <input type="hidden" id="tmpGrpCod" value=""> <input type="hidden" id="tmpGrpCodNm" value=""> <input type="hidden" name="action" id="action" value="">
+  <form id="myForm" action="">
+    <input type="hidden" id="currentPageCod" value="1"> 
+    <input type="hidden" id="notice_id">
+    <input id="file_no" type="hidden">
+    <input id="file_path" type="hidden"> 
     <!-- 모달 배경 -->
     <div id="mask"></div>
     <div id="wrap_area">
@@ -631,44 +644,43 @@
               <p class="conTitle">
                 <span>공지사항</span>
               </p>
-              <form class="search-container">
-                <div class="row">
-                  <!-- searchbar -->
-                  <div class="col-lg-6">
-                    <div class="input-group">
-                      <select style="width: 90px; height: 34px;" id="option">
-                        <option value="all" selected>전체</option>
-                        <option value="title" id="title">제목</option>
-                        <option value="content" id="content">내용</option>
-                      </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
-                    </div>
+              <div class="row">
+                <!-- searchbar -->
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <select style="width: 90px; height: 34px;" id="option">
+                      <option value="all" selected>전체</option>
+                      <option value="title" id="title">제목</option>
+                      <option value="content" id="content">내용</option>
+                    </select> <input type="text" class="form-control" aria-label="..." id="keyword" autocomplete="off">
                   </div>
-                  <!-- // searchbar -->
-                  <!-- datepicker -->
-                  <div class='col-md-3 col-xs-4'>
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="">
-                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                          <div class="input-group-text">
-                            <i class="fa fa-calendar"></i>
-                          </div>
+                </div>
+                <!-- // searchbar -->
+                <!-- datepicker -->
+                <div class='col-md-3 col-xs-4'>
+                  <div class="form-group">
+                    <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" style="pointer-events:none;">
+                      <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text">
+                          <i class="fa fa-calendar"></i>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <span class="divider">~</span>
-                  <div class='col-md-3 col-xs-4'>
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" value="">
-                        <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
-                          <div class="input-group-text">
-                            <i class="fa fa-calendar"></i>
-                          </div>
+                </div>
+                <span class="divider">~</span>
+                <div class='col-md-3 col-xs-4'>
+                  <div class="form-group">
+                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" style="pointer-events:none;">
+                      <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                        <div class="input-group-text">
+                          <i class="fa fa-calendar"></i>
                         </div>
                       </div>
                     </div>
+                  </div>
                   </div>
                   <!-- // datepicker -->
                   <!-- button -->
@@ -678,27 +690,26 @@
                   <!-- // button -->
                 </div>
                 <!-- /.row -->
-              </form>
-              <div class="divComGrpCodList">
-                <table class="col">
-                  <caption>caption</caption>
-                  <colgroup>
-                    <col width="10%">
-                    <col width="50%">
-                    <col width="30%">
-                    <col width="20%">
-                  </colgroup>
-                  <thead>
-                    <tr>
-                      <th scope="col">글번호</th>
-                      <th scope="col">제목</th>
-                      <th scope="col">작성일</th>
-                      <th scope="col">조회수</th>
-                    </tr>
-                  </thead>
-                  <tbody id="noticeList"></tbody>
-                </table>
-              </div>
+                <div class="divComGrpCodList">
+                  <table class="col">
+                    <caption>caption</caption>
+                    <colgroup>
+                      <col width="10%">
+                      <col width="50%">
+                      <col width="30%">
+                      <col width="20%">
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th scope="col">글번호</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">작성일</th>
+                        <th scope="col">조회수</th>
+                      </tr>
+                    </thead>
+                    <tbody id="noticeList"></tbody>
+                  </table>
+                </div>
               <div class="paging_area" id="pagination"></div>
               <div class="btn-wrap">
                 <c:if test="${sessionScope.userType eq 'E'}">
@@ -707,13 +718,15 @@
               </div>
               <h3 class="hidden">풋터 영역</h3>
               <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
+            </div>
           </li>
         </ul>
+        <!--  -->
       </div>
     </div>
     <!-- 공지사항 모달 시작-->
     <div id="layer1" class="layerPop layerType2" style="width: 600px;">
-      <input type="hidden" id="notice_id">
+      
       <dl>
         <dt id="dt_write">
           <strong>글쓰기</strong>
@@ -744,7 +757,8 @@
                 <td colspan="3"><textarea class="inputTxt p100" name="notice_content" id="notice_content" placeholder="최대 1000자까지 입력 가능합니다" required></textarea>
                   <p class="pull-right" id="count_cotent">
                     <span id="count">0</span>/1000
-                  </p></td>
+                  </p>
+                </td>
               </tr>
               <tr id="add_file">
                 <th scope="row">첨부파일</th>
@@ -752,15 +766,20 @@
               </tr>
               <tr id="download_file">
                 <th scope="row">첨부파일</th>
-                <td style="border-right: none;"><input id="file_no" type="hidden"> <input id="file_path" type="hidden"> <input id="file_name" value="" readonly></td>
-                <td style="border-left: none;"><a class="btn" id="download" href="" download>
+                <td style="border-right: none;">
+                  
+                  <input id="file_name" value="" readonly>
+                </td>
+                <td style="border-left: none;">
+                  <a class="btn" id="download" href="" download>
                     <button class="btn-default btn-sm">다운로드</button>
-                </a></td>
+                  </a>
+                </td>
               <tr>
               <tr id="modify_file">
                 <th scope="row">첨부파일 변경</th>
-                <td style="border-right: none;"><input type="file" class="inputTxt p100" id="upload_modify_file" accept="image/*" /></td>
-                <td style="border-left: none;"><button id="delete_file_button">첨부파일 삭제</button></td>
+                <td style="border-right: none;"><input type="file" class="btn-default btn-sm" id="upload_modify_file" accept="image/*" /></td>
+                <td style="border-left: none;"><button class="btn-default btn-sm" id="delete_file_button">첨부파일 삭제</button></td>
               <tr>
               <tr class="auth_block">
                 <th scope="row">열람권한</th>
