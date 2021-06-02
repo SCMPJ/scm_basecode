@@ -171,13 +171,22 @@
     if ((!validateFormerDate && validateLatterDate) && (validateFormerDate && !validateLatterDate)) {
       swal('기간을 설정해 주세요');
       return false;
-    } else if (validateFormerDate > validateLatterDate) {
-      swal('기간을 확인해 주세요');
-      return false;
-    } else if (validateFormerDate > today || validateLatterDate > today ) {
-      swal('오늘 이후는 검색할 수 없습니다');
-      return false;
-    } else {
+    } 
+    else if (validateFormerDate > validateFormerDate) {
+      // validateFormerDate가 validateFormerDate보다 클 경우는 2개의 날짜를 교환
+      // google이 날짜검색 시 이 방식을 사용하고 있음
+        var temp;
+        temp = validateFormerDate;
+        validateFormerDate = validateLatterDate;
+        validateLatterDate = temp;
+        $("#datetimepicker1").find('input').val(validateFormerDate);
+        $("#datetimepicker3").find('input').val(validateLatterDate);
+    } 
+    else if (validateFormerDate > today || validateLatterDate > today ) {
+        swal('오늘 이후는 검색할 수 없습니다');
+        return false;
+    } 
+    else {
       return true;
     }
   }
@@ -245,6 +254,7 @@
     
     if(isSearch){
         param.option = option;
+        console.log('트림',keyword.trim())
         param.keyword = keyword.trim();
         param.formerDate = formerDate;
         param.latterDate = latterDate;
@@ -648,7 +658,7 @@
                   <div class='col-md-3 col-xs-4'>
                     <div class="form-group">
                       <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1">
                         <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                           <div class="input-group-text">
                             <i class="fa fa-calendar"></i>
@@ -661,7 +671,7 @@
                   <div class='col-md-3 col-xs-4'>
                     <div class="form-group">
                       <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" value="">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3">
                         <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
                           <div class="input-group-text">
                             <i class="fa fa-calendar"></i>
