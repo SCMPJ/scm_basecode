@@ -65,12 +65,12 @@
 
 1. 모델 분석
   - 주문 처리 flow
-    - [주문처리.png 넣기]
+    - ![주문처리](https://user-images.githubusercontent.com/46353755/120425446-31f59700-c3a9-11eb-8aa5-750acefe5b82.png)
   - 반품 처리 flow
-    - [반품처리.png 넣기]
+    - ![반품처리](https://user-images.githubusercontent.com/46353755/120425458-3752e180-c3a9-11eb-9112-375dd9b586cb.png)
 2. 메뉴 분석
   - 메뉴 구성도
-    - [메뉴구성도.png 넣기]
+    - ![메뉴구성도](https://user-images.githubusercontent.com/46353755/120425510-4fc2fc00-c3a9-11eb-821f-e303c7c26ee3.png)
   - [메뉴 분배 엑셀 시트](https://drive.google.com/file/d/18ESviVPlBGmbFSp0f9Qea4YL6BMrv5TY/view?usp=sharing)
   - [코드 명명규칙](https://www.notion.so/0c355022a01f4024a99f92d6f217fd61?v=a3d057f7ece24f86bfe40ea3cddc065f)
   - [용어 사전](https://www.notion.so/84d7b17dd9584471b33632da5488b669?v=e2724827f1324f3ca263c31d99a3ef35)
@@ -79,11 +79,37 @@
 
 ### ERD
 
-- [erd.png 넣기]
+![SCM_ERD](https://user-images.githubusercontent.com/46353755/120425531-58b3cd80-c3a9-11eb-8045-d1429de25ab8.png)
 
 ## 🎇 구현
 
-- 이미지 파일 잔 뜩 넣기
+1. 고객 주문
+![1고객주문](https://user-images.githubusercontent.com/46353755/120425926-0fb04900-c3aa-11eb-9a9c-9adbf505df0f.png)
+
+2. 고객 장바구니
+![2고객장바구니](https://user-images.githubusercontent.com/46353755/120425944-19d24780-c3aa-11eb-8331-a3f738fbcc0a.png)
+
+3. 고객 입금 처리
+![3고객입금](https://user-images.githubusercontent.com/46353755/120425945-1b037480-c3aa-11eb-9b6d-d10c0fac0e54.png)
+
+4. SCM 수주내역 조회
+![4SCM수주내역조회2](https://user-images.githubusercontent.com/46353755/120425948-1ccd3800-c3aa-11eb-957a-a2c0e9e8156c.png)
+
+5. SCM 재고 확인, 배송 및 발주
+![5SCM수주내역조회3](https://user-images.githubusercontent.com/46353755/120425951-1dfe6500-c3aa-11eb-970f-c170c6ca823a.png)
+
+6. 배송팀 배송지시서 작성
+![6배송지시서작성](https://user-images.githubusercontent.com/46353755/120425953-1f2f9200-c3aa-11eb-91ac-75a797deed63.png)
+
+7. 배송팀 출하 계획
+![7배송출하계획](https://user-images.githubusercontent.com/46353755/120425955-2060bf00-c3aa-11eb-87f4-653872cb1ed1.png)
+
+8. 배송팀 배송완료 처리
+![8배송완료처리](https://user-images.githubusercontent.com/46353755/120425960-2191ec00-c3aa-11eb-958f-e41fc84b3509.png)
+
+9. 고객 반품 또는 구매확정 처리
+![9고객구매확정](https://user-images.githubusercontent.com/46353755/120425964-235baf80-c3aa-11eb-89b2-b0b782ed917f.png)
+
 
 ## 📏 시험
 
