@@ -48,7 +48,7 @@
       
       isSearch = true;
       var validate = validateDate();
-      console.log('//', validate)
+      
       if(validate) {
         option = $('#option').val();
         keyword = $('#keyword').val();
@@ -58,6 +58,11 @@
       else {
         return false;
       }
+    });
+    
+    // 날짜 초기화 버튼 이벤트
+    $('#init_date_button').click(function() {
+      $('#datetimepicker1').find("input").val('');
     });
   });
   
@@ -278,6 +283,9 @@
                 <!-- button -->
                 <div class="btn-group" role="group" aria-label="...">
                   <button type="button" class="btn btn-default" id="search_button">검색</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" id="init_date_button">초기화</button>
                 </div>
                 <!-- // button -->
               </div>
