@@ -568,7 +568,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">반품수량</th>
-                                <td><input type="number" class="form-control" name="return_qty" id="return_qty" oninput="printName();" min="1" onkeyup="if(this.value > max) this.value = null; swal('반품수량이 발주했던 수량보다 클 수 없습니다.');"/></td>
+                                <td><input type="number" class="form-control" name="return_qty" id="return_qty" oninput="printName();" min="1" onkeyup="if(this.value > max) this.value = max;"/></td>
                                 <th scope="row">반품액</th>
                                 <td><input type="text" class="form-control" name="return_price" id="return_price" value="" /></td>
                             </tr>
