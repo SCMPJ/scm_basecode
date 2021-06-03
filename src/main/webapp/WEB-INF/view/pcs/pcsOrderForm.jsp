@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>발주서</title>
+<title>발주서 목록 :: ChainMaker</title>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <script type="text/javascript">
   // 발주서 페이징 설정
@@ -193,7 +193,6 @@
     $("#purchMngId").text(purch_mng_id);
     $("#purchasePrice").text(numberWithCommas(purchase_price));
 
-    
     // 날짜 타입 변환
     var date1 = purch_date.substr(0, 10);
     var date2 = purch_date.substr(24, 29);
@@ -282,8 +281,7 @@
     $("#return_price").val();
     $("#return_date").val(return_date);
     $("#request_return_date").val(request_return_date);
-    $("#return_mng_id").val(return_mng_id);
-    
+    $("#return_mng_id").val(return_mng_id);    
     $("#return_qty").attr('max', purch_qty);
     
     var resultCallback = function(data) {
@@ -304,6 +302,7 @@
       $("#return_mng_id").val(data.pcsModel.return_mng_id);
       $("#return_price").val(data.pcsModel.purchase_price);
       $("#Pprice").val(data.pcsModel.purchase_price);
+      $("#purch_qty").val(data.pcsModel.purch_qty);
       
       console.log("fSelectRefundBtnResult : " + JSON.stringify(data));
     } else {
@@ -317,19 +316,10 @@
     var return_price = $("#return_price").val();
     var request_return_date = $(".requestReturnDateValue").val();
     var purch_list_no = $("#purch_list_no").val();
+    var purch_qty = $("#purchQty").val();
     
     if (!request_return_date) {
       swal("반품요청날짜를 선택해주세요.");
-      return;
-    }
-    
-    if (return_qty === 0) {
-      swal("반품수량을 0보다 크게 해주세요.");
-      $('#return_qty').val(1);
-      return;
-    } else if (return_qty > $("#return_qty").val()) {
-      swal("반품수량이 발주했던 수량보다 클 수 없습니다.");
-      $('#return_qty').val($("#return_qty").val());
       return;
     }
     
@@ -447,8 +437,8 @@
                                         <col width="10%">
                                         <col width="10%">
                                         <col width="10%">
-                                        <col width="7%">
                                         <col width="*">
+                                        <col width="10%">
                                         <col width="6%">
                                     </colgroup>
                                     <thead>
@@ -578,7 +568,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">반품수량</th>
-                                <td><input type="number" class="form-control" name="return_qty" id="return_qty" oninput="printName();" min="1"/></td>
+                                <td><input type="number" class="form-control" name="return_qty" id="return_qty" oninput="printName();" min="1" onkeyup="if(this.value > max) this.value = max; swal('반품수량이 발주했던 수량보다 클 수 없습니다.');"/></td>
                                 <th scope="row">반품액</th>
                                 <td><input type="text" class="form-control" name="return_price" id="return_price" value="" /></td>
                             </tr>
