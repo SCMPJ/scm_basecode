@@ -200,6 +200,7 @@ public class PcsController {
       HttpServletResponse response, HttpSession session) throws Exception {
     
     logger.info("+ Start " + className + ".selectRefundBtn");
+	paramMap.put("loginId", session.getAttribute("loginId")); // 로그인 아이디
     logger.info("   - paramMap : " + paramMap);
     
     String result = "SUCCESS";
@@ -224,6 +225,7 @@ public class PcsController {
       HttpServletResponse response, HttpSession session) throws Exception {
     
     logger.info("+ Start " + className + ".sendrefund");
+	paramMap.put("loginId", session.getAttribute("loginId")); // 로그인 아이디
     logger.info("   - paramMap : " + paramMap);
 
     String result = "SUCCESS";
