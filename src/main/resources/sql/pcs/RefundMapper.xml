@@ -122,36 +122,36 @@
   <!-- 반품서 단건 조회  -->
   <select id="selectOneRefund" resultType="kr.happyjob.study.pcs.model.RefundDetailModel" parameterType="String">
      /*selectOneRefund*/
-    SELECT 
-           pur.purch_list_no
-         , pur.order_cd
-         , DATE_FORMAT(pur.purch_date, '%Y-%m-%d') as purch_date
-         , DATE_FORMAT(pur.desired_delivery_date, '%Y-%m-%d') as desired_delivery_date  
-         , DATE_FORMAT(pur.return_date, '%Y-%m-%d') as return_date
-         , pur.return_mng_id
-         , pur.return_price
-         , pur.return_qty
-         , sup.supply_nm
-         , sup.supply_cd
-         , pro.prod_nm
-         , pro.product_cd
-         , war.warehouse_cd
-         , war.warehouse_nm
-         , war.addr
-         , cat.m_ct_nm 
-         
-      FROM tb_scm_purchase_list pur
-           LEFT JOIN tb_order ord
-           ON pur.order_cd = ord.order_cd
-           LEFT JOIN tb_scm_product pro
-           ON ord.product_cd = pro.product_cd 
-           LEFT JOIN tb_scm_supply sup
-           ON pro.supply_cd = sup.supply_cd
-           LEFT JOIN tb_scm_warehouse war
-           ON sup.warehouse_cd = war.warehouse_cd
-           LEFT JOIN tb_scm_m_category  cat
-           ON pro.m_ct_cd = cat.m_ct_cd
-    WHERE pur.purch_list_no = #{purch_list_no}
+    SELECT  pur.purch_list_no
+          , pur.order_cd
+          , DATE_FORMAT(pur.purch_date, '%Y-%m-%d') as purch_date
+          , DATE_FORMAT(pur.desired_delivery_date, '%Y-%m-%d') as desired_delivery_date  
+          , DATE_FORMAT(pur.return_date, '%Y-%m-%d') as return_date
+          , pur.return_price
+          , pur.return_qty
+          , sup.supply_nm
+          , sup.supply_cd
+          , pro.prod_nm
+          , pro.product_cd
+          , war.warehouse_cd
+          , war.warehouse_nm
+          , war.addr
+          , cat.m_ct_nm 
+          , user.name
+      FROM  tb_scm_purchase_list pur
+            LEFT JOIN tb_order ord
+            ON pur.order_cd = ord.order_cd
+            LEFT JOIN tb_scm_product pro
+            ON ord.product_cd = pro.product_cd 
+            LEFT JOIN tb_scm_supply sup
+            ON pro.supply_cd = sup.supply_cd
+            LEFT JOIN tb_scm_warehouse war
+            ON sup.warehouse_cd = war.warehouse_cd
+            LEFT JOIN tb_scm_m_category  cat
+            ON pro.m_ct_cd = cat.m_ct_cd
+            LEFT JOIN tb_userinfo user
+            ON pur.return_mng_id = user.loginID
+     WHERE  pur.purch_list_no = #{purch_list_no}
   </select>
   
   <!-- 반품 완료 처리 -->

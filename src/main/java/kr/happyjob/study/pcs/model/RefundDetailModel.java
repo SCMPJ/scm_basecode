@@ -14,7 +14,7 @@ public class RefundDetailModel {
   private String m_ct_nm; // 상호명  
   private int return_qty; // 반품수량
   private int return_price; // 반품 금액
-  private String return_mng_id; // 반품담당자
+  private String name; // 반품담당자 이름
   private String return_date; // 반품 완료일
   private String purch_date; // 구매일
   private String desired_delivery_date; // 배송희망일
@@ -75,11 +75,11 @@ public class RefundDetailModel {
   public void setReturn_price(int return_price) {
     this.return_price = return_price;
   }
-  public String getReturn_mng_id() {
-    return return_mng_id;
+  public String getName() {
+    return name;
   }
-  public void setReturn_mng_id(String return_mng_id) {
-    this.return_mng_id = return_mng_id;
+  public void setName(String name) {
+    this.name = name;
   }
   public String getReturn_date() {
     return return_date;

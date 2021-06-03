@@ -182,7 +182,7 @@
       $('#returnPrice').val('');
       $('#warehouse_cd').val('');
       $('#addr').val('');
-      $('return_mng_id').val('');
+      $('return_mng_nm').val('');
       $('#purch_date').val('');
       $('#desired_delivery_date').val('');
     } else {
@@ -196,7 +196,7 @@
       $('#returnPrice').val(result.return_price);
       $('#warehouse_cd').val(result.warehouse_cd);
       $('#addr').val(result.addr);
-      $('#return_mng_id').val(result.return_mng_id);
+      $('#return_mng_nm').val(result.name);
       $('#purch_date').val(result.purch_date);
       $('#desired_delivery_date').val(result.desired_delivery_date);
     }
@@ -378,7 +378,7 @@
               </tr>
               <tr>
                 <th scope="row">담당자</th>
-                <td colspan="3"><input type="text" class="inputTxt p100" name="return_mng_id" id="return_mng_id"  readonly/></td>
+                <td colspan="3"><input type="text" class="inputTxt p100" name="return_mng_nm" id="return_mng_nm"  readonly/></td>
               </tr>
               <tr>
                 <th scope="row">발주날짜</th>
