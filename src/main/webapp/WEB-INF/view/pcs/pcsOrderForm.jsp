@@ -283,6 +283,7 @@
     $("#request_return_date").val(request_return_date);
     $("#return_mng_id").val(return_mng_id);    
     $("#return_qty").attr('max', purch_qty);
+    $("#return_price").val()
     
     var resultCallback = function(data) {
       fSelectRefundBtnResult(data);
@@ -618,6 +619,14 @@
 	        language: 'ko',
 	        autoclose: true,
 	    });
+      $('#return_qty').on('keyup',function(){
+        var return_qty = $('#return_qty').val();
+
+        if(return_qty == 0){
+          swal("반품수량을 0보다 크게 해주세요.");
+          $('#return_qty').val(1);
+        }
+      });
     });
     </script>
 </body>
