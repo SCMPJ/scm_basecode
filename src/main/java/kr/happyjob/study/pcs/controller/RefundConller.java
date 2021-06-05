@@ -58,26 +58,16 @@ public class RefundConller {
     // 총 로우의 개수
     int totalCount;
     
-    
     // 검색어 유무 확인
-    if(!param.containsKey("option")) {
-
-      // 반품서 목록(기본)의 총 로우의 개수
+    if(!param.containsKey("option") && !param.containsKey("isReturn")) {
+      System.out.println("기본검색" + param);
+      // 반품서 목록(기본)의 총 로우의 개수  
       totalCount = refundService.countRefundList();
-      
     }
     else {
+      System.out.println("검색 또는 가능" + param);
       
       // 반품서 목록 조회(검색)
-      String option = (String) param.get("option");
-      String keyword = (String) param.get("keyword");
-      String date = (String) param.get("date");
-      
-      // param 에 옵션, 키워드, 날짜 추가하여  DB에서 조회
-      param.put("option", option);
-      param.put("keyword", keyword);
-      param.put("date", date);
-
       // 반품서 목록(검색)의 총 로우의 개수
       totalCount = refundService.countConditionList(param);
     }

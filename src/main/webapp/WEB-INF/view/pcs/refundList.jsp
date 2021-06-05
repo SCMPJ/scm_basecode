@@ -7,225 +7,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>반품서</title>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-  <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
-
-<script type="text/javascript">
-
-  // 페이징 설정
-  var pageSize = 5;
-  var pageBlock = 5;
-  var isSearch;
-  var option;
-  var keyword;
-  var date;
-
-  /* OnLoad event */ 
-  $(function() {
-    
-    //  datepicker설정
-    $('#datetimepicker1').datetimepicker({
-         //format : 'L',
-         format: 'YYYY-MM-DD',
-         formatDate: 'YYYY-MM-DD',
-         language: 'kr'
-      });
-      
-    $('#datetimepicker2').datetimepicker({
-      format : 'L',
-      useCurrent : false,
-      language: 'kr'
-      });
-      
-    $("#datetimepicker1").on("change.datetimepicker", function(e) {
-      $('#datetimepicker2').datetimepicker('minDate', e.date);
-    });
-
-    // 반품서 목록 조회 호출
-    selectList();
-    
-    // 검색 버튼 이벤트
-    $('#search_button').click(function() {
-      
-      isSearch = true;
-      var validate = validateDate();
-      
-      if(validate) {
-        option = $('#option').val();
-        keyword = $('#keyword').val();
-        date = $('#datetimepicker1').find("input").val();
-        selectList();
-      }
-      else {
-        return false;
-      }
-    });
-    
-    // 날짜 초기화 버튼 이벤트
-    $('#init_date_button').click(function() {
-      $('#datetimepicker1').find("input").val('');
-    });
-  });
-  
-  /* 검색일 검증 */
-  function validateDate() {
-    
-    var delimiter = '-';
-    var today = new Date();
-    today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
-    var date = $("#datetimepicker1").find("input").val();
-    
-    if(date > today) {
-      swal('오늘 이후는 검색할 수 없습니다');
-      $("#datetimepicker1").find("input").val(today);
-      return false;
-    }
-    else {
-      return true;
-    };
-  }
-
-   /* 반품서 목록 조회 */
-  function selectList(currentPage) {
-    
-    currentPage = currentPage || 1;
-
-    console.log("currentPage : " + currentPage);
-      
-      if (isSearch) {
-        var param = {
-          option : option,
-          keyword : keyword,
-          date : date,
-          currentPage : currentPage,
-          pageSize : pageSize
-        }
-      }
-      else {
-        var param = {
-          currentPage : currentPage,
-          pageSize : pageSize
-        }
-      }
-
-      var resultCallback = function(data) {
-        selectListCallBack(data, currentPage);
-    };
-
-    //Ajax실행 방식
-    callAjax("/pcs/refund/list.do", "post", "text", true, param, resultCallback);
-  }
-
-   /* 반품서 목록 조회 콜백 함수 */
-  function selectListCallBack(data, currentPage) {
-    
-    // 기존 목록 삭제
-    $('#refundList').empty();
-    
-    // 신규 목록 생성
-    $("#refundList").append(data);
-    
-    // 리스트 로우의 총 개수 추출
-    var totalCount = $("#totalCount").val();
-    
-    // 페이지 네비게이션 생성
-    var paginationHtml = getPaginationHtml(currentPage, totalCount, pageSize, pageBlock, 'selectList');
-    console.log("paginationHtml : " + paginationHtml);
-    $("#pagination").empty().append(paginationHtml);
-  
-    // 현재 페이지 설정
-    $("#currentPageCod").val(currentPage);
-  }
-
-  /* 반품서 단건 조회 모달  */
-  function fadeInModal(refund_list_no) {
-    
-    if (refund_list_no != null || refund_list_no != undefined) {
-      // 그룹코드 폼 초기화
-      initModal();
-      
-      // 모달 팝업
-      gfModalPop("#layer1");
-    } else {
-      swal("에러가 발생했습니다");
-    }
-    // 반품서 단건 조회
-    selectDetail(refund_list_no);
-  }
-
-  /* 반품서 단건 조회 함수 */
-  function selectDetail(refund_list_no) {
-    
-    var param = {
-      refund_list_no : refund_list_no
-    };
-
-    /* 반품서 단건 조회 콜백 함수 */
-    var resultCallback = function(data) {
-      gfModalPop("#layer1");
-      initModal(data);
-    };
-    
-    callAjax("/pcs/refund/detail.do", "post", "json", true, param, resultCallback);
-  }
-
-
-  /* 반품서 모달 초기화,데이터 설정 함수 */
-  function initModal(result) {
-    if (result == '' || result == null || result == undefined) {
-      $('#purch_list_no').val('');
-      $('#supply_nm').val('');
-      $('#supply_cd').val('');
-      $('#m_ct_nm').val('');
-      $('#product_cd').val('');
-      $('#prod_nm').val('');
-      $('#return_qty').val('');
-      $('#returnPrice').val('');
-      $('#warehouse_cd').val('');
-      $('#addr').val('');
-      $('return_mng_nm').val('');
-      $('#purch_date').val('');
-      $('#desired_delivery_date').val('');
-    } else {
-      $('#purch_list_no').val(result.purch_list_no);
-      $('#supply_nm').val(result.supply_nm);
-      $('#supply_cd').val(result.supply_cd);
-      $('#m_ct_nm').val(result.m_ct_nm);
-      $('#product_cd').val(result.product_cd);
-      $('#prod_nm').val(result.prod_nm);
-      $('#return_qty').val(result.return_qty);
-      $('#returnPrice').val(result.return_price);
-      $('#warehouse_cd').val(result.warehouse_cd);
-      $('#addr').val(result.addr);
-      $('#return_mng_nm').val(result.name);
-      $('#purch_date').val(result.purch_date);
-      $('#desired_delivery_date').val(result.desired_delivery_date);
-    }
-  }
-
-  /* 반품 완료 처리 */
-  function insertReturnDate(purch_list_no, currentPage, order_cd, supply_cd) {
-    // tb_acc_slip 에 사용될 값 가져오기
-    var return_price = $('#return_price').val();
-   
-    var param = {
-      purch_list_no : purch_list_no,
-      return_price : return_price,
-      order_cd : order_cd, 
-      supply_cd: supply_cd,
-    }
-    
-    // 콜백 함수
-    function resultCallback(data) {
-      if (data == 1) {
-       selectList(currentPage);
-      } else {
-        swal('서버에서 에러가 발생했습니다.');
-      }
-    }
-    
-    callAjax("/pcs/refund/returndate.do", "post", "json", true, param, resultCallback);
-  }
-</script>
 </head>
 <body>
   <form id="myForm" action="">
@@ -288,6 +69,12 @@
                   <button type="button" class="btn btn-default" id="init_date_button">초기화</button>
                 </div>
                 <!-- // button -->
+              </div>
+              <div class="row" style="margin-top: 0.5%; margin-bottom: 6% !important;">
+                <div class="col-lg-6">
+                  <button type="button" class="btn btn-default" id="return">반품가능 상품</button>
+                  <button type="button" class="btn btn-default" id="not_return">반품완료 상품</button>
+                </div>
               </div>
               <!-- /.row -->
               <div class="divComGrpCodList">
@@ -393,5 +180,247 @@
       <a href="" class="closePop"><span class="hidden">닫기</span></a>
     </div>
   </form>
+  <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+  <script type="text/javascript">
+
+    // 페이징 설정
+    var pageSize = 5;
+    var pageBlock = 5;
+    var isSearch;
+    var option;
+    var keyword;
+    var date;
+    var isReturn;
+  
+    /* OnLoad event */ 
+    $(function() {
+      
+      //  datepicker설정
+      $('#datetimepicker1').datetimepicker({
+           //format : 'L',
+           format: 'YYYY-MM-DD',
+           formatDate: 'YYYY-MM-DD',
+           language: 'kr'
+        });
+        
+      $('#datetimepicker2').datetimepicker({
+        format : 'L',
+        useCurrent : false,
+        language: 'kr'
+        });
+        
+      $("#datetimepicker1").on("change.datetimepicker", function(e) {
+        $('#datetimepicker2').datetimepicker('minDate', e.date);
+      });
+  
+      // 반품서 목록 조회 호출
+      selectList();
+      
+      // 검색 버튼 이벤트
+      $('#search_button').click(function() {
+        
+        isSearch = true;
+        var validate = validateDate();
+        
+        if(validate) {
+          option = $('#option').val();
+          keyword = $('#keyword').val();
+          date = $('#datetimepicker1').find("input").val();
+          selectList();
+        }
+        else {
+          return false;
+        }
+      });
+      
+      // 날짜 초기화 버튼 이벤트
+      $('#init_date_button').click(function() {
+        $('#datetimepicker1').find("input").val('');
+      });
+    });
+    
+    /* 검색일 검증 */
+    function validateDate() {
+      
+      var delimiter = '-';
+      var today = new Date();
+      today = today.getFullYear() + delimiter + ('0' + (today.getMonth() + 1)).slice(-2) + delimiter + ('0' + today.getDate()).slice(-2);
+      var date = $("#datetimepicker1").find("input").val();
+      
+      if(date > today) {
+        swal('오늘 이후는 검색할 수 없습니다');
+        $("#datetimepicker1").find("input").val(today);
+        return false;
+      }
+      else {
+        return true;
+      };
+    }
+    
+    /* 반품 가능  상품 조회 함수*/
+    $('#return').click(function() {
+      isSearch = false;
+      isReturn = 1;
+      selectList();
+    })
+    
+    /* 반품 완료 상품 조회 함수*/
+    $('#not_return').click(function() {
+      isSearch = false;
+      isReturn = 2;
+      selectList();
+    })
+    
+     /* 반품서 목록 조회 */
+    function selectList(currentPage) {
+      
+      currentPage = currentPage || 1;
+  
+      console.log("currentPage : " + currentPage);
+      
+      if (isSearch) {
+        var param = {
+                      option : option,
+                      keyword : keyword,
+                      date : date,
+                      currentPage : currentPage,
+                      pageSize : pageSize
+                     }    
+      }
+      else if(isReturn) {
+        $('#keyword').val('');
+        $('#datetimepicker1').find("input").val('');
+        var param = {
+                      isReturn : isReturn,
+                      currentPage : currentPage,
+                      pageSize : pageSize
+                    }
+      }
+      else {
+        var param = {
+                      currentPage : currentPage,
+                      pageSize : pageSize
+                    }
+      }
+  
+        var resultCallback = function(data) {
+          selectListCallBack(data, currentPage);
+      };
+  
+      //Ajax실행 방식
+      callAjax("/pcs/refund/list.do", "post", "text", true, param, resultCallback);
+    }
+  
+     /* 반품서 목록 조회 콜백 함수 */
+    function selectListCallBack(data, currentPage) {
+      
+      // 기존 목록 삭제
+      $('#refundList').empty();
+      
+      // 신규 목록 생성
+      $("#refundList").append(data);
+      
+      // 리스트 로우의 총 개수 추출
+      var totalCount = $("#totalCount").val();
+      
+      // 페이지 네비게이션 생성
+      var paginationHtml = getPaginationHtml(currentPage, totalCount, pageSize, pageBlock, 'selectList');
+      console.log("paginationHtml : " + paginationHtml);
+      $("#pagination").empty().append(paginationHtml);
+    
+      // 현재 페이지 설정
+      $("#currentPageCod").val(currentPage);
+    }
+  
+    /* 반품서 단건 조회 모달  */
+    function fadeInModal(refund_list_no) {
+      
+      if (refund_list_no != null || refund_list_no != undefined) {
+        // 그룹코드 폼 초기화
+        initModal();
+        
+        // 모달 팝업
+        gfModalPop("#layer1");
+      } else {
+        swal("에러가 발생했습니다");
+      }
+      // 반품서 단건 조회
+      selectDetail(refund_list_no);
+    }
+  
+    /* 반품서 단건 조회 함수 */
+    function selectDetail(refund_list_no) {
+      
+      var param = {
+        refund_list_no : refund_list_no
+      };
+  
+      /* 반품서 단건 조회 콜백 함수 */
+      var resultCallback = function(data) {
+        gfModalPop("#layer1");
+        initModal(data);
+      };
+      
+      callAjax("/pcs/refund/detail.do", "post", "json", true, param, resultCallback);
+    }
+  
+  
+    /* 반품서 모달 초기화,데이터 설정 함수 */
+    function initModal(result) {
+      if (result == '' || result == null || result == undefined) {
+        $('#purch_list_no').val('');
+        $('#supply_nm').val('');
+        $('#supply_cd').val('');
+        $('#m_ct_nm').val('');
+        $('#product_cd').val('');
+        $('#prod_nm').val('');
+        $('#return_qty').val('');
+        $('#returnPrice').val('');
+        $('#warehouse_cd').val('');
+        $('#addr').val('');
+        $('return_mng_nm').val('');
+        $('#purch_date').val('');
+        $('#desired_delivery_date').val('');
+      } else {
+        $('#purch_list_no').val(result.purch_list_no);
+        $('#supply_nm').val(result.supply_nm);
+        $('#supply_cd').val(result.supply_cd);
+        $('#m_ct_nm').val(result.m_ct_nm);
+        $('#product_cd').val(result.product_cd);
+        $('#prod_nm').val(result.prod_nm);
+        $('#return_qty').val(result.return_qty);
+        $('#returnPrice').val(result.return_price);
+        $('#warehouse_cd').val(result.warehouse_cd);
+        $('#addr').val(result.addr);
+        $('#return_mng_nm').val(result.name);
+        $('#purch_date').val(result.purch_date);
+        $('#desired_delivery_date').val(result.desired_delivery_date);
+      }
+    }
+  
+    /* 반품 완료 처리 */
+    function insertReturnDate(purch_list_no, currentPage, order_cd, supply_cd) {
+      // tb_acc_slip 에 사용될 값 가져오기
+      var return_price = $('#return_price').val();
+     
+      var param = {
+        purch_list_no : purch_list_no,
+        return_price : return_price,
+        order_cd : order_cd, 
+        supply_cd: supply_cd,
+      }
+      
+      // 콜백 함수
+      function resultCallback(data) {
+        if (data == 1) {
+         selectList(currentPage);
+        } else {
+          swal('서버에서 에러가 발생했습니다.');
+        }
+      }
+      
+      callAjax("/pcs/refund/returndate.do", "post", "json", true, param, resultCallback);
+    }
+  </script>
 </body>
 </html>

@@ -26,7 +26,7 @@
              INNER JOIN tb_scm_m_category  cat
              ON pro.m_ct_cd = cat.m_ct_cd
       WHERE  pur.request_return_date is not null
-      <if test="keyword != ''">
+      <if test="keyword != '' and isReturn == null">
         <choose>
           <when test="option eq 'all'.toString()">
             AND (
@@ -42,8 +42,18 @@
           </when>               
         </choose>
       </if>
-      <if test="date != null and !date.equals('')">
+      <if test="date != null and !date.equals('') and isReturn == null">
         AND DATE(pur.return_date) = (#{date})
+      </if>
+      <if test="isReturn != null and !isReturn.equals('')">
+        <choose>
+          <when test="isReturn eq '1'.toString()">
+            AND DATE(pur.return_date) IS NULL
+          </when>
+          <when test="isReturn eq '2'.toString()">
+            AND DATE(pur.return_date) IS NOT NULL
+          </when>
+        </choose>
       </if>
      ORDER BY purch_list_no DESC
      LIMIT #{pageIndex}, #{pageSize}    
@@ -71,25 +81,35 @@
             INNER JOIN tb_scm_m_category  cat
             ON pro.m_ct_cd = cat.m_ct_cd
      WHERE  pur.request_return_date is not null
-    <if test="keyword != ''">
-      <choose>
-        <when test="option eq 'all'.toString()">
-          AND (
-                 pro.prod_nm LIKE CONCAT('%', #{keyword}, '%')
-              OR cat.m_ct_nm LIKE CONCAT('%', #{keyword}, '%')
-               )
-        </when>                 
-        <when test="option eq 'product'.toString()">
-          AND  pro.prod_nm LIKE CONCAT('%', #{keyword}, '%')
-        </when>                
-        <when test="option eq 'category'.toString()">
-          AND cat.m_ct_nm LIKE CONCAT('%', #{keyword}, '%')
-        </when>               
-      </choose>
-    </if>
-    <if test="date != null and !date.equals('')">
-      AND DATE(pur.return_date) = (#{date})
-    </if>
+      <if test="keyword != '' and isReturn == null">
+        <choose>
+          <when test="option eq 'all'.toString()">
+            AND (
+                    pro.prod_nm LIKE CONCAT('%', #{keyword}, '%')
+                 OR cat.m_ct_nm LIKE CONCAT('%', #{keyword}, '%')
+                 )
+          </when>                 
+          <when test="option eq 'product'.toString()">
+            AND  pro.prod_nm LIKE CONCAT('%', #{keyword}, '%')
+          </when>                
+          <when test="option eq 'category'.toString()">
+            AND cat.m_ct_nm LIKE CONCAT('%', #{keyword}, '%')
+          </when>               
+        </choose>
+      </if>
+      <if test="date != null and !date.equals('') and isReturn == null">
+        AND DATE(pur.return_date) = (#{date})
+      </if>
+      <if test="isReturn != null and !isReturn.equals('')">
+        <choose>
+          <when test="isReturn eq '1'.toString()">
+            AND DATE(pur.return_date) IS NULL
+          </when>
+          <when test="isReturn eq '2'.toString()">
+            AND DATE(pur.return_date) IS NOT NULL
+          </when>
+        </choose>
+      </if>
   </select>
   
   <!-- 반품서 단건 조회  -->
@@ -111,7 +131,7 @@
           , war.addr
           , cat.m_ct_nm 
           , user.name
-      
+
       FROM  tb_scm_purchase_list pur
             INNER JOIN tb_order ord
             ON pur.order_cd = ord.order_cd
