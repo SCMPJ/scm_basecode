@@ -17,13 +17,13 @@
            , cat.m_ct_nm 
        FROM
              tb_scm_purchase_list pur
-             LEFT JOIN tb_order ord
+             INNER JOIN tb_order ord
              ON pur.order_cd  = ord.order_cd
-             LEFT JOIN tb_scm_product pro
+             INNER JOIN tb_scm_product pro
              ON ord.product_cd = pro.product_cd
-             LEFT JOIN tb_scm_supply sup
+             INNER JOIN tb_scm_supply sup
              ON pro.supply_cd = sup.supply_cd
-             LEFT JOIN tb_scm_m_category  cat
+             INNER JOIN tb_scm_m_category  cat
              ON pro.m_ct_cd = cat.m_ct_cd
       WHERE  pur.request_return_date is not null
     <if test="keyword != ''">
@@ -61,7 +61,6 @@
   ORDER BY purch_list_no DESC
      LIMIT #{pageIndex}, #{pageSize}    
   </select>
-  
   <!-- 반품서 목록(기본) 총 개수 조회 -->
   <select id="countRefundList" resultType="int">
     /*countRefundList*/
@@ -75,13 +74,13 @@
     /*countConditionList*/
    SELECT  count(pur.purch_list_no)
      FROM  tb_scm_purchase_list pur
-           LEFT JOIN tb_order ord
+           INNER JOIN tb_order ord
            ON pur.order_cd  = ord.order_cd
-           LEFT JOIN tb_scm_product pro
+           INNER JOIN tb_scm_product pro
            ON ord.product_cd = pro.product_cd
-           LEFT JOIN tb_scm_supply sup
+           INNER JOIN tb_scm_supply sup
            ON pro.supply_cd = sup.supply_cd
-           LEFT JOIN tb_scm_m_category  cat
+           INNER JOIN tb_scm_m_category  cat
            ON pro.m_ct_cd = cat.m_ct_cd
     WHERE  pur.request_return_date is not null
     <if test="keyword != ''">
@@ -138,18 +137,19 @@
           , war.addr
           , cat.m_ct_nm 
           , user.name
+      
       FROM  tb_scm_purchase_list pur
-            LEFT JOIN tb_order ord
+            INNER JOIN tb_order ord
             ON pur.order_cd = ord.order_cd
-            LEFT JOIN tb_scm_product pro
+            INNER JOIN tb_scm_product pro
             ON ord.product_cd = pro.product_cd 
-            LEFT JOIN tb_scm_supply sup
+            INNER JOIN tb_scm_supply sup
             ON pro.supply_cd = sup.supply_cd
-            LEFT JOIN tb_scm_warehouse war
+            INNER JOIN tb_scm_warehouse war
             ON sup.warehouse_cd = war.warehouse_cd
-            LEFT JOIN tb_scm_m_category  cat
+            INNER JOIN tb_scm_m_category  cat
             ON pro.m_ct_cd = cat.m_ct_cd
-            LEFT JOIN tb_userinfo user
+            INNER JOIN tb_userinfo user
             ON pur.return_mng_id = user.loginID
      WHERE  pur.purch_list_no = #{purch_list_no}
   </select>
