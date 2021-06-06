@@ -384,12 +384,10 @@
   
   // 이미지 파일 검증
   function validateFile(modifier) {
-    console.log('...', modifier)
     var imgFile;
     
     if(modifier == 'w') imgFile = document.getElementById('uploadFile');
     else imgFile = document.getElementById('upload_modify_file');
-    console.log('ddd', imgFile.files[0].size)
     var fileForm = /(.*?)\.(jpg|jpeg|png|bmp)$/;
     var maxSize = 5 * 1024 * 1024; 
     var fileSize = imgFile.files[0].size;
@@ -545,7 +543,6 @@
     /* 공지사항 단건 조회 콜백 함수  */
     function resultCallback(result) {
       // 공지사항  작성 모달
-      console.log('단건',result)
       gfModalPop("#layer1");
       initModal(identifier, result);
     }
@@ -615,7 +612,6 @@
 
       // 콜백
       function resultCallback(result) {
-        console.log('페이지확인', currentPage)
         if (result == 1) {
           gfCloseModal();
           selectList(currentPage);
