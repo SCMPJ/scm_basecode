@@ -48,59 +48,63 @@
                 </div>
                 <!-- // searchbar -->
                 <!-- datepicker -->
-                <div class='col-md-3 col-xs-4'>
-                  <div class="form-group">
-                    <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" style="pointer-events:none;">
-                      <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                        <div class="input-group-text">
-                          <i class="fa fa-calendar"></i>
+                <div class='col-md-6 col-xs-6'>
+                  <div class='col-md-2 col-xs-2'>
+                    <div class="form-group">
+                      <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" style="pointer-events:none;">
+                        <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                          <div class="input-group-text">
+                            <i class="fa fa-calendar"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-1 col-xs-1" style="padding-top: 1%;">
+                    <span style="font-weight : bold;">~</span>
+                  </div>
+                  <div class='col-md-2 col-xs-2' style="padding:0px;">
+                    <div class="form-group">
+                      <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" style="pointer-events:none;">
+                        <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                          <div class="input-group-text">
+                            <i class="fa fa-calendar"></i>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <span class="divider">~</span>
-                <div class='col-md-3 col-xs-4'>
-                  <div class="form-group">
-                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" style="pointer-events:none;">
-                      <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
-                        <div class="input-group-text">
-                          <i class="fa fa-calendar"></i>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                  <!-- // datepicker -->
-                  <!-- button -->
-                  <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" id="search_button">검색</button>
-                  </div>
-                  <!-- // button -->
+                <!-- // datepicker -->
+                <!-- button -->
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" id="search_button">검색</button>
                 </div>
-                <!-- /.row -->
-                <div class="divComGrpCodList">
-                  <table class="col">
-                    <caption>caption</caption>
-                    <colgroup>
-                      <col width="10%">
-                      <col width="50%">
-                      <col width="30%">
-                      <col width="20%">
-                    </colgroup>
-                    <thead>
-                      <tr>
-                        <th scope="col">글번호</th>
-                        <th scope="col">제목</th>
-                        <th scope="col">작성일</th>
-                        <th scope="col">조회수</th>
-                      </tr>
-                    </thead>
-                    <tbody id="noticeList"></tbody>
-                  </table>
-                </div>
+                <!-- // button -->
+              </div>
+              <!-- /.row -->
+              <div class="divComGrpCodList">
+                <table class="col">
+                  <caption>caption</caption>
+                  <colgroup>
+                    <col width="10%">
+                    <col width="50%">
+                    <col width="30%">
+                    <col width="20%">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col">글번호</th>
+                      <th scope="col">제목</th>
+                      <th scope="col">작성일</th>
+                      <th scope="col">조회수</th>
+                    </tr>
+                  </thead>
+                  <tbody id="noticeList"></tbody>
+                </table>
+              </div>
               <div class="paging_area" id="pagination"></div>
               <div class="btn-wrap">
                 <c:if test="${sessionScope.userType eq 'E'}">
@@ -112,12 +116,10 @@
             </div>
           </li>
         </ul>
-        <!--  -->
       </div>
     </div>
     <!-- 공지사항 모달 시작-->
     <div id="layer1" class="layerPop layerType2" style="width: 600px;">
-      
       <dl>
         <dt id="dt_write">
           <strong>글쓰기</strong>
