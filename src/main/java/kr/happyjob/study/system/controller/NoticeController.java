@@ -1,14 +1,10 @@
 package kr.happyjob.study.system.controller;
 
 import java.io.File;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.LogManager;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.happyjob.study.common.comnUtils.FileUtilCho;
@@ -46,7 +41,7 @@ public class NoticeController {
   
   // 상대경로
   @Value("${fileUpload.noticeRelativePath}")
-  private String fileRelativePath;
+  private String noticeRelativePath;
   
   // logger
   private final Logger log = LogManager.getLogger(this.getClass());
@@ -146,28 +141,28 @@ public class NoticeController {
     if(!param.containsKey("isFile")) {
       
       // file_no 조회
-      int file_no = noticeService.selectFileNo();
+      int fileNo = noticeService.selectFileNo();
       
-      String imgPath = noticePath + File.separator + file_no + File.separator;
+      String imgPath = noticePath + File.separator + fileNo + File.separator;
       FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
       Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
       
       String delimiter = "/";
-      String random_id = (String) fileUtilModel.get("random_id");
-      String file_ofname = (String) fileUtilModel.get("file_nm");
-      file_ofname = random_id + file_ofname;
-      String file_local_path = (String) fileUtilModel.get("file_loc");
-      String file_size = (String) fileUtilModel.get("file_size");
-      String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
-      
-      log.info("uploadedFile -" + file_relative_path);
+      String randomId = (String) fileUtilModel.get("random_id");
+      String fileOfName = (String) fileUtilModel.get("file_nm");
+      fileOfName = randomId + fileOfName;
+      String fileLocalPath = (String) fileUtilModel.get("file_loc");
+      String fileSize = (String) fileUtilModel.get("file_size");
+      String fileRelativePath = noticeRelativePath + delimiter + noticePath + delimiter + fileNo + delimiter + fileOfName;
+     
+      log.info("uploadedFile -" + fileRelativePath);
       
       // DB에 등록할 파일 정보
-      param.put("file_no", file_no);
-      param.put("file_local_path", file_local_path);
-      param.put("file_relative_path", file_relative_path);
-      param.put("file_ofname", file_ofname);
-      param.put("file_size", file_size);
+      param.put("file_no", fileNo);
+      param.put("file_local_path", fileLocalPath);
+      param.put("file_relative_path", fileRelativePath);
+      param.put("file_ofname", fileOfName);
+      param.put("file_size", fileSize);
       
       // DB에 파일  등록  
       int fileResult = noticeService.insertFile(param);
@@ -218,8 +213,8 @@ public class NoticeController {
     
     int result = 0;
     // 첨부파일이 없다가 새로 등록되는 경우는 신규등록과 같은 절차를 거쳐야 한다
-    int file_no;
-    String file_nm = (String)param.get("file_nm");
+    int fileNo;
+    String fileName = (String)param.get("file_nm");
     
     // 첨부파일의 존재유무 확인
     if(param.containsKey("noFile")) { // 글만 수정되는 경우
@@ -227,9 +222,9 @@ public class NoticeController {
     }
     else if(param.containsKey("deleted")) {
       // 기존 첨부파일 삭제  + 글수정
-      file_no = Integer.parseInt((String)param.get("file_no"));
+      fileNo = Integer.parseInt((String)param.get("file_no"));
       
-      String imgPath = rootPath + File.separator + noticePath + File.separator + file_no + File.separator;
+      String imgPath = rootPath + File.separator + noticePath + File.separator + fileNo + File.separator;
       FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
       
       // 글 업데이트
@@ -237,53 +232,52 @@ public class NoticeController {
       
       if(updateResult == 1) {
         // DB에서 파일 삭제
-        int deleteResult = noticeService.deleteFile(file_no);
+        int deleteResult = noticeService.deleteFile(fileNo);
         
         // 물리경로에서 파일 삭제
         fileUtil.deleteFiles(param);
         if(deleteResult == 1) {
-          if (file_nm != null && !"".equals(file_nm)) {
-            File file = new File(imgPath + file_nm);
+          if (fileName != null && !"".equals(fileName)) {
+            File file = new File(imgPath + fileName);
             File folder = new File(imgPath);
             if (file.exists()) file.delete();
             if (folder.exists()) folder.delete();
-            log.info("deletedFile" + file_nm);
+            log.info("deletedFile" + fileName);
             result = 1;
           }
         }
         else result = 0;
-        
       }
       else result = 0;
     }
     else if(param.containsKey("modified")|| param.containsKey("added")) { // 첨부파일 수정 + 글수정
       // 첨부파일 신규등록 || 첨부파일 수정
       // 기존 파일 번호
-      file_no = Integer.parseInt((String)param.get("file_no"));
-      int formerFileNo = file_no;
+      fileNo = Integer.parseInt((String)param.get("file_no"));
+      int formerFileNo = fileNo;
       
       // 신규파일 등록을 위한 파일번호
-      file_no = noticeService.selectFileNo();
+      fileNo = noticeService.selectFileNo();
       
-      String imgPath =  noticePath + File.separator + file_no + File.separator;
+      String imgPath =  noticePath + File.separator + fileNo + File.separator;
       FileUtilCho fileUtil = new FileUtilCho(multipartHttpServletRequest, rootPath, imgPath);
       
       Map<String, Object> fileUtilModel = fileUtil.uploadFiles();
       
       String delimiter = "/";
-      String random_id = (String) fileUtilModel.get("random_id");
-      String file_ofname = (String) fileUtilModel.get("file_nm");
-      file_ofname = random_id + file_ofname;
-      String file_local_path = (String) fileUtilModel.get("file_loc");
-      String file_size = (String) fileUtilModel.get("file_size");
-      String file_relative_path = fileRelativePath + delimiter + noticePath + delimiter + file_no + delimiter + file_ofname;
+      String randomId = (String) fileUtilModel.get("random_id");
+      String fileOfName = (String) fileUtilModel.get("file_nm");
+      fileOfName = randomId + fileOfName;
+      String fileLocalPath = (String) fileUtilModel.get("file_loc");
+      String fileSize = (String) fileUtilModel.get("file_size");
+      String fileRelativePath = noticeRelativePath + delimiter + noticePath + delimiter + fileNo + delimiter + fileOfName;
       
       // DB에 등록할 파일 정보
-      param.put("file_no", file_no);
-      param.put("file_local_path", file_local_path);
-      param.put("file_relative_path", file_relative_path);
-      param.put("file_ofname", file_ofname);
-      param.put("file_size", file_size);
+      param.put("file_no", fileNo);
+      param.put("file_local_path", fileLocalPath);
+      param.put("file_relative_path", fileRelativePath);
+      param.put("file_ofname", fileOfName);
+      param.put("file_size", fileSize);
       
       // DB에 신규 파일  등록  
       int fileResult = noticeService.insertFile(param);
@@ -301,19 +295,18 @@ public class NoticeController {
           
           // 물리경로에서 파일 삭제
           if(deleteResult == 1) {
-            if (file_nm != null && !"".equals(file_nm)) {
-              File file = new File(imgPath + file_nm);
+            if (fileName != null && !"".equals(fileName)) {
+              File file = new File(imgPath + fileName);
               File folder = new File(imgPath);
               if (file.exists()) file.delete();
               if (folder.exists()) folder.delete();
-              log.info("deletedFile -" + file_nm);
+              log.info("deletedFile -" + fileName);
               result = 1;
             }
           }
         }// 기존 파일 삭제 끝
       }// 파일 신규등록 성공 끝
      }
-    
     return result; 
   }
   
@@ -328,20 +321,19 @@ public class NoticeController {
     
     if(noticeResult == 1) {
       
-      // 파일도db에서삭제
-      int file_no = Integer.parseInt((String)param.get("file_no"));
-      noticeService.deleteFile(file_no);
-      // 파일도물리에서삭제
-      
-      String imgPath = rootPath + File.separator + noticePath + File.separator + file_no + File.separator;
-      String file_nm = (String)param.get("file_nm");
+      // 파일 db에서삭제
+      int fileNo = Integer.parseInt((String)param.get("file_no"));
+      noticeService.deleteFile(fileNo);
+      // 파일 물리에서삭제
+      String imgPath = rootPath + File.separator + noticePath + File.separator + fileNo + File.separator;
+      String fileName = (String)param.get("file_nm");
 
-      if (file_nm != null && !"".equals(file_nm)) {
-          File file = new File(imgPath + file_nm);
+      if (fileName != null && !"".equals(fileName)) {
+          File file = new File(imgPath + fileName);
           File folder = new File(imgPath);
           if (file.exists()) file.delete();
           if (folder.exists()) folder.delete();
-          log.info("deletedFile -" + file_nm);
+          log.info("deletedFile -" + fileName);
       }
       result = 1;
     }
