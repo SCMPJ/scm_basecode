@@ -374,6 +374,7 @@
         validateLatterDate = temp;
         $("#datetimepicker1").find('input').val(validateFormerDate);
         $("#datetimepicker3").find('input').val(validateLatterDate);
+        return true;
     } 
     else if (validateFormerDate > today || validateLatterDate > today ) {
         swal('오늘 이후는 검색할 수 없습니다');
