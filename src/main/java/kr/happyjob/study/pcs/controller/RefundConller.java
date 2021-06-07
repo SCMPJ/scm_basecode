@@ -41,7 +41,8 @@ public class RefundConller {
   // 반품 목록 조회(기본,검색)
   @RequestMapping(value="/list.do", method=RequestMethod.POST)
   public String selectList(Model model, @RequestParam Map<String, Object> param) throws Exception{
-
+    
+    log.info("list.do - Param -" + param);
     // 현재 페이지 번호
     int currentPage = Integer.parseInt((String)param.get("currentPage"));
    
@@ -79,7 +80,6 @@ public class RefundConller {
 
       // 반품서 목록(검색)의 총 로우의 개수
       totalCount = refundService.countConditionList(param);
-      
     }
     
     List<RefundDetailModel> refundList = refundService.selectRefundList(param);
@@ -97,6 +97,7 @@ public class RefundConller {
   @RequestMapping(value="/detail.do", method=RequestMethod.POST)
   public RefundDetailModel selectRefundDetail(@RequestParam(required=false)Map<String, Object> param, RefundDetailModel refundDetail) throws Exception {
     
+    log.info("detail.do - Param -" + param);
     String temp = (String) param.get("refund_list_no");
     int refund_list_no = Integer.parseInt(temp);
     
@@ -111,19 +112,19 @@ public class RefundConller {
   @RequestMapping(value="returndate.do", method=RequestMethod.POST)
   public int insertReturnDate(@RequestParam Map<String,Object> param, HttpSession session) throws Exception {
     
+    log.info("returndate.do - Param -" + param);
     // 현재 로그인 중인 PCS 직원의 ID 알아내기
       String direct_id = (String)session.getAttribute("loginId");
       param.put("direct_id", direct_id);
       
       int purch_list_no = Integer.parseInt((String) param.get("purch_list_no"));
+      int result = 0;
       
       // 구매 테이블에 반품 처리
       int refundResult = refundService.insertReturnDate(purch_list_no);
       
       // 환불액 입금 처리
       int  amtResult = refundService.insertAmt(param);
-      
-      int result = 0;
       
       // 반품과 입금처리 둘 다 처리되어야  성공(1)으로 처리
       if (refundResult == 1 && amtResult == 1) {
@@ -132,7 +133,6 @@ public class RefundConller {
       else if (refundResult == 0 || amtResult == 0) {
         result = 0;
       }
-      
       return result;
   }
   

@@ -279,7 +279,7 @@
     $("#prod_nm").val(prod_nm);
     $("#m_ct_nm").val(m_ct_nm);
     $("#return_qty").val(purch_qty);
-    $("#return_price").val(return_price);
+    $("#return_price").val();
     $("#return_date").val(return_date);
     $("#request_return_date").val(request_return_date);
     $("#return_mng_id").val(return_mng_id);
@@ -302,6 +302,7 @@
       $("#product_cd").val(data.pcsModel.product_cd);
       $("#warehouse_cd").val(data.pcsModel.warehouse_cd);
       $("#return_mng_id").val(data.pcsModel.return_mng_id);
+      $("#return_price").val(data.pcsModel.purchase_price);
       $("#Pprice").val(data.pcsModel.purchase_price);
       
       console.log("fSelectRefundBtnResult : " + JSON.stringify(data));
@@ -317,12 +318,19 @@
     var request_return_date = $(".requestReturnDateValue").val();
     var purch_list_no = $("#purch_list_no").val();
     
+    if (!request_return_date) {
+      swal("반품요청날짜를 선택해주세요.");
+      return;
+    }
+    
     if (return_qty === 0) {
       swal("반품수량을 0보다 크게 해주세요.");
       $('#return_qty').val(1);
+      return;
     } else if (return_qty > $("#return_qty").val()) {
       swal("반품수량이 발주했던 수량보다 클 수 없습니다.");
       $('#return_qty').val($("#return_qty").val());
+      return;
     }
     
     var param = {
@@ -572,7 +580,7 @@
                                 <th scope="row">반품수량</th>
                                 <td><input type="number" class="form-control" name="return_qty" id="return_qty" oninput="printName();" min="1"/></td>
                                 <th scope="row">반품액</th>
-                                <td><input type="text" class="form-control" name="return_price" id="return_price" /></td>
+                                <td><input type="text" class="form-control" name="return_price" id="return_price" value="" /></td>
                             </tr>
                             <tr>
                                 <th scope="row">반품요청날짜</th>

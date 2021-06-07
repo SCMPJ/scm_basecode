@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>JobKorea</title>
+<title>공지사항</title>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <script type="text/javascript">
   // 페이징 설정
@@ -89,6 +89,7 @@
     $('#write_modal_button').click(function() {
       var identifier = 'w';
       fadeInModal(identifier);
+      console.log('//')
     });
 
     /* 공지사항 작성 버튼 이벤트 */
@@ -105,6 +106,7 @@
     $('#modify_modal_button').click(function() {
       var identifier = 'm';
       fadeInModal(identifier);
+      console.log('수정')
     });
 
     // 공지사항 수정 버튼 이벤트
@@ -121,7 +123,6 @@
     $('#delete_file_button').click(function() {
       $('#delete_file_button').hide();
       $('#file_path').val('');
-      console.log('파일경로삭제',$('#file_path').val())
     })
     
      /* 공지사항 검색 버튼 이벤트 */
@@ -292,9 +293,10 @@
   /* 공지사항 글 작성 함수 */
   function writeNotice() {
     // 공지사항 글 작성 null 체크
-    var validate = validateIsNull();
-
-    if (validate) {
+    var validatedFile = validateFile();
+    var validateNull = validateIsNull();
+    
+    if (validatedFile && validateNull) {
       var title = $('#notice_title').val();
       var content = $('#notice_content').val();
       var auth = $('#notice_auth').val();
@@ -433,6 +435,7 @@
 
       if (!file) {
         $('#delete_file_button').hide();
+        $('#modify_file').val('');
       }
     }
   }
@@ -536,8 +539,7 @@
           swal('서버에서 에러가 발생했습니다');
         }
       }
-      ;
-
+      
       callAjax("/system/deleteNotice.do", "post", "text", true, param, resultCallback);
     } else {
       return false;
@@ -565,7 +567,6 @@
       // 수정은 단건 조회에서 불러온 데이터를 그대로 가지고
       // 모달만 변경시키면 된다.
       // 추가:글자수 카운팅 설정
-      console.log('이건호출..?',identifier)
       swapModal(identifier);
       initModal(identifier);
       var count = $('#notice_content').val().length;
@@ -609,7 +610,6 @@
       } 
     }
     else if (identifier == 'm') { // 수정모달
-      console.log('수정모달호출')
       $('#upload_modify_file').val('');
       $('#download_file').hide();
     }
@@ -746,7 +746,7 @@
             <tbody>
               <tr>
                 <th scope="row">제목</th>
-                <td colspan="3"><input type="text" class="inputTxt p100" name="notice_title" id="notice_title" autocomplete="off" placeholder="최대 100자까지 입력 가능합니다" required /></td>
+                <td colspan="3"><input type="text" class="inputTxt p100" name="notice_title" id="notice_title" autocomplete="off" placeholder="최대 100자까지 입력 가능합니다" /></td>
               </tr>
               <tr id="datice_date_block">
                 <th scope="row">작성시간</th>
@@ -754,7 +754,7 @@
               </tr>
               <tr>
                 <th scope="row">내용</th>
-                <td colspan="3"><textarea class="inputTxt p100" name="notice_content" id="notice_content" placeholder="최대 1000자까지 입력 가능합니다" required></textarea>
+                <td colspan="3"><textarea class="inputTxt p100" name="notice_content" id="notice_content" placeholder="최대 1000자까지 입력 가능합니다"></textarea>
                   <p class="pull-right" id="count_cotent">
                     <span id="count">0</span>/1000
                   </p>
@@ -771,15 +771,15 @@
                   <input id="file_name" value="" readonly>
                 </td>
                 <td style="border-left: none;">
-                  <a class="btn" id="download" href="" download>
-                    <button class="btn-default btn-sm">다운로드</button>
-                  </a>
+                   <a class="btn" id="download" href="" download>
+                     <button type="button" class="btn-default btn-sm">다운로드</button>
+                   </a>
                 </td>
               <tr>
               <tr id="modify_file">
                 <th scope="row">첨부파일 변경</th>
                 <td style="border-right: none;"><input type="file" class="btn-default btn-sm" id="upload_modify_file" accept="image/*" /></td>
-                <td style="border-left: none;"><button class="btn-default btn-sm" id="delete_file_button">첨부파일 삭제</button></td>
+                <td style="border-left: none;"><button class="btn-default btn-sm" id="delete_file_button" type="button">첨부파일 삭제</button></td>
               <tr>
               <tr class="auth_block">
                 <th scope="row">열람권한</th>
@@ -794,11 +794,11 @@
                 <td colspan="3" style="position:absolute; top:100%; left:35%; border-right:none;border-left:none">
                   <c:if test="${sessionScope.userType == 'E'}">
                     <div class="btn-group">
-                      <button class="btn-default btn-sm" id="write_button">저장</button>
-                      <button class="btn-default btn-sm" id="modify_button">저장</button>
-                      <button class="btn-default btn-sm" id="modify_modal_button">수정</button>
-                      <button class="btn-default btn-sm" id="delete_button">삭제</button>
-                      <button class="btn-default btn-sm" id="close_button">취소</button>
+                      <button type="button" class="btn-default btn-sm" id="write_button">저장</button>
+                      <button type="button" class="btn-default btn-sm" id="modify_button">저장</button>
+                      <button type="button" class="btn-default btn-sm" id="modify_modal_button">수정</button>
+                      <button type="button" class="btn-default btn-sm" id="delete_button">삭제</button>
+                      <button type="button" class="btn-default btn-sm" id="close_button">취소</button>
                     </div>
                   </c:if>
                 </td>

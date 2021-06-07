@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>JobKorea</title>
+<title>반품서</title>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
   <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
 
@@ -48,7 +48,7 @@
       
       isSearch = true;
       var validate = validateDate();
-      console.log('//', validate)
+      
       if(validate) {
         option = $('#option').val();
         keyword = $('#keyword').val();
@@ -58,6 +58,11 @@
       else {
         return false;
       }
+    });
+    
+    // 날짜 초기화 버튼 이벤트
+    $('#init_date_button').click(function() {
+      $('#datetimepicker1').find("input").val('');
     });
   });
   
@@ -278,6 +283,9 @@
                 <!-- button -->
                 <div class="btn-group" role="group" aria-label="...">
                   <button type="button" class="btn btn-default" id="search_button">검색</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" id="init_date_button">초기화</button>
                 </div>
                 <!-- // button -->
               </div>

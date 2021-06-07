@@ -277,7 +277,11 @@
          ,   PL.return_price
          ,   PL.return_qty
          ,   PL.return_date
-         ,   PL.return_mng_id
+         ,   (
+         		SELECT name 
+         		FROM tb_userinfo 
+         		WHERE loginID = #{loginId}
+       		  ) as return_mng_id
          ,   PL.request_return_date
       FROM tb_scm_purchase_list as PL
           LEFT JOIN tb_order as OD
@@ -302,7 +306,8 @@
    UPDATE tb_scm_purchase_list
       SET return_qty = #{return_qty},
           return_price = #{return_price},
-          request_return_date = #{request_return_date}
+          request_return_date = #{request_return_date},
+          return_mng_id = #{loginId}
     WHERE purch_list_no = #{purch_list_no}
   </update>
 </mapper>
